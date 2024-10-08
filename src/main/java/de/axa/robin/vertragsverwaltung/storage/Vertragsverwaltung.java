@@ -39,7 +39,7 @@ public class Vertragsverwaltung {
         return vertrage.stream().anyMatch(v -> v.getFahrzeug().getAmtlichesKennzeichen().equals(kennzeichen));
     }
     public static void speichereVertrage() {
-        try (FileWriter file = new FileWriter("vertrage.json")) {
+        try (FileWriter file = new FileWriter("vertrage.json", false)) {
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             for (Vertrag v : vertrage) {
                 arrayBuilder.add(Json.createObjectBuilder()

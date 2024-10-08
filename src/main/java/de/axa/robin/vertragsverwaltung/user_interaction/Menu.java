@@ -35,7 +35,7 @@ public class Menu {
                     }
             }
             if (number == 6) {
-                return;
+                System.exit(0);
             }
         }
     }

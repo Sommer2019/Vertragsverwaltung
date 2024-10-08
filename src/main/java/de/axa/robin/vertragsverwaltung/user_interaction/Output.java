@@ -1,7 +1,10 @@
 package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.storage.Vertrag;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Output {
     public static void menu() {
@@ -21,10 +24,15 @@ public class Output {
         System.out.println("Bitte gebe die 8-stellige VSNR ein: (oder 0 zum abbrechen) ");
     }
     public static void druckeVertrage(List<Vertrag> vertrage) {
+        Set<Vertrag> printedContracts = new HashSet<>();
         for (Vertrag v : vertrage) {
-            druckeVertrag(v);
+            if (!printedContracts.contains(v)) {
+                druckeVertrag(v);
+                printedContracts.add(v);
+            }
         }
     }
+
     public static void create(String input){
         System.out.println("Geben Sie "+input+" ein:");
     }
@@ -41,14 +49,14 @@ public class Output {
     public static void cancel(){
         System.out.println("Abgebrochen");
     }
+
     public static void druckeVertrag(Vertrag v) {
         System.out.println("Vertragsnummer: " + v.getVsnr());
         System.out.println("Preis: " + Vertrag.getPreis());
         System.out.print("Abrechnungszeitraum: ");
-        if(v.getMonatlich()){
+        if (v.getMonatlich()) {
             System.out.print("monatlich");
-        }
-        else{
+        } else {
             System.out.print("jährlich");
         }
         System.out.println();
