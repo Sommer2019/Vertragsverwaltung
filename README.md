@@ -32,7 +32,7 @@ die zu speichernden Verträge enthalten folgende Daten:
 - Fahrzeughersteller (z.B. BMW, Mercedes)
 - Fahrzeugtyp (z.B. GLA, Focus, X1)
 - Fahrzeughöchstgeschwindigkeit: Bis maximal 250kmh
-- Wagnisskennziffer: Es wird **nur** WKZ 112 zugelassen. Alle anderen sollen auf Fehler laufen
+- Wagnisskennziffer: Es wird **nur** WKZ 112 zugelassen. Alle anderen sollen auf Fehler laufen.
 ### Partnerdaten (Partner ist der Versicherungsnehmer)
 #### Der Versicherungsnehmer ist mit dem Fahrzeughalter identisch. Es gibt immer nur einen Partner pro Vertrag!
 - Vorname
