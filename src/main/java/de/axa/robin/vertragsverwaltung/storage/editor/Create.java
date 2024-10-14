@@ -1,8 +1,8 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
-import de.axa.robin.vertragsverwaltung.storage.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.storage.Partner;
-import de.axa.robin.vertragsverwaltung.storage.Vertrag;
+import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.modell.Partner;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.FahrzeugInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.PersonInput;
@@ -17,7 +17,7 @@ public class Create {
         Fahrzeug fahrzeug = createFahrzeug();
         Partner partner = createPartner();
         boolean monatlich = VertragInput.preisym();
-
+        LocalDate beginn = VertragInput.beginn();
         Vertrag.setPreis(monatlich, partner, fahrzeug);
         Output.preis(monatlich, Vertrag.getPreis());
 
@@ -25,8 +25,8 @@ public class Create {
                 VertragInput.setvsnr(),
                 monatlich,
                 Vertrag.getPreis(),
-                LocalDate.now(),
-                LocalDate.now().plusYears(1),
+                beginn,
+                beginn.plusYears(1),
                 LocalDate.now(),
                 fahrzeug,
                 partner
