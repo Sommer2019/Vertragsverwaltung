@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.storage;
+package de.axa.robin.vertragsverwaltung.modell;
 
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 

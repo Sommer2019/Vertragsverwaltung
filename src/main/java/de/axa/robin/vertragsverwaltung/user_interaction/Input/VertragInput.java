@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.user_interaction.Input;
 
-import de.axa.robin.vertragsverwaltung.storage.Vertrag;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
@@ -61,15 +61,36 @@ public class VertragInput {
         }
         return monatlich;
     }
+    public static LocalDate beginn() {
+        boolean rerun = true;
+        Scanner scanner = new Scanner(System.in);
+        LocalDate start = LocalDate.now();
+        while(rerun){
+            Output.editTime("den Versicherungsbeginn");
+            try{
+                start = LocalDate.parse(scanner.next());
+                rerun = false;
+            } catch(Exception e) {
+                Output.invalidinput();
+            }
+        }
+        return start;
+    }
 
-    public static void beginn(Vertrag vertrag) {
+    public static void editbeginn(Vertrag vertrag) {
         boolean rerun = true;
         Scanner scanner = new Scanner(System.in);
         while(rerun){
-            Output.editTime("den neuen Versicherungsbeginn");
+            Output.editTime("den Versicherungsbeginn");
             try{
-                vertrag.setVersicherungsbeginn(LocalDate.parse(scanner.nextLine()));
-                rerun = false;
+                LocalDate start = LocalDate.parse(scanner.next());
+                if(start.isBefore(vertrag.getVersicherungsablauf())&&!start.isBefore(vertrag.getAntragsDatum())){
+                    vertrag.setVersicherungsbeginn(start);
+                    rerun = false;
+                }
+                else{
+                    Output.invalidinput();
+                }
             } catch(Exception e) {
                 Output.invalidinput();
             }
@@ -79,10 +100,16 @@ public class VertragInput {
         boolean rerun = true;
         Scanner scanner = new Scanner(System.in);
         while(rerun) {
-            Output.editTime("den neuen Versicherungsablauf");
+            Output.editTime("das neue Versicherungsende");
             try {
-                vertrag.setVersicherungsablauf(LocalDate.parse(scanner.nextLine()));
-                rerun = false;
+                LocalDate start = LocalDate.parse(scanner.next());
+                if(!start.isBefore(LocalDate.now())&&start.isAfter(vertrag.getVersicherungsbeginn())){
+                    vertrag.setVersicherungsablauf(start);
+                    rerun = false;
+                }
+                else{
+                    Output.invalidinput();
+                }
             } catch (Exception e) {
                 Output.invalidinput();
             }
@@ -94,8 +121,14 @@ public class VertragInput {
         while(rerun) {
             Output.editTime("das neue Antragsdatum");
             try {
-                vertrag.setAntragsDatum(LocalDate.parse(scanner.nextLine()));
-                rerun = false;
+                LocalDate start = LocalDate.parse(scanner.next());
+                if(!start.isAfter(vertrag.getVersicherungsbeginn())){
+                    vertrag.setAntragsDatum(start);
+                    rerun = false;
+                }
+                else{
+                    Output.invalidinput();
+                }
             } catch (Exception e) {
                 Output.invalidinput();
             }

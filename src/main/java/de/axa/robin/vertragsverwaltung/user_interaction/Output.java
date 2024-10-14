@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.user_interaction;
 
-import de.axa.robin.vertragsverwaltung.storage.Vertrag;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
 import java.util.HashSet;
 import java.util.List;

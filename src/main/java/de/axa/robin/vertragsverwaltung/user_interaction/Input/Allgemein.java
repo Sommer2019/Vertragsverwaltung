@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.user_interaction.Input;
 
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
-import de.axa.robin.vertragsverwaltung.storage.Vertrag;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import java.util.InputMismatchException;
@@ -92,6 +92,9 @@ public class Allgemein {
                 } else if (confirm == 'y' || confirm == 'Y') {
                     Vertragsverwaltung.vertragAnlegen(vertrag);
                     Output.done("erfolgreich erstellt.");
+                }
+                else{
+                    Output.done("wurde nicht erstellt.");
                 }
             } catch (Exception e) {
                 Output.invalidinput();
