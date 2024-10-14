@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.storage;
+package de.axa.robin.vertragsverwaltung.storage.Checker;
 
 import java.time.LocalDate;
 

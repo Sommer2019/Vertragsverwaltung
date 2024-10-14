@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.user_interaction.Input;
 
-import de.axa.robin.vertragsverwaltung.storage.Checker;
+import de.axa.robin.vertragsverwaltung.storage.Checker.Checker;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
