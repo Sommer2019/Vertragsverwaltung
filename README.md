@@ -1,8 +1,8 @@
 # Vertragsverwaltung
 
 ## Zusammenfassung
-Der Auszubildende entwickelt eine Java-Anwendung die JSON-Dateien einliest mit denen es möglich ist (einfache)
-Versicherungsverträge anzulegen, zu ändern, zu stonieren und eine Preisberechnung für neue Verträge und Änderungen zur Verfügung zu stellen.
+Der Auszubildende entwickelt eine Java-Anwendung die JSON-Dateien einliest, mit denen es möglich ist (einfache)
+Versicherungsverträge anzulegen, zu ändern, zu stornieren und eine Preisberechnung für neue Verträge und Änderungen zur Verfügung zu stellen.
 Um die Verträge zu speichern wird der Auszubildende sie in einem JSON-File speichern und beim Aufrufen des Vertrages von der Festplatte lesen (keine Datenbank).
 Neben Java wird der Auszubildende Maven nutzen. Die Nutzung von Java Bibliotheken außerhalb des JDKs muss mit dem Ausbilder abgesprochen werden und wird so gering gehalten wie möglich (z.B. kein Spring).
 Als IDE nutzt der Auszubildende Intellij.
@@ -14,11 +14,11 @@ Der Auszubildende soll bei dieser Übung die grundlegende Handhabung von Java er
 
 ## Funktionen
 folgende Funktionen sollen über die Konsole möglich sein: 
-- GET Vertraege -> gibt alle gespeicherten Verträge zurück
-- GET Vertrag -> gibt einen bestimmten Vertrag (nach Angabe von VSNR) zurück
-- CREATE Vertrag -> erstellt einen neuen Vertrag
-- EDIT Vertrag -> bearbeitet einen Vertrag
-- DELETE Vertrag -> löscht einen Vertrag nach Angabe der VSNR
+- GET Verträge → gibt alle gespeicherten Verträge zurück
+- GET Vertrag → gibt einen bestimmten Vertrag (nach Angabe von VSNR) zurück
+- CREATE Vertrag → erstellt einen neuen Vertrag
+- EDIT Vertrag → bearbeitet einen Vertrag
+- DELETE Vertrag → löscht einen Vertrag nach Angabe der VSNR
 
 ## Vertragsdaten
 die zu speichernden Verträge enthalten folgende Daten:
@@ -37,7 +37,7 @@ die zu speichernden Verträge enthalten folgende Daten:
 #### Der Versicherungsnehmer ist mit dem Fahrzeughalter identisch. Es gibt immer nur einen Partner pro Vertrag!
 - Vorname
 - Nachname
-- Addresse (Land, Bundesland, Stadt, Straße, Hausnummer, PLZ): andere Länder außer DE laufen auf Fehlermeldung
+- Adresse (Land, Bundesland, Stadt, Straße, Hausnummer, PLZ): andere Länder außer DE laufen auf Fehlermeldung
 - Geburtsdatum
 
 ## Preisberechnung
