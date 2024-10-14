@@ -115,13 +115,8 @@ public class Output {
         System.out.println("Welche Personendaten möchten Sie bearbeiten?");
         System.out.println("1. Vorname");
         System.out.println("2. Nachname");
-        System.out.println("3. Land");
-        System.out.println("4. Bundesland");
-        System.out.println("5. Stadt");
-        System.out.println("6. Straße");
-        System.out.println("7. Hausnummer");
-        System.out.println("8. PLZ");
-        System.out.println("9. Geburtsdatum");
+        System.out.println("3. Geburtsdatum");
+        System.out.println("4. Adresse");
     }
     public static void editFahrzeug() {
         System.out.println("Welche Fahrzeugdaten möchten Sie bearbeiten?");

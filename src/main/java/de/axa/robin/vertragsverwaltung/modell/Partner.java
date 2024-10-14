@@ -13,7 +13,8 @@ public class Partner {
     private LocalDate geburtsdatum;
 
     // Konstruktor
-    public Partner(String vorname, String nachname, String land, String bundesland, String stadt, String strasse, int hausnummer, int plz, LocalDate geburtsdatum) {
+    public Partner(String vorname, String nachname, LocalDate geburtsdatum,
+                   String land, String strasse, int hausnummer, int plz, String stadt, String bundesland) {
         this.vorname = vorname;
         this.nachname = nachname;
         this.land = land;

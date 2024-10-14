@@ -62,13 +62,14 @@ public class Vertragsverwaltung {
                         .add("partner", Json.createObjectBuilder()
                                 .add("vorname", v.getPartner().getVorname())
                                 .add("nachname", v.getPartner().getNachname())
+                                .add("geburtsdatum", v.getPartner().getGeburtsdatum().toString()))
                                 .add("land", v.getPartner().getLand())
-                                .add("bundesland", v.getPartner().getBundesland())
-                                .add("stadt", v.getPartner().getStadt())
                                 .add("strasse", v.getPartner().getStrasse())
                                 .add("hausnummer", v.getPartner().getHausnummer())
                                 .add("plz", v.getPartner().getPlz())
-                                .add("geburtsdatum", v.getPartner().getGeburtsdatum().toString())));
+                                .add("stadt", v.getPartner().getStadt())
+                                .add("bundesland", v.getPartner().getBundesland())
+                                );
             }
             JsonArray jsonArray = arrayBuilder.build();
             JsonWriter writer = Json.createWriter(file);
@@ -101,13 +102,13 @@ public class Vertragsverwaltung {
                         new Partner(
                                 jsonObject.getJsonObject("partner").getString("vorname"),
                                 jsonObject.getJsonObject("partner").getString("nachname"),
+                                LocalDate.parse(jsonObject.getJsonObject("partner").getString("geburtsdatum")),
                                 jsonObject.getJsonObject("partner").getString("land"),
-                                jsonObject.getJsonObject("partner").getString("bundesland"),
-                                jsonObject.getJsonObject("partner").getString("stadt"),
                                 jsonObject.getJsonObject("partner").getString("strasse"),
                                 jsonObject.getJsonObject("partner").getInt("hausnummer"),
                                 jsonObject.getJsonObject("partner").getInt("plz"),
-                                LocalDate.parse(jsonObject.getJsonObject("partner").getString("geburtsdatum"))
+                                jsonObject.getJsonObject("partner").getString("stadt"),
+                                jsonObject.getJsonObject("partner").getString("bundesland")
                         )
                 );
                 vertrage.add(vertrag);

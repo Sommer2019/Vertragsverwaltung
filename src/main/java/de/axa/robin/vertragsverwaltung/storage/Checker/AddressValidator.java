@@ -23,7 +23,18 @@ public class AddressValidator {
             // Send request to the Nominatim API
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36");
+
+            // Set timeouts (5 seconds for connection, 5 seconds for reading the response)
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            // Check the HTTP response code
+            int status = conn.getResponseCode();
+            if (status != HttpURLConnection.HTTP_OK) {
+                System.err.println("Error: Received HTTP status code " + status);
+                return false; // Return false if the request was not successful
+            }
 
             // Read the response
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -51,6 +62,13 @@ public class AddressValidator {
                         displayName.contains(place.toLowerCase()) &&
                         displayName.contains(bundesland.toLowerCase());
             }
+
+        } catch (java.net.ConnectException e) {
+            System.err.println("Connection failed: " + e.getMessage());
+            return true;
+        } catch (java.net.SocketTimeoutException e) {
+            System.err.println("Connection timed out: " + e.getMessage());
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,3 +86,4 @@ public class AddressValidator {
         System.out.println("Is valid address: " + isValid);
     }
 }
+

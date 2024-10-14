@@ -3,6 +3,7 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Checker.AddressValidator;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.FahrzeugInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.PersonInput;
@@ -46,16 +47,29 @@ public class Create {
     }
 
     private static Partner createPartner() {
-        return new Partner(
-                PersonInput.name("Vor"),
-                PersonInput.name("Nach"),
-                PersonInput.land(),
-                PersonInput.bundesland(),
-                PersonInput.stadt(),
-                PersonInput.strasse(),
-                PersonInput.hausnummer(),
-                PersonInput.plz(),
-                PersonInput.geburtsdatum()
-        );
+        String vorname = PersonInput.name("Vor");
+        String nachname = PersonInput.name("Nachname");
+        LocalDate geburtsdatum = PersonInput.geburtsdatum();
+        String land;
+        String strasse;
+        int hausnummer;
+        int plz;
+        String stadt;
+        String bundesland;
+
+        while(true){
+            land = PersonInput.land();
+            strasse = PersonInput.strasse();
+            hausnummer = PersonInput.hausnummer();
+            stadt = PersonInput.stadt();
+            plz = PersonInput.plz();
+            bundesland = PersonInput.bundesland();
+            if(AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt, bundesland)){
+                break;
+            }
+        }
+        Partner partner = new Partner(vorname, nachname, geburtsdatum,
+                land, strasse, hausnummer, plz, stadt, bundesland);
+        return partner;
     }
 }

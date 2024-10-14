@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Checker.AddressValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.FahrzeugInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
@@ -85,25 +86,26 @@ public class Edit {
                     vertrag.getPartner().setNachname(PersonInput.name("Nach"));
                     break;
                 case 3:
-                    vertrag.getPartner().setLand(PersonInput.land());
+                    vertrag.getPartner().setGeburtsdatum(PersonInput.geburtsdatum());
                     break;
                 case 4:
-                    vertrag.getPartner().setBundesland(PersonInput.bundesland());
-                    break;
-                case 5:
-                    vertrag.getPartner().setStadt(PersonInput.stadt());
-                    break;
-                case 6:
-                    vertrag.getPartner().setStrasse(PersonInput.strasse());
-                    break;
-                case 7:
-                    vertrag.getPartner().setHausnummer(PersonInput.hausnummer());
-                    break;
-                case 8:
-                    vertrag.getPartner().setPlz(PersonInput.plz());
-                    break;
-                case 9:
-                    vertrag.getPartner().setGeburtsdatum(PersonInput.geburtsdatum());
+                    while(true){
+                        String land = PersonInput.land();
+                        String strasse = PersonInput.strasse();
+                        int hausnummer = PersonInput.hausnummer();
+                        int plz = PersonInput.plz();
+                        String stadt = PersonInput.stadt();
+                        String bundesland = PersonInput.bundesland();
+                        if(AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt, bundesland)){
+                            vertrag.getPartner().setLand(land);
+                            vertrag.getPartner().setStrasse(strasse);
+                            vertrag.getPartner().setHausnummer(hausnummer);
+                            vertrag.getPartner().setPlz(plz);
+                            vertrag.getPartner().setStadt(stadt);
+                            vertrag.getPartner().setBundesland(bundesland);
+                            break;
+                        }
+                    }
                     break;
                 default:
                     Output.invalidinput();
