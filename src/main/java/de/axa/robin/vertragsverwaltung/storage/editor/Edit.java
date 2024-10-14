@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
-import de.axa.robin.vertragsverwaltung.storage.Vertrag;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.FahrzeugInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
@@ -33,6 +33,7 @@ public class Edit {
                     Vertragsverwaltung.vertragLoeschen(vertrag.getVsnr());
                     Vertragsverwaltung.vertragAnlegen(vertrag);
                     Output.done("erfolgreich aktualisiert.");
+                    Output.preis(vertrag.getMonatlich(),Vertrag.getPreis());
                     return; // Zurück zum Hauptmenü
                 default:
                     Output.invalidinput();
@@ -50,7 +51,7 @@ public class Edit {
 
             switch (choice) {
                 case 1:
-                    VertragInput.beginn(vertrag);
+                    VertragInput.editbeginn(vertrag);
                     break;
                 case 2:
                     VertragInput.ende(vertrag);
