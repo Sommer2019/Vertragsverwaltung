@@ -79,7 +79,7 @@ public class Output {
         System.out.println("  Hausnummer: " + v.getPartner().getHausnummer());
         System.out.println("  PLZ: " + v.getPartner().getPlz());
         System.out.println("  Geburtsdatum: " + v.getPartner().getGeburtsdatum());
-        if(v.getVersicherungsablauf().isAfter(LocalDate.now())){
+        if(v.getVersicherungsablauf().isBefore(LocalDate.now())){
             System.err.println("Vertrag abgelaufen!");
         }
         System.out.println("-------------------------------");

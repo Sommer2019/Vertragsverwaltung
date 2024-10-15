@@ -62,7 +62,7 @@ public class Vertragsverwaltung {
                         .add("partner", Json.createObjectBuilder()
                                 .add("vorname", v.getPartner().getVorname())
                                 .add("nachname", v.getPartner().getNachname())
-                                .add("geschlecht", v.getPartner().getGeschlecht())
+                                .add("geschlecht", Character.toString(v.getPartner().getGeschlecht()))
                                 .add("geburtsdatum", v.getPartner().getGeburtsdatum().toString())
                                 .add("land", v.getPartner().getLand())
                                 .add("strasse", v.getPartner().getStrasse())

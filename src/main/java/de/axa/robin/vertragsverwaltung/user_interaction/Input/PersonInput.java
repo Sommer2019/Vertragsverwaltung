@@ -113,6 +113,11 @@ public class PersonInput {
             Output.create("die Hausnummer");
             try {
                 hausnummer = scanner.nextLine();
+                if(hausnummer.isEmpty()){
+                    Output.invalidinput();
+                    rerun = true;
+                    scanner.next();
+                }
             } catch (InputMismatchException e) {
                 Output.invalidinput();
                 rerun = true;

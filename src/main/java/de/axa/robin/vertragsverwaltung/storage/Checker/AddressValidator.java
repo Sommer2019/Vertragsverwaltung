@@ -2,10 +2,7 @@ package de.axa.robin.vertragsverwaltung.storage.Checker;
 
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.json.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -22,7 +19,7 @@ public class AddressValidator {
             String url = NOMINATIM_URL + query;
 
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
-
+            //make optional:
             System.setProperty("http.proxyHost", "localhost");
             System.setProperty("http.proxyPort", "3128");
             System.setProperty("https.proxyHost", "localhost");
@@ -67,14 +64,22 @@ public class AddressValidator {
                 JsonObject address = jsonArray.getJsonObject(0);
                 String displayName = address.getString("display_name").toLowerCase();
 
-                return displayName.contains(street.toLowerCase()) &&
+                if(displayName.contains(street.toLowerCase()) &&
                         displayName.contains(houseNumber.toLowerCase()) &&
                         displayName.contains(plz.toLowerCase()) &&
-                        displayName.contains(place.toLowerCase());
+                        displayName.contains(place.toLowerCase())){
+                    return true;
+                }
+                else {
+                    Output.errorvalidate("Fehler in Adresse!");
+                    return false;
+                }
             }
             else {
                 Output.errorvalidate("Adresse existiert nicht!");
+                return false;
             }
+
 
         } catch (ConnectException | SocketTimeoutException e) {
             Output.connection(e.getMessage());
