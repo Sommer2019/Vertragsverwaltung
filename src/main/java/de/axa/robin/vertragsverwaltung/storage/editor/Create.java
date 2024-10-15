@@ -18,9 +18,9 @@ public class Create {
         Fahrzeug fahrzeug = createFahrzeug();
         Partner partner = createPartner();
         boolean monatlich = VertragInput.preisym();
-        LocalDate beginn = VertragInput.beginn();
         Vertrag.setPreis(monatlich, partner, fahrzeug);
         Output.preis(monatlich, Vertrag.getPreis());
+        LocalDate beginn = VertragInput.beginn();
 
         Vertrag vertrag = new Vertrag(
                 VertragInput.setvsnr(),
@@ -48,11 +48,11 @@ public class Create {
 
     private static Partner createPartner() {
         String vorname = PersonInput.name("Vor");
-        String nachname = PersonInput.name("Nachname");
+        String nachname = PersonInput.name("Nach");
         LocalDate geburtsdatum = PersonInput.geburtsdatum();
         String land;
         String strasse;
-        int hausnummer;
+        String hausnummer;
         int plz;
         String stadt;
         String bundesland;
@@ -64,7 +64,7 @@ public class Create {
             stadt = PersonInput.stadt();
             plz = PersonInput.plz();
             bundesland = PersonInput.bundesland();
-            if(AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt, bundesland)){
+            if(AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt)){
                 break;
             }
         }

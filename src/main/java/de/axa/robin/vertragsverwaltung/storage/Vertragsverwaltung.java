@@ -105,7 +105,7 @@ public class Vertragsverwaltung {
                                 LocalDate.parse(jsonObject.getJsonObject("partner").getString("geburtsdatum")),
                                 jsonObject.getJsonObject("partner").getString("land"),
                                 jsonObject.getJsonObject("partner").getString("strasse"),
-                                jsonObject.getJsonObject("partner").getInt("hausnummer"),
+                                jsonObject.getJsonObject("partner").getString("hausnummer"),
                                 jsonObject.getJsonObject("partner").getInt("plz"),
                                 jsonObject.getJsonObject("partner").getString("stadt"),
                                 jsonObject.getJsonObject("partner").getString("bundesland")

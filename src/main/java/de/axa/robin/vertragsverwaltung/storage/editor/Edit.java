@@ -92,11 +92,11 @@ public class Edit {
                     while(true){
                         String land = PersonInput.land();
                         String strasse = PersonInput.strasse();
-                        int hausnummer = PersonInput.hausnummer();
+                        String hausnummer = PersonInput.hausnummer();
                         int plz = PersonInput.plz();
                         String stadt = PersonInput.stadt();
                         String bundesland = PersonInput.bundesland();
-                        if(AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt, bundesland)){
+                        if(AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt)){
                             vertrag.getPartner().setLand(land);
                             vertrag.getPartner().setStrasse(strasse);
                             vertrag.getPartner().setHausnummer(hausnummer);

@@ -8,13 +8,13 @@ public class Partner {
     private String bundesland;
     private String stadt;
     private String strasse;
-    private int hausnummer;
+    private String hausnummer;
     private int plz;
     private LocalDate geburtsdatum;
 
     // Konstruktor
     public Partner(String vorname, String nachname, LocalDate geburtsdatum,
-                   String land, String strasse, int hausnummer, int plz, String stadt, String bundesland) {
+                   String land, String strasse, String hausnummer, int plz, String stadt, String bundesland) {
         this.vorname = vorname;
         this.nachname = nachname;
         this.land = land;
@@ -75,11 +75,11 @@ public class Partner {
         this.strasse = strasse;
     }
 
-    public int getHausnummer() {
+    public String getHausnummer() {
         return hausnummer;
     }
 
-    public void setHausnummer(int hausnummer) {
+    public void setHausnummer(String hausnummer) {
         this.hausnummer = hausnummer;
     }
 

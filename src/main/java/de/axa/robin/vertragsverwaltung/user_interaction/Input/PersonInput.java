@@ -83,15 +83,15 @@ public class PersonInput {
         return input;
     }
 
-    public static int hausnummer(){
+    public static String hausnummer(){
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
-        int hausnummer = 0;
+        String hausnummer = "0";
         while (rerun) {
             rerun = false;
             Output.create("die Hausnummer");
             try {
-                hausnummer = scanner.nextInt();
+                hausnummer = scanner.nextLine();
             } catch (InputMismatchException e) {
                 Output.invalidinput();
                 rerun = true;

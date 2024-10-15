@@ -18,7 +18,7 @@ public class Output {
     }
 
     public static void invalidinput() {
-        System.out.println("Ungültige Eingabe!");
+        System.err.println("Ungültige Eingabe!");
     }
     public static void getvsnr(){
         System.out.println("Bitte gebe die 8-stellige VSNR ein: (oder 0 zum abbrechen) ");
@@ -37,7 +37,7 @@ public class Output {
         System.out.println("Geben Sie "+input+" ein:");
     }
     public static void error(String errorMessage) {
-        System.out.println(errorMessage+" existiert bereits.");
+        System.err.println(errorMessage+" existiert bereits.");
     }
     public static void confirm(Vertrag v,String handle){
         druckeVertrag(v);
@@ -125,5 +125,12 @@ public class Output {
         System.out.println("3. Typ");
         System.out.println("4. Höchstgeschwindigkeit");
         System.out.println("5. Wagnisskennziffer");
+    }
+
+    public static void connection(String errormessage) {
+        System.err.println("Connection timed out: " + errormessage);
+    }
+    public static void errorvalidate(String message) {
+        System.err.println("Error: "+message);
     }
 }
