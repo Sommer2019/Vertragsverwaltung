@@ -113,7 +113,7 @@ public class PersonInput {
             Output.create("die Hausnummer");
             try {
                 hausnummer = scanner.nextLine();
-                if(hausnummer.isEmpty()){
+                if(hausnummer != null && hausnummer.matches("^[a-zA-Z0-9]*$")){
                     Output.invalidinput();
                     rerun = true;
                     scanner.next();
