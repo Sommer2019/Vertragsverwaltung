@@ -86,9 +86,12 @@ public class Edit {
                     vertrag.getPartner().setNachname(PersonInput.name("Nach"));
                     break;
                 case 3:
-                    vertrag.getPartner().setGeburtsdatum(PersonInput.geburtsdatum());
+                    vertrag.getPartner().setGeschlecht(PersonInput.geschlecht());
                     break;
                 case 4:
+                    vertrag.getPartner().setGeburtsdatum(PersonInput.geburtsdatum());
+                    break;
+                case 5:
                     while(true){
                         String land = PersonInput.land();
                         String strasse = PersonInput.strasse();

@@ -4,26 +4,28 @@ import java.time.LocalDate;
 public class Partner {
     private String vorname;
     private String nachname;
+    private char geschlecht;
+    private LocalDate geburtsdatum;
     private String land;
-    private String bundesland;
-    private String stadt;
     private String strasse;
     private String hausnummer;
     private int plz;
-    private LocalDate geburtsdatum;
+    private String stadt;
+    private String bundesland;
 
     // Konstruktor
-    public Partner(String vorname, String nachname, LocalDate geburtsdatum,
+    public Partner(String vorname, String nachname, char geschlecht, LocalDate geburtsdatum,
                    String land, String strasse, String hausnummer, int plz, String stadt, String bundesland) {
         this.vorname = vorname;
         this.nachname = nachname;
+        this.geschlecht = geschlecht;
+        this.geburtsdatum = geburtsdatum;
         this.land = land;
-        this.bundesland = bundesland;
-        this.stadt = stadt;
         this.strasse = strasse;
         this.hausnummer = hausnummer;
         this.plz = plz;
-        this.geburtsdatum = geburtsdatum;
+        this.stadt = stadt;
+        this.bundesland = bundesland;
     }
 
     // Getter und Setter
@@ -43,28 +45,28 @@ public class Partner {
         this.nachname = nachname;
     }
 
+    public char getGeschlecht() {
+        return geschlecht;
+    }
+
+    public void setGeschlecht(char geschlecht) {
+        this.geschlecht = geschlecht;
+    }
+
+    public LocalDate getGeburtsdatum() {
+        return geburtsdatum;
+    }
+
+    public void setGeburtsdatum(LocalDate geburtsdatum) {
+        this.geburtsdatum = geburtsdatum;
+    }
+
     public String getLand() {
         return land;
     }
 
     public void setLand(String land) {
         this.land = land;
-    }
-
-    public String getBundesland() {
-        return bundesland;
-    }
-
-    public void setBundesland(String bundesland) {
-        this.bundesland = bundesland;
-    }
-
-    public String getStadt() {
-        return stadt;
-    }
-
-    public void setStadt(String stadt) {
-        this.stadt = stadt;
     }
 
     public String getStrasse() {
@@ -91,11 +93,20 @@ public class Partner {
         this.plz = plz;
     }
 
-    public LocalDate getGeburtsdatum() {
-        return geburtsdatum;
+    public String getStadt() {
+        return stadt;
     }
 
-    public void setGeburtsdatum(LocalDate geburtsdatum) {
-        this.geburtsdatum = geburtsdatum;
+    public void setStadt(String stadt) {
+        this.stadt = stadt;
     }
+
+    public String getBundesland() {
+        return bundesland;
+    }
+
+    public void setBundesland(String bundesland) {
+        this.bundesland = bundesland;
+    }
+
 }

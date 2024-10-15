@@ -62,14 +62,15 @@ public class Vertragsverwaltung {
                         .add("partner", Json.createObjectBuilder()
                                 .add("vorname", v.getPartner().getVorname())
                                 .add("nachname", v.getPartner().getNachname())
-                                .add("geburtsdatum", v.getPartner().getGeburtsdatum().toString()))
+                                .add("geschlecht", v.getPartner().getGeschlecht())
+                                .add("geburtsdatum", v.getPartner().getGeburtsdatum().toString())
                                 .add("land", v.getPartner().getLand())
                                 .add("strasse", v.getPartner().getStrasse())
                                 .add("hausnummer", v.getPartner().getHausnummer())
                                 .add("plz", v.getPartner().getPlz())
                                 .add("stadt", v.getPartner().getStadt())
                                 .add("bundesland", v.getPartner().getBundesland())
-                                );
+                                ));
             }
             JsonArray jsonArray = arrayBuilder.build();
             JsonWriter writer = Json.createWriter(file);
@@ -102,6 +103,7 @@ public class Vertragsverwaltung {
                         new Partner(
                                 jsonObject.getJsonObject("partner").getString("vorname"),
                                 jsonObject.getJsonObject("partner").getString("nachname"),
+                                jsonObject.getJsonObject("partner").getString("geschlecht").charAt(0),
                                 LocalDate.parse(jsonObject.getJsonObject("partner").getString("geburtsdatum")),
                                 jsonObject.getJsonObject("partner").getString("land"),
                                 jsonObject.getJsonObject("partner").getString("strasse"),

@@ -49,6 +49,7 @@ public class Create {
     private static Partner createPartner() {
         String vorname = PersonInput.name("Vor");
         String nachname = PersonInput.name("Nach");
+        char geschlecht = PersonInput.geschlecht();
         LocalDate geburtsdatum = PersonInput.geburtsdatum();
         String land;
         String strasse;
@@ -57,19 +58,15 @@ public class Create {
         String stadt;
         String bundesland;
 
-        while(true){
+        do {
             land = PersonInput.land();
             strasse = PersonInput.strasse();
             hausnummer = PersonInput.hausnummer();
-            stadt = PersonInput.stadt();
             plz = PersonInput.plz();
+            stadt = PersonInput.stadt();
             bundesland = PersonInput.bundesland();
-            if(AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt)){
-                break;
-            }
-        }
-        Partner partner = new Partner(vorname, nachname, geburtsdatum,
+        } while (!AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt));
+        return new Partner(vorname, nachname, geschlecht, geburtsdatum,
                 land, strasse, hausnummer, plz, stadt, bundesland);
-        return partner;
     }
 }

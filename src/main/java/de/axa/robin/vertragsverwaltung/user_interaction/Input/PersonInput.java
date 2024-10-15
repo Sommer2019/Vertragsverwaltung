@@ -24,6 +24,27 @@ public class PersonInput {
         return name;
     }
 
+    public static char geschlecht(){
+        Scanner scanner = new Scanner(System.in);
+        boolean rerun = true;
+        char gender = 'm';
+        while (rerun) {
+            rerun = false;
+            Output.create("das Geschlecht des Partners");
+            try{
+                gender = Character.toLowerCase(scanner.next(".").charAt(0));
+                if(gender != 'm'&& gender != 'w'&& gender != 'd'){
+                    Output.invalidinput();
+                    rerun = true;
+                }
+            }
+            catch (InputMismatchException e){
+                Output.invalidinput();
+                rerun = true;
+            }
+        }
+        return gender;
+    }
 
     public static String land(){
         Scanner scanner = new Scanner(System.in);

@@ -115,8 +115,9 @@ public class Output {
         System.out.println("Welche Personendaten möchten Sie bearbeiten?");
         System.out.println("1. Vorname");
         System.out.println("2. Nachname");
-        System.out.println("3. Geburtsdatum");
-        System.out.println("4. Adresse");
+        System.out.println("3. Geschlecht");
+        System.out.println("4. Geburtsdatum");
+        System.out.println("5. Adresse");
     }
     public static void editFahrzeug() {
         System.out.println("Welche Fahrzeugdaten möchten Sie bearbeiten?");
