@@ -2,6 +2,7 @@ package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,6 +79,9 @@ public class Output {
         System.out.println("  Hausnummer: " + v.getPartner().getHausnummer());
         System.out.println("  PLZ: " + v.getPartner().getPlz());
         System.out.println("  Geburtsdatum: " + v.getPartner().getGeburtsdatum());
+        if(v.getVersicherungsablauf().isAfter(LocalDate.now())){
+            System.err.println("Vertrag abgelaufen!");
+        }
         System.out.println("-------------------------------");
     }
     public static void preisMJ(){
