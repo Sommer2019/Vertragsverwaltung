@@ -37,6 +37,7 @@ die zu speichernden Verträge enthalten folgende Daten:
 #### Der Versicherungsnehmer ist mit dem Fahrzeughalter identisch. Es gibt immer nur einen Partner pro Vertrag!
 - Vorname
 - Nachname
+- Geschlecht
 - Adresse (Land, Bundesland, Stadt, Straße, Hausnummer, PLZ): andere Länder außer DE laufen auf Fehlermeldung
 - Geburtsdatum
 
