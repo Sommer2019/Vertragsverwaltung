@@ -49,7 +49,7 @@ public class Output {
         System.out.println("Soll dieser Vertrag wirklich "+handle+" werden? (y/n): ");
     }
     public static void skip(){
-        System.out.println("Überprüfung überspringen? (y/n): ");
+        System.err.println("Überprüfung überspringen? (y/n): ");
     }
     public static void done(String verarbeitet){
         System.out.println("Vertrag "+verarbeitet);
