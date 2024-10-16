@@ -2,6 +2,7 @@ package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -30,12 +31,21 @@ public class Output {
     }
     public static void druckeVertrage(List<Vertrag> vertrage) {
         Set<Vertrag> printedContracts = new HashSet<>();
+        BigDecimal summe=BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
             if (!printedContracts.contains(v)) {
                 druckeVertrag(v);
                 printedContracts.add(v);
+                if(!v.getMonatlich()){
+                    summe = summe.add(BigDecimal.valueOf(v.getPreis()));
+                }
+                else{
+                    summe = summe.add(BigDecimal.valueOf(v.getPreis()*12));
+                }
             }
         }
+        System.out.println("Summe aller Beiträge im Jahr: "+summe);
+        System.out.println("-------------------------------");
     }
 
     public static void create(String input){
