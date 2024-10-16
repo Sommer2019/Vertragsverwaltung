@@ -47,9 +47,15 @@ public class FahrzeugInput {
     public static String typ() {
         Scanner scanner = new Scanner(System.in);
         String input = "";
-        Output.create("den Typ");
-        while (input.isEmpty()) {
+        boolean rerun = true;
+        while (input.isEmpty()||rerun) {
+            rerun = false;
+            Output.create("den Typ");
             input = scanner.nextLine();
+            if(!input.matches("^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$")){
+                Output.invalidinput();
+                rerun = !Allgemein.skip();
+            }
         }
         return input;
     }

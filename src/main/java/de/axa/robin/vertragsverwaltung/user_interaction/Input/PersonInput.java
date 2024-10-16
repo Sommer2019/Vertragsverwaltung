@@ -16,9 +16,10 @@ public class PersonInput {
             rerun = false;
             Output.create("den "+prefix+"namen des Partners");
             name = scanner.nextLine();
-            if(Checker.string(name)){
+            if(Checker.string(name)||!name.matches("^[a-zA-Z\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$")){
+                Output.eventuell();
                 Output.invalidinput();
-                rerun = true;
+                rerun = !Allgemein.skip();
             }
         }
         return name;
@@ -113,6 +114,7 @@ public class PersonInput {
             if (input.matches("[a-zA-Z0-9]+")) {
                 return input;
             } else {
+                Output.eventuell();
                 Output.invalidinput();
             }
         }

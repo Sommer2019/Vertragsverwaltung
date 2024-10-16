@@ -18,6 +18,9 @@ public class Output {
         System.out.println("6 -- beenden");
     }
 
+    public static void eventuell() {
+        System.err.print("Eventuell ");
+    }
     public static void invalidinput() {
         System.err.println("Ungültige Eingabe!");
     }

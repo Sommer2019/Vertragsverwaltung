@@ -46,6 +46,8 @@ public class AddressValidator {
 
             if (status != HttpURLConnection.HTTP_OK) {
                 Output.errorvalidate("HTTP-Status Code " + status+" empfangen.");
+                Output.eventuell();
+                Output.invalidinput();
                 return !Allgemein.skip();
             }
 
@@ -73,18 +75,20 @@ public class AddressValidator {
                     return true;
                 }
                 else {
-                    Output.errorvalidate("Fehler in Adresse!");
+                    Output.errorvalidate("Eventuell fehler in Adresse!");
                     return Allgemein.skip();
                 }
             }
             else {
-                Output.errorvalidate("Adresse existiert nicht!");
+                Output.errorvalidate("Adresse existiert eventuell nicht!");
                 return Allgemein.skip();
             }
 
 
         } catch (ConnectException | SocketTimeoutException e) {
             Output.connection(e.getMessage());
+            Output.eventuell();
+            Output.invalidinput();
             return Allgemein.skip();
         } catch (Exception e) {
             e.printStackTrace();
