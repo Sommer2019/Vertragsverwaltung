@@ -104,27 +104,18 @@ public class PersonInput {
         return input;
     }
 
-    public static String hausnummer(){
+    public static String hausnummer() {
         Scanner scanner = new Scanner(System.in);
-        boolean rerun = true;
-        String hausnummer = "0";
-        while (rerun) {
-            rerun = false;
+        while(true){
             Output.create("die Hausnummer");
-            try {
-                hausnummer = scanner.nextLine();
-                if(hausnummer != null && hausnummer.matches("^[a-zA-Z0-9]*$")){
-                    Output.invalidinput();
-                    rerun = true;
-                    scanner.next();
-                }
-            } catch (InputMismatchException e) {
+            String input = scanner.nextLine();
+
+            if (input.matches("[a-zA-Z0-9]+")) {
+                return input;
+            } else {
                 Output.invalidinput();
-                rerun = true;
-                scanner.next();
             }
         }
-        return hausnummer;
     }
 
     public static int plz() {
