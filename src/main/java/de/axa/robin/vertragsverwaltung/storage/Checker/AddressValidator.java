@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage.Checker;
 
+import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import javax.json.*;
@@ -13,9 +14,9 @@ public class AddressValidator {
 
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search?format=json&q=";
 
-    public static boolean validateAddress(String street, String houseNumber, String plz, String place) {
+    public static boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland) {
         try {
-            String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place, StandardCharsets.UTF_8);
+            String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", "+ bundesland, StandardCharsets.UTF_8);
             String url = NOMINATIM_URL + query;
 
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
@@ -44,8 +45,8 @@ public class AddressValidator {
             }
 
             if (status != HttpURLConnection.HTTP_OK) {
-                Output.errorvalidate("Received HTTP status code " + status);
-                return true;
+                Output.errorvalidate("HTTP-Status Code " + status+" empfangen.");
+                return !Allgemein.skip();
             }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -67,23 +68,24 @@ public class AddressValidator {
                 if(displayName.contains(street.toLowerCase()) &&
                         displayName.contains(houseNumber.toLowerCase()) &&
                         displayName.contains(plz.toLowerCase()) &&
-                        displayName.contains(place.toLowerCase())){
+                        displayName.contains(place.toLowerCase()) &&
+                        displayName.contains(bundesland.toLowerCase())){
                     return true;
                 }
                 else {
                     Output.errorvalidate("Fehler in Adresse!");
-                    return false;
+                    return Allgemein.skip();
                 }
             }
             else {
                 Output.errorvalidate("Adresse existiert nicht!");
-                return false;
+                return Allgemein.skip();
             }
 
 
         } catch (ConnectException | SocketTimeoutException e) {
             Output.connection(e.getMessage());
-            return true;
+            return Allgemein.skip();
         } catch (Exception e) {
             e.printStackTrace();
         }

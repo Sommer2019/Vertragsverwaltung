@@ -76,6 +76,30 @@ public class Allgemein {
         return delete;
     }
 
+    public static boolean skip() {
+        boolean rerun = true;
+        char confirm;
+        Scanner character = new Scanner(System.in);
+
+        while (rerun) {
+            rerun = false;
+            Output.skip();
+            try {
+                confirm = character.next(".").charAt(0);
+                if (confirm != 'y' && confirm != 'Y' && confirm != 'n' && confirm != 'N') {
+                    Output.invalidinput();
+                    rerun = true;
+                } else if (confirm == 'y' || confirm == 'Y') {
+                    return true;
+                }
+            } catch (Exception e) {
+                Output.invalidinput();
+                rerun = true;
+            }
+        }
+        return false;
+    }
+
     public static void createconfirm(Vertrag vertrag) {
         boolean rerun = true;
         char confirm;

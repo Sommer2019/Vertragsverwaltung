@@ -99,7 +99,7 @@ public class Edit {
                         int plz = PersonInput.plz();
                         String stadt = PersonInput.stadt();
                         String bundesland = PersonInput.bundesland();
-                        if(AddressValidator.validateAddress(strasse, String.valueOf(hausnummer), String.valueOf(plz), stadt)){
+                        if(AddressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland)){
                             vertrag.getPartner().setLand(land);
                             vertrag.getPartner().setStrasse(strasse);
                             vertrag.getPartner().setHausnummer(hausnummer);
