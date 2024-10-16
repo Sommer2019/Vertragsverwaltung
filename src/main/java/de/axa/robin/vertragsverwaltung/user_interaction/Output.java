@@ -19,6 +19,7 @@ public class Output {
     }
 
     public static void eventuell() {
+        System.out.println();
         System.err.print("Eventuell ");
     }
     public static void invalidinput() {
