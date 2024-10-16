@@ -5,6 +5,7 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import javax.json.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.*;
@@ -16,15 +17,20 @@ public class AddressValidator {
 
     public static boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland) {
         try {
-            String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", "+ bundesland, StandardCharsets.UTF_8);
+            String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland, StandardCharsets.UTF_8);
             String url = NOMINATIM_URL + query;
 
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
-            //make optional:
-            System.setProperty("http.proxyHost", "localhost");
-            System.setProperty("http.proxyPort", "3128");
-            System.setProperty("https.proxyHost", "localhost");
-            System.setProperty("https.proxyPort", "3128");
+
+            String host = "localhost";
+            int port = 3128;
+            // Check if proxy is reachable
+            if (isProxyReachable(host, 3128)) {
+                System.setProperty("http.proxyHost", host);
+                System.setProperty("http.proxyPort", String.valueOf(port));
+                System.setProperty("https.proxyHost", host);
+                System.setProperty("https.proxyPort", String.valueOf(port));
+            }
 
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestMethod("GET");
@@ -45,7 +51,7 @@ public class AddressValidator {
             }
 
             if (status != HttpURLConnection.HTTP_OK) {
-                Output.errorvalidate("HTTP-Status Code " + status+" empfangen.");
+                Output.errorvalidate("HTTP-Status Code " + status + " empfangen.");
                 Output.eventuell();
                 Output.invalidinput();
                 return !Allgemein.skip();
@@ -67,23 +73,20 @@ public class AddressValidator {
                 JsonObject address = jsonArray.getJsonObject(0);
                 String displayName = address.getString("display_name").toLowerCase();
 
-                if(displayName.contains(street.toLowerCase()) &&
+                if (displayName.contains(street.toLowerCase()) &&
                         displayName.contains(houseNumber.toLowerCase()) &&
                         displayName.contains(plz.toLowerCase()) &&
                         displayName.contains(place.toLowerCase()) &&
-                        displayName.contains(bundesland.toLowerCase())){
+                        displayName.contains(bundesland.toLowerCase())) {
                     return true;
-                }
-                else {
+                } else {
                     Output.errorvalidate("Eventuell fehler in Adresse!");
                     return Allgemein.skip();
                 }
-            }
-            else {
+            } else {
                 Output.errorvalidate("Adresse existiert eventuell nicht!");
                 return Allgemein.skip();
             }
-
 
         } catch (ConnectException | SocketTimeoutException e) {
             Output.connection(e.getMessage());
@@ -94,5 +97,14 @@ public class AddressValidator {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private static boolean isProxyReachable(String host, int port) {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(host, port), 2000);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
