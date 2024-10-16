@@ -37,7 +37,7 @@ public class FahrzeugInput {
             rerun = false;
             Output.create("die Marke");
             marke = scanner.nextLine();
-            if(Checker.string(marke)){
+            if(Checker.string(marke)||!Checker.isStringInJsonFile(marke)) {
                 Output.invalidinput();
                 rerun = true;
             }

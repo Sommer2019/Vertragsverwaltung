@@ -1,6 +1,12 @@
 package de.axa.robin.vertragsverwaltung.storage.Checker;
 
 import java.time.LocalDate;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class Checker {
     public static boolean geburtsdatum(LocalDate geburtsdatum) {
@@ -18,5 +24,17 @@ public class Checker {
         }
         return input.isEmpty();
     }
-
+    public static boolean isStringInJsonFile(String searchString) {
+        String filePath = "src/main/resources/brands.json";
+        try (InputStream fis = new FileInputStream(filePath);
+             JsonReader jsonReader = Json.createReader(fis)) {
+            JsonObject jsonObject = jsonReader.readObject();
+            return jsonObject.toString().contains(searchString);
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
