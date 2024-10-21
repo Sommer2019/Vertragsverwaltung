@@ -16,10 +16,9 @@ public class PersonInput {
             rerun = false;
             Output.create("den "+prefix+"namen des Partners");
             name = scanner.nextLine();
-            if(Checker.string(name)||!name.matches("^[a-zA-Z\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$")){
-                Output.eventuell();
+            if(Checker.string(name)){
                 Output.invalidinput();
-                rerun = !Allgemein.skip();
+                rerun = true;
             }
         }
         return name;
