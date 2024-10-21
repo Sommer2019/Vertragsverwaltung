@@ -80,7 +80,7 @@ public class AddressValidator {
                         displayName.contains(bundesland.toLowerCase())) {
                     return true;
                 } else {
-                    Output.errorvalidate("Eventuell fehler in Adresse!");
+                    Output.errorvalidate("Eventuell Fehler in Adresse!");
                     return Allgemein.skip();
                 }
             } else {
