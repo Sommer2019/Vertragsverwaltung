@@ -69,7 +69,12 @@ public class VertragInput {
             Output.editTime("den Versicherungsbeginn");
             try{
                 start = LocalDate.parse(scanner.next());
-                rerun = false;
+                if(!start.isBefore(LocalDate.now())){
+                    rerun = false;
+                }
+                else{
+                    Output.invalidinput();
+                }
             } catch(Exception e) {
                 Output.invalidinput();
             }
