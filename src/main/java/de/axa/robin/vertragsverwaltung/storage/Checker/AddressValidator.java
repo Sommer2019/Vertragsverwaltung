@@ -3,7 +3,7 @@ package de.axa.robin.vertragsverwaltung.storage.Checker;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
-import javax.json.*;
+import jakarta.json.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

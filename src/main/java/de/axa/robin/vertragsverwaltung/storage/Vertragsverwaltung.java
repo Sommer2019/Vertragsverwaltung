@@ -4,7 +4,7 @@ import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
-import javax.json.*;
+import jakarta.json.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
