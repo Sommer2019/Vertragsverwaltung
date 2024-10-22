@@ -25,7 +25,7 @@ public class AddressValidator {
             String host = "localhost";
             int port = 3128;
             // Check if proxy is reachable
-            if (isProxyReachable(host, 3128)) {
+            if (isProxyReachable(host, port)) {
                 System.setProperty("http.proxyHost", host);
                 System.setProperty("http.proxyPort", String.valueOf(port));
                 System.setProperty("https.proxyHost", host);
