@@ -44,7 +44,7 @@ public class Output {
                 }
             }
         }
-        System.out.println("Summe aller Beiträge im Jahr: "+summe);
+        System.out.println("Summe aller Beiträge im Jahr: "+summe+"€");
         System.out.println("-------------------------------");
     }
 
