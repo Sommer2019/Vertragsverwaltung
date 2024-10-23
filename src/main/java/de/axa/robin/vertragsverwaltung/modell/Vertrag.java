@@ -42,11 +42,14 @@ public class Vertrag {
     public static void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         double preis = 0;
         int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
+        double factor = 1.5;
+        double factoralter = 0.1;
+        double factorspeed = 0.4;
         try {
             if(!monatlich){
-                preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit()  * 0.4)*24;
+                preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit()  * factorspeed)*factor/3*4;
             } else{
-                preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit() * 0.4)*1.5;
+                preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit() * factorspeed)*factor;
             }
         } catch (Exception e) {
             Output.invalidinput();
