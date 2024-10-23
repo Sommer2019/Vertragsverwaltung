@@ -23,10 +23,7 @@ public class Menu {
                 Create.createVertrag();
             }
             if (number == 4) {
-                int vsnr = Allgemein.getvsnr();
-                if(vsnr!=0){
-                    Edit.editVertrag(Vertragsverwaltung.getVertrag(vsnr));
-                }
+                Edit.editmenu();
             }
             if (number == 5) {
                 int vsnr = Allgemein.getvsnr();

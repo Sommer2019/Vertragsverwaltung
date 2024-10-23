@@ -9,6 +9,9 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Input.PersonInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.VertragInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 public class Edit {
     public static void editVertrag(Vertrag vertrag) {
         while (true) {
@@ -144,6 +147,40 @@ public class Edit {
                 default:
                     Output.invalidinput();
                     rerun = true;
+                    break;
+            }
+        }
+    }
+
+    public static void editmenu() {
+        while (true) {
+            Output.editwhat();
+            int choice = Allgemein.getnumberinput();
+            switch (choice) {
+                case 1:
+                    int vsnr = Allgemein.getvsnr();
+                    if (vsnr != 0) {
+                        Edit.editVertrag(Vertragsverwaltung.getVertrag(vsnr));
+                    }
+                    return;
+                case 2:
+                    List<Vertrag> vertrage = Vertragsverwaltung.getVertrage();
+                    BigDecimal summe=BigDecimal.ZERO;
+                    for (Vertrag v : vertrage) {
+                        v.setPreis(v.getMonatlich(), v.getPartner(), v.getFahrzeug());
+                        if(!v.getMonatlich()){
+                            summe = summe.add(BigDecimal.valueOf(v.getPreis()));
+                        }
+                        else{
+                            summe = summe.add(BigDecimal.valueOf(v.getPreis()*12));
+                        }
+                    }
+                    Output.newsum(summe);
+                    return;
+                case 3:
+                    return; // Zurück zum Hauptmenü
+                default:
+                    Output.invalidinput();
                     break;
             }
         }

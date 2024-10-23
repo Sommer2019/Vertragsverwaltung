@@ -44,9 +44,9 @@ public class Vertrag {
         int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
         try {
             if(!monatlich){
-                preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit()  * 0.4)*12;
+                preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit()  * 0.4)*24;
             } else{
-                preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit() * 0.4)*1.2;
+                preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit() * 0.4)*2.2;
             }
         } catch (Exception e) {
             Output.invalidinput();

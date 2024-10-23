@@ -4,9 +4,7 @@ import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Output {
     public static void menu() {
@@ -19,6 +17,10 @@ public class Output {
         System.out.println("6 -- beenden");
     }
 
+    public static void newsum(BigDecimal summe) {
+        System.out.println("Neue Summe aller Beiträge im Jahr: "+summe+"€");
+        System.out.println("-------------------------------");
+    }
     public static void eventuell() {
         System.out.println();
         System.err.print("Eventuell ");
@@ -30,18 +32,14 @@ public class Output {
         System.out.println("Bitte gebe die 8-stellige VSNR ein: (oder 0 zum abbrechen) ");
     }
     public static void druckeVertrage(List<Vertrag> vertrage) {
-        Set<Vertrag> printedContracts = new HashSet<>();
         BigDecimal summe=BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
-            if (!printedContracts.contains(v)) {
-                druckeVertrag(v);
-                printedContracts.add(v);
-                if(!v.getMonatlich()){
-                    summe = summe.add(BigDecimal.valueOf(v.getPreis()));
-                }
-                else{
-                    summe = summe.add(BigDecimal.valueOf(v.getPreis()*12));
-                }
+            druckeVertrag(v);
+            if(!v.getMonatlich()){
+                summe = summe.add(BigDecimal.valueOf(v.getPreis()));
+            }
+            else{
+                summe = summe.add(BigDecimal.valueOf(v.getPreis()*12));
             }
         }
         System.out.println("Summe aller Beiträge im Jahr: "+summe+"€");
@@ -113,6 +111,12 @@ public class Output {
             System.out.print(" im Jahr.");
         }
         System.out.println();
+    }
+    public static void editwhat(){
+        System.out.println("Was möchten Sie bearbeiten?");
+        System.out.println("1. Bestimmten Vertrag");
+        System.out.println("2. Preisneuberechnung");
+        System.out.println("3. Abbrechen");
     }
     public static void editMenu(){
         System.out.println("Was möchten Sie bearbeiten?");
