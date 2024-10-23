@@ -46,7 +46,7 @@ public class Vertrag {
             if(!monatlich){
                 preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit()  * 0.4)*24;
             } else{
-                preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit() * 0.4)*2;
+                preis = (alter * 0.1 + fahrzeug.getHoechstgeschwindigkeit() * 0.4)*1.5;
             }
         } catch (Exception e) {
             Output.invalidinput();
