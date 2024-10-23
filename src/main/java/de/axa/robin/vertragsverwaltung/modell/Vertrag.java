@@ -1,7 +1,11 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 
+import java.io.FileReader;
 import java.time.LocalDate;
 
 public class Vertrag {
@@ -41,14 +45,22 @@ public class Vertrag {
 
     public static void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         double preis = 0;
-        int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
         double factor = 1.5;
         double factoralter = 0.1;
         double factorspeed = 0.4;
+        int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
+        try (JsonReader reader = Json.createReader(new FileReader("preiscalc.json"))) {
+            JsonObject jsonObject = reader.readObject();
+            factor = jsonObject.getJsonNumber("factor").doubleValue();
+            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
+            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit()  * factorspeed)*factor;
             if(!monatlich){
-                preis = preis/3*4;
+                preis = preis*11;
             }
         } catch (Exception e) {
             Output.invalidinput();

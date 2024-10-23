@@ -144,4 +144,22 @@ public class Allgemein {
         }
         return number;
     }
+
+    public static double getdoubleinput() {
+        boolean rerun = true;
+        double number = 0;
+        Scanner scanner = new Scanner(System.in);
+
+        while (rerun) {
+            rerun = false;
+            try {
+                number = scanner.nextDouble();
+            } catch (InputMismatchException e) {
+                Output.invalidinput();
+                rerun = true;
+                scanner.next(); // Clear the invalid input
+            }
+        }
+        return number;
+    }
 }

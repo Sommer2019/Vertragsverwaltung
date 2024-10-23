@@ -3,6 +3,7 @@ package de.axa.robin.vertragsverwaltung.user_interaction;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,13 +13,13 @@ public class Output {
         System.out.println("1 -- alle Verträge anzeigen");
         System.out.println("2 -- bestimmten Vertrag anzeigen");
         System.out.println("3 -- Vertrag erstellen");
-        System.out.println("4 -- Vertrag bearbeiten");
+        System.out.println("4 -- Bearbeiten");
         System.out.println("5 -- Vertrag löschen");
         System.out.println("6 -- beenden");
     }
 
     public static void newsum(BigDecimal summe) {
-        System.out.println("Neue Summe aller Beiträge im Jahr: "+summe+"€");
+        System.out.println("Neue Summe aller Beiträge im Jahr: "+summe.setScale(2, RoundingMode.HALF_DOWN)+"€");
         System.out.println("-------------------------------");
     }
     public static void eventuell() {
@@ -42,7 +43,7 @@ public class Output {
                 summe = summe.add(BigDecimal.valueOf(v.getPreis()*12));
             }
         }
-        System.out.println("Summe aller Beiträge im Jahr: "+summe+"€");
+        System.out.println("Summe aller Beiträge im Jahr: "+summe.setScale(2, RoundingMode.HALF_DOWN)+"€");
         System.out.println("-------------------------------");
     }
 
@@ -115,7 +116,7 @@ public class Output {
     public static void editwhat(){
         System.out.println("Was möchten Sie bearbeiten?");
         System.out.println("1. Bestimmten Vertrag");
-        System.out.println("2. Preisneuberechnung");
+        System.out.println("2. Preisneuberechnung (alle Verträge)");
         System.out.println("3. Abbrechen");
     }
     public static void editMenu(){
