@@ -68,33 +68,7 @@ public class Output {
     }
 
     public static void druckeVertrag(Vertrag v) {
-        System.out.println("Vertragsnummer: " + v.getVsnr());
-        System.out.println("Preis: " + Vertrag.getPreis());
-        System.out.print("Abrechnungszeitraum: ");
-        if (v.getMonatlich()) {
-            System.out.print("monatlich");
-        } else {
-            System.out.print("jährlich");
-        }
-        System.out.println();
-        System.out.println("Versicherungsbeginn: " + v.getVersicherungsbeginn());
-        System.out.println("Versicherungsablauf: " + v.getVersicherungsablauf());
-        System.out.println("Antragsdatum: " + v.getAntragsDatum());
-        System.out.println("Fahrzeug:");
-        System.out.println("  Amtliches Kennzeichen: " + v.getFahrzeug().getAmtlichesKennzeichen());
-        System.out.println("  Hersteller: " + v.getFahrzeug().getHersteller());
-        System.out.println("  Typ: " + v.getFahrzeug().getTyp());
-        System.out.println("  Hoechstgeschwindigkeit: " + v.getFahrzeug().getHoechstgeschwindigkeit());
-        System.out.println("  Wagnisskennziffer: " + v.getFahrzeug().getWagnisskennziffer());
-        System.out.println("Partner:");
-        System.out.println("  Vorname: " + v.getPartner().getVorname());
-        System.out.println("  Nachname: " + v.getPartner().getNachname());
-        System.out.println("  Bundesland: " + v.getPartner().getBundesland());
-        System.out.println("  Stadt: " + v.getPartner().getStadt());
-        System.out.println("  Strasse: " + v.getPartner().getStrasse());
-        System.out.println("  Hausnummer: " + v.getPartner().getHausnummer());
-        System.out.println("  PLZ: " + v.getPartner().getPlz());
-        System.out.println("  Geburtsdatum: " + v.getPartner().getGeburtsdatum());
+        System.out.println(v.toString());
         if(v.getVersicherungsablauf().isBefore(LocalDate.now())){
             System.err.println("Vertrag abgelaufen!");
         }
@@ -124,8 +98,7 @@ public class Output {
         System.out.println("1. Allgemeine Daten");
         System.out.println("2. Personendaten");
         System.out.println("3. Fahrzeugdaten");
-        System.out.println("4. Versicherungsnummer");
-        System.out.println("5. Bearbeitung abschließen");
+        System.out.println("4. Bearbeitung abschließen");
     }
     public static void editDates(){
         System.out.println("Welche allgemeinen Daten möchten Sie bearbeiten?");
