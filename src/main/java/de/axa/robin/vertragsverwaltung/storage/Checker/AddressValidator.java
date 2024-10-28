@@ -15,9 +15,9 @@ public class AddressValidator {
 
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search?format=json&q=";
 
-    public static boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland) {
+    public static boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
         try {
-            String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland, StandardCharsets.UTF_8);
+            String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland + ", " + land, StandardCharsets.UTF_8);
             String url = NOMINATIM_URL + query;
 
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
@@ -73,11 +73,12 @@ public class AddressValidator {
                 JsonObject address = jsonArray.getJsonObject(0);
                 String displayName = address.getString("display_name").toLowerCase();
 
-                if (displayName.contains(street.toLowerCase()) &&
-                        displayName.contains(houseNumber.toLowerCase()) &&
-                        displayName.contains(plz.toLowerCase()) &&
-                        displayName.contains(place.toLowerCase()) &&
-                        displayName.contains(bundesland.toLowerCase())) {
+                if (displayName.contains(street.toLowerCase()+",") &&
+                        displayName.contains(houseNumber.toLowerCase()+",") &&
+                        displayName.contains(plz.toLowerCase()+",") &&
+                        displayName.contains(place.toLowerCase()+",") &&
+                        displayName.contains(bundesland.toLowerCase()+",") &&
+                        displayName.contains(land.toLowerCase())) {
                     return true;
                 } else {
                     Output.errorvalidate("Eventuell Fehler in Adresse!");

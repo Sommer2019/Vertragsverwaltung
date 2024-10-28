@@ -54,7 +54,7 @@ public class PersonInput {
             rerun = false;
             Output.create("das Land");
             land = scanner.nextLine();
-            if(Checker.string(land)||!land.equals("DE")){
+            if(Checker.string(land)||!land.equals("Deutschland")){
                 Output.invalidinput();
                 rerun = true;
             }

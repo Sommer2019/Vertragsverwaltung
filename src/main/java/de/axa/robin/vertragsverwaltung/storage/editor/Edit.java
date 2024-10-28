@@ -104,7 +104,7 @@ public class Edit {
                         int plz = PersonInput.plz();
                         String stadt = PersonInput.stadt();
                         String bundesland = PersonInput.bundesland();
-                        if(AddressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland)){
+                        if(AddressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land)){
                             vertrag.getPartner().setLand(land);
                             vertrag.getPartner().setStrasse(strasse);
                             vertrag.getPartner().setHausnummer(hausnummer);

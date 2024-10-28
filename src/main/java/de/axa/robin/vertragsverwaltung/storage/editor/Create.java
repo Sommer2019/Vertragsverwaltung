@@ -77,7 +77,7 @@ public class Create {
             plz = PersonInput.plz();
             stadt = PersonInput.stadt();
             bundesland = PersonInput.bundesland();
-        } while (!AddressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland));
+        } while (!AddressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land));
         return new Partner(vorname, nachname, geschlecht, geburtsdatum,
                 land, strasse, hausnummer, plz, stadt, bundesland);
     }
