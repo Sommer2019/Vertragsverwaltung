@@ -4,6 +4,7 @@ import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Checker.AddressValidator;
+import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.FahrzeugInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.PersonInput;
@@ -13,19 +14,18 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import java.time.LocalDate;
 
 public class Create {
-
     public static void createVertrag() {
         Fahrzeug fahrzeug = createFahrzeug();
         Partner partner = createPartner();
-        boolean monatlich = VertragInput.preisym();
-        Vertrag.setPreis(monatlich, partner, fahrzeug);
-        Output.preis(monatlich, Vertrag.getPreis());
+        boolean monatlich = VertragInput.preisYM();
+        double preis = Vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
+        Output.preis(monatlich, preis);
         LocalDate beginn = VertragInput.beginn();
 
         Vertrag vertrag = new Vertrag(
-                VertragInput.setvsnr(),
+                createvsnr(),
                 monatlich,
-                Vertrag.getPreis(),
+                preis,
                 beginn,
                 beginn.plusYears(1),
                 LocalDate.now(),
@@ -34,6 +34,18 @@ public class Create {
         );
 
         Allgemein.createconfirm(vertrag);
+    }
+
+    public static int createvsnr() {
+        int vsnr = 10000000;
+        while(Vertragsverwaltung.getVertrag(vsnr)!=null) {
+            vsnr++;
+        }
+        if (vsnr>99999999) {
+            Output.errorvalidate("Keine freien Versicherungsnummern mehr!");
+            System.exit(1);
+        }
+        return vsnr;
     }
 
     private static Fahrzeug createFahrzeug() {

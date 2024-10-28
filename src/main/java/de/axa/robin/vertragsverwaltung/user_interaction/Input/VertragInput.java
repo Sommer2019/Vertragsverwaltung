@@ -1,43 +1,14 @@
 package de.axa.robin.vertragsverwaltung.user_interaction.Input;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import java.time.LocalDate;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class VertragInput {
-    public static int setvsnr() {
-        Scanner scanner = new Scanner(System.in);
-        int vsnr = 0;
-        boolean rerun = true;
-        while (rerun) {
-            rerun = false;
-            Output.create("die 8-stellige Versicherungsnummer");
-            try {
-                vsnr = scanner.nextInt();
-                if (String.valueOf(vsnr).length() != 8) {
-                    Output.invalidinput();
-                    rerun = true;
-                } else if (String.valueOf(vsnr).charAt(0) == '0') {
-                    Output.invalidinput();
-                    rerun = true;
-                } else if (Vertragsverwaltung.vertragExistiert(vsnr)) {
-                    Output.error("Die Versicherungsnummer");
-                    rerun = true;
-                }
-            } catch (InputMismatchException e) {
-                Output.invalidinput();
-                rerun = true;
-                scanner.next(); // Clear the invalid input
-            }
-        }
-        return vsnr;
-    }
 
-    public static boolean preisym() {
+    public static boolean preisYM() {
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
         char ym;

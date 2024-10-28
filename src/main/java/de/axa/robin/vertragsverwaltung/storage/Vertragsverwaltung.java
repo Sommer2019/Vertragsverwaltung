@@ -4,6 +4,7 @@ import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
+import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import jakarta.json.*;
 import java.io.*;
 import java.time.LocalDate;
@@ -23,7 +24,30 @@ public class Vertragsverwaltung {
         vertrage.add(vertrag);
         speichereVertrage();
     }
-
+    public static double calcPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
+        double preis = 0;
+        double factor = 1.5;
+        double factoralter = 0.1;
+        double factorspeed = 0.4;
+        int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
+        try (JsonReader reader = Json.createReader(new FileReader("preiscalc.json"))) {
+            JsonObject jsonObject = reader.readObject();
+            factor = jsonObject.getJsonNumber("factor").doubleValue();
+            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
+            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit()  * factorspeed)*factor;
+            if(!monatlich){
+                preis = preis*11;
+            }
+        } catch (Exception e) {
+            Output.invalidinput();
+        }
+        return Math.round(preis * 100.0) / 100.0;
+    }
     public static void vertragLoeschen(int vsnr) {
         vertrage.removeIf(v -> v.getVsnr() == vsnr);
         speichereVertrage();
@@ -49,7 +73,7 @@ public class Vertragsverwaltung {
                 arrayBuilder.add(Json.createObjectBuilder()
                         .add("vsnr", v.getVsnr())
                         .add("abrechnungszeitraum monatlich", v.getMonatlich())
-                        .add("preis", Vertrag.getPreis())
+                        .add("preis", v.getPreis())
                         .add("versicherungsbeginn", v.getVersicherungsbeginn().toString())
                         .add("versicherungsablauf", v.getVersicherungsablauf().toString())
                         .add("antragsDatum", v.getAntragsDatum().toString())

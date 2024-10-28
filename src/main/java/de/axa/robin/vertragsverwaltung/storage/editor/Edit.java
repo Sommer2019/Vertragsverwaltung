@@ -20,7 +20,7 @@ import java.util.List;
 public class Edit {
     public static void editVertrag(Vertrag vertrag) {
         while (true) {
-            Vertrag.setPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug());
+            vertrag.setPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug());
             Output.druckeVertrag(vertrag);
             Output.editMenu();
             int choice = Allgemein.getnumberinput();
@@ -36,13 +36,10 @@ public class Edit {
                     editFahrzeugdaten(vertrag);
                     break;
                 case 4:
-                    vertrag.setVsnr(VertragInput.setvsnr());
-                    break;
-                case 5:
                     Vertragsverwaltung.vertragLoeschen(vertrag.getVsnr());
                     Vertragsverwaltung.vertragAnlegen(vertrag);
                     Output.done("erfolgreich aktualisiert.");
-                    Output.preis(vertrag.getMonatlich(),Vertrag.getPreis());
+                    Output.preis(vertrag.getMonatlich(),vertrag.getPreis());
                     return; // Zurück zum Hauptmenü
                 default:
                     Output.invalidinput();
@@ -69,7 +66,7 @@ public class Edit {
                     VertragInput.erstelltam(vertrag);
                     break;
                 case 4:
-                    vertrag.setMonatlich(VertragInput.preisym());
+                    vertrag.setMonatlich(VertragInput.preisYM());
                     break;
                 default:
                     Output.invalidinput();
