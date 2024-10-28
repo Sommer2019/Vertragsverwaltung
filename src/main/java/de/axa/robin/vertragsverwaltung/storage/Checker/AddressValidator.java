@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage.Checker;
 
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
+import de.axa.robin.vertragsverwaltung.user_interaction.Input.AllgemeinInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import jakarta.json.*;
@@ -12,10 +12,12 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 public class AddressValidator {
-
+    ////Klassen einlesen////
+    private final Output output = new Output();
+    private final AllgemeinInput allgemeinInput = new AllgemeinInput();
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search?format=json&q=";
 
-    public static boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
+    public boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
         try {
             String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland + ", " + land, StandardCharsets.UTF_8);
             String url = NOMINATIM_URL + query;
@@ -51,10 +53,10 @@ public class AddressValidator {
             }
 
             if (status != HttpURLConnection.HTTP_OK) {
-                Output.errorvalidate("HTTP-Status Code " + status + " empfangen.");
-                Output.eventuell();
-                Output.invalidinput();
-                return !Allgemein.skip();
+                output.errorvalidate("HTTP-Status Code " + status + " empfangen.");
+                output.eventuell();
+                output.invalidinput();
+                return !allgemeinInput.skip();
             }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -81,26 +83,26 @@ public class AddressValidator {
                         displayName.contains(land.toLowerCase())) {
                     return true;
                 } else {
-                    Output.errorvalidate("Eventuell Fehler in Adresse!");
-                    return Allgemein.skip();
+                    output.errorvalidate("Eventuell Fehler in Adresse!");
+                    return allgemeinInput.skip();
                 }
             } else {
-                Output.errorvalidate("Adresse existiert eventuell nicht!");
-                return Allgemein.skip();
+                output.errorvalidate("Adresse existiert eventuell nicht!");
+                return allgemeinInput.skip();
             }
 
         } catch (ConnectException | SocketTimeoutException e) {
-            Output.connection(e.getMessage());
-            Output.eventuell();
-            Output.invalidinput();
-            return Allgemein.skip();
+            output.connection(e.getMessage());
+            output.eventuell();
+            output.invalidinput();
+            return allgemeinInput.skip();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    private static boolean isProxyReachable(String host, int port) {
+    private boolean isProxyReachable(String host, int port) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), 2000);
             return true;

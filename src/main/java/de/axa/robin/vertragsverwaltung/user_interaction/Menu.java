@@ -5,35 +5,43 @@ import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.storage.editor.Delete;
 import de.axa.robin.vertragsverwaltung.storage.editor.Edit;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
+import de.axa.robin.vertragsverwaltung.user_interaction.Input.AllgemeinInput;
 
 import java.util.List;
 
 public class Menu {
-    public static void menu() {
+    ////Klassen einlesen////
+    private final Output output = new Output();
+    private final AllgemeinInput allgemeinInput = new AllgemeinInput();
+    private final Delete delete = new Delete();
+    private final Create create = new Create();
+    private final Edit edit = new Edit();
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+
+    public void menu() {
         while (true) {
-            int number = Allgemein.menu();
-            List vertrage = Vertragsverwaltung.getVertrage();
+            int number = allgemeinInput.menu();
+            List vertrage = vertragsverwaltung.getVertrage();
             if (number == 1) {
-                Output.druckeVertrage(vertrage);
+                output.druckeVertrage(vertrage);
             }
             if (number == 2) {
-                int vsnr = Allgemein.getvsnr();
-                Vertrag vertrag = Vertragsverwaltung.getVertrag(vsnr);
+                int vsnr = allgemeinInput.getvsnr();
+                Vertrag vertrag = vertragsverwaltung.getVertrag(vsnr);
                 if(vsnr!=0){
-                    Output.druckeVertrag(vertrag);
+                    output.druckeVertrag(vertrag);
                 }
             }
             if (number == 3) {
-                Create.createVertrag();
+                create.createVertrag();
             }
             if (number == 4) {
-                Edit.editmenu();
+                edit.editmenu();
             }
             if (number == 5) {
-                int vsnr = Allgemein.getvsnr();
+                int vsnr = allgemeinInput.getvsnr();
                 if(vsnr!=0){
-                    Delete.delete(vsnr);
+                    delete.delete(vsnr);
                     }
             }
             if (number == 6) {

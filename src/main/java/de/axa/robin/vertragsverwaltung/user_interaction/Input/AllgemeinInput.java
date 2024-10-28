@@ -7,20 +7,23 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Allgemein {
+public class AllgemeinInput {
+    ////Klassen einlesen////
+    private final Output output = new Output();
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
 
-    public static int menu() {
+    public int menu() {
         boolean rerun = true;
         int menunumber = 0;
         Scanner number = new Scanner(System.in);
 
         while (rerun) {
             rerun = false;
-            Output.menu();
+            output.menu();
             try {
                 menunumber = number.nextInt();
             } catch (InputMismatchException e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
                 number.next(); // Clear the invalid input
             }
@@ -28,25 +31,25 @@ public class Allgemein {
         return menunumber;
     }
 
-    public static int getvsnr() {
+    public int getvsnr() {
         boolean rerun = true;
         int vsnr = 0;
         Scanner number = new Scanner(System.in);
 
         while (rerun) {
             rerun = false;
-            Output.getvsnr();
+            output.getvsnr();
             try {
                 vsnr = number.nextInt();
                 if (vsnr == 0) {
                     return 0;
                 }
-                if (String.valueOf(vsnr).length() != 8 || !Vertragsverwaltung.vertragExistiert(vsnr)) {
-                    Output.invalidinput();
+                if (String.valueOf(vsnr).length() != 8 || !vertragsverwaltung.vertragExistiert(vsnr)) {
+                    output.invalidinput();
                     rerun = true;
                 }
             } catch (InputMismatchException e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
                 number.next(); // Clear the invalid input
             }
@@ -54,80 +57,80 @@ public class Allgemein {
         return vsnr;
     }
 
-    public static char delete(int vsnrdelete) {
+    public char delete(int vsnrdelete) {
         boolean rerun = true;
         char delete = 'n';
         Scanner character = new Scanner(System.in);
 
         while (rerun) {
             rerun = false;
-            Output.confirm(Vertragsverwaltung.getVertrag(vsnrdelete), "gelöscht");
+            output.confirm(vertragsverwaltung.getVertrag(vsnrdelete), "gelöscht");
             try {
                 delete = character.next(".").charAt(0);
                 if (delete != 'y' && delete != 'Y' && delete != 'n' && delete != 'N') {
-                    Output.invalidinput();
+                    output.invalidinput();
                     rerun = true;
                 }
             } catch (Exception e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
             }
         }
         return delete;
     }
 
-    public static boolean skip() {
+    public boolean skip() {
         boolean rerun = true;
         char confirm;
         Scanner character = new Scanner(System.in);
 
         while (rerun) {
             rerun = false;
-            Output.skip();
+            output.skip();
             try {
                 confirm = character.next(".").charAt(0);
                 if (confirm != 'y' && confirm != 'Y' && confirm != 'n' && confirm != 'N') {
-                    Output.invalidinput();
+                    output.invalidinput();
                     rerun = true;
                 } else if (confirm == 'y' || confirm == 'Y') {
                     return true;
                 }
             } catch (Exception e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
             }
         }
         return false;
     }
 
-    public static void createconfirm(Vertrag vertrag) {
+    public void createconfirm(Vertrag vertrag) {
         boolean rerun = true;
         char confirm;
         Scanner character = new Scanner(System.in);
 
         while (rerun) {
             rerun = false;
-            Output.confirm(vertrag, "erstellt");
+            output.confirm(vertrag, "erstellt");
             try {
                 confirm = character.next(".").charAt(0);
                 if (confirm != 'y' && confirm != 'Y' && confirm != 'n' && confirm != 'N') {
-                    Output.invalidinput();
+                    output.invalidinput();
                     rerun = true;
                 } else if (confirm == 'y' || confirm == 'Y') {
-                    Vertragsverwaltung.vertragAnlegen(vertrag);
-                    Output.done("erfolgreich erstellt.");
+                    vertragsverwaltung.vertragAnlegen(vertrag);
+                    output.done("erfolgreich erstellt.");
                 }
                 else{
-                    Output.done("wurde nicht erstellt.");
+                    output.done("wurde nicht erstellt.");
                 }
             } catch (Exception e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
             }
         }
     }
 
-    public static int getnumberinput() {
+    public int getnumberinput() {
         boolean rerun = true;
         int number = 0;
         Scanner scanner = new Scanner(System.in);
@@ -137,7 +140,7 @@ public class Allgemein {
             try {
                 number = scanner.nextInt();
             } catch (InputMismatchException e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
                 scanner.next(); // Clear the invalid input
             }
@@ -145,7 +148,7 @@ public class Allgemein {
         return number;
     }
 
-    public static double getdoubleinput() {
+    public double getdoubleinput() {
         boolean rerun = true;
         double number = 0;
         Scanner scanner = new Scanner(System.in);
@@ -155,7 +158,7 @@ public class Allgemein {
             try {
                 number = scanner.nextDouble();
             } catch (InputMismatchException e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
                 scanner.next(); // Clear the invalid input
             }

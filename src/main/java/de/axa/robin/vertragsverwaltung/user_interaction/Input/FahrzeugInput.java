@@ -9,7 +9,13 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class FahrzeugInput {
-    public static String kennzeichen() {
+    ////Klassen einlesen////
+    private final Output output = new Output();
+    private final Checker checker = new Checker();
+    private final AllgemeinInput allgemeinInput = new AllgemeinInput();
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+
+    public String kennzeichen() {
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
         String kennzeichen = "";
@@ -17,64 +23,64 @@ public class FahrzeugInput {
 
         while (rerun) {
             rerun = false;
-            Output.create("das amtliche Kennzeichen");
+            output.create("das amtliche Kennzeichen");
             kennzeichen = scanner.nextLine();
             if (!pattern.matcher(kennzeichen).matches()) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
-            } else if (Vertragsverwaltung.kennzeichenExistiert(kennzeichen)) {
-                Output.error("Das Kennzeichen");
+            } else if (vertragsverwaltung.kennzeichenExistiert(kennzeichen)) {
+                output.error("Das Kennzeichen");
                 rerun = true;
             }
         }
         return kennzeichen;
     }
-    public static String marke(){
+    public String marke(){
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
         String marke = "";
         while (rerun) {
             rerun = false;
-            Output.create("die Marke");
+            output.create("die Marke");
             marke = scanner.nextLine();
-            if(!Checker.isStringInJsonFile(marke)) {
-                Output.eventuell();
-                Output.invalidinput();
-                rerun = !Allgemein.skip();
+            if(!checker.isStringInJsonFile(marke)) {
+                output.eventuell();
+                output.invalidinput();
+                rerun = !allgemeinInput.skip();
             }
         }
         return marke;
     }
-    public static String typ() {
+    public String typ() {
         Scanner scanner = new Scanner(System.in);
         String input = "";
         boolean rerun = true;
         while (input.isEmpty()||rerun) {
             rerun = false;
-            Output.create("den Typ");
+            output.create("den Typ");
             input = scanner.nextLine();
             if(!input.matches("^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$")){
-                Output.invalidinput();
-                rerun = !Allgemein.skip();
+                output.invalidinput();
+                rerun = !allgemeinInput.skip();
             }
         }
         return input;
     }
-    public static int maxspeed(){
+    public int maxspeed(){
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
         int hoechstgeschwindigkeit = 0;
         while (rerun) {
             rerun = false;
-            Output.create("die Höchstgeschwindigkeit");
+            output.create("die Höchstgeschwindigkeit");
             try {
                 hoechstgeschwindigkeit = scanner.nextInt();
                 if (hoechstgeschwindigkeit <50 || hoechstgeschwindigkeit >250){
-                    Output.invalidinput();
+                    output.invalidinput();
                     rerun = true;
                 }
             } catch (InputMismatchException e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
                 scanner.next();
             }
@@ -82,21 +88,21 @@ public class FahrzeugInput {
         return hoechstgeschwindigkeit;
     }
 
-    public static int wkz(){
+    public int wkz(){
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
         int wkz = 0;
         while (rerun) {
             rerun = false;
-            Output.create("die Wagnisskennziffer");
+            output.create("die Wagnisskennziffer");
             try {
                 wkz = scanner.nextInt();
                 if(wkz!=112){
-                    Output.invalidinput();
+                    output.invalidinput();
                     rerun = true;
                 }
             } catch (InputMismatchException e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
                 scanner.next();
             }

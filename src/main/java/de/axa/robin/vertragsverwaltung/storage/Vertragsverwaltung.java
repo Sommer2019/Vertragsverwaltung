@@ -13,18 +13,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Vertragsverwaltung {
+    ////Klassen einlesen////
+    private final Output output = new Output();
     private static final List<Vertrag> vertrage = new ArrayList<>();
     private static final Logger logger = Logger.getLogger(Vertragsverwaltung.class.getName());
-
     static {
         ladeVertrage();
     }
-
-    public static void vertragAnlegen(Vertrag vertrag) {
+    public void vertragAnlegen(Vertrag vertrag) {
         vertrage.add(vertrag);
         speichereVertrage();
     }
-    public static double calcPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
+    public double calcPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         double preis = 0;
         double factor = 1.5;
         double factoralter = 0.1;
@@ -44,29 +44,29 @@ public class Vertragsverwaltung {
                 preis = preis*11;
             }
         } catch (Exception e) {
-            Output.invalidinput();
+            output.invalidinput();
         }
         return Math.round(preis * 100.0) / 100.0;
     }
-    public static void vertragLoeschen(int vsnr) {
+    public void vertragLoeschen(int vsnr) {
         vertrage.removeIf(v -> v.getVsnr() == vsnr);
         speichereVertrage();
     }
 
-    public static List<Vertrag> getVertrage() {
+    public List<Vertrag> getVertrage() {
         return vertrage;
     }
 
-    public static Vertrag getVertrag(int vsnr) {
+    public Vertrag getVertrag(int vsnr) {
         return vertrage.stream().filter(v -> v.getVsnr() == vsnr).findFirst().orElse(null);
     }
-    public static boolean vertragExistiert(int vsnr) {
+    public boolean vertragExistiert(int vsnr) {
         return vertrage.stream().anyMatch(v -> v.getVsnr() == vsnr);
     }
-    public static boolean kennzeichenExistiert(String kennzeichen) {
+    public boolean kennzeichenExistiert(String kennzeichen) {
         return vertrage.stream().anyMatch(v -> v.getFahrzeug().getAmtlichesKennzeichen().equals(kennzeichen));
     }
-    public static void speichereVertrage() {
+    public void speichereVertrage() {
         try (FileWriter file = new FileWriter("vertrage.json", false)) {
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             for (Vertrag v : vertrage) {

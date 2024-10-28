@@ -7,57 +7,59 @@ import java.time.LocalDate;
 import java.util.Scanner;
 
 public class VertragInput {
+    ////Klassen einlesen////
+    private final Output output = new Output();
 
-    public static boolean preisYM() {
+    public boolean preisYM() {
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
         char ym;
         boolean monatlich = false;
         while (rerun) {
             rerun = false;
-            Output.preisMJ();
+            output.preisMJ();
             try {
                 ym = scanner.next(".").charAt(0);
                 if (ym != 'y' && ym != 'Y' && ym != 'm' && ym != 'M') {
-                    Output.invalidinput();
+                    output.invalidinput();
                     rerun = true;
                 }
                 if (ym == 'm' || ym == 'M') {
                     monatlich = true;
                 }
             } catch (Exception e) {
-                Output.invalidinput();
+                output.invalidinput();
                 rerun = true;
             }
         }
         return monatlich;
     }
-    public static LocalDate beginn() {
+    public LocalDate beginn() {
         boolean rerun = true;
         Scanner scanner = new Scanner(System.in);
         LocalDate start = LocalDate.now();
         while(rerun){
-            Output.editTime("den Versicherungsbeginn");
+            output.editTime("den Versicherungsbeginn");
             try{
                 start = LocalDate.parse(scanner.next());
                 if(!start.isBefore(LocalDate.now())){
                     rerun = false;
                 }
                 else{
-                    Output.invalidinput();
+                    output.invalidinput();
                 }
             } catch(Exception e) {
-                Output.invalidinput();
+                output.invalidinput();
             }
         }
         return start;
     }
 
-    public static void editbeginn(Vertrag vertrag) {
+    public void editbeginn(Vertrag vertrag) {
         boolean rerun = true;
         Scanner scanner = new Scanner(System.in);
         while(rerun){
-            Output.editTime("den Versicherungsbeginn");
+            output.editTime("den Versicherungsbeginn");
             try{
                 LocalDate start = LocalDate.parse(scanner.next());
                 if(start.isBefore(vertrag.getVersicherungsablauf())&&!start.isBefore(vertrag.getAntragsDatum())){
@@ -65,18 +67,18 @@ public class VertragInput {
                     rerun = false;
                 }
                 else{
-                    Output.invalidinput();
+                    output.invalidinput();
                 }
             } catch(Exception e) {
-                Output.invalidinput();
+                output.invalidinput();
             }
         }
     }
-    public static void ende(Vertrag vertrag){
+    public void ende(Vertrag vertrag){
         boolean rerun = true;
         Scanner scanner = new Scanner(System.in);
         while(rerun) {
-            Output.editTime("das neue Versicherungsende");
+            output.editTime("das neue Versicherungsende");
             try {
                 LocalDate start = LocalDate.parse(scanner.next());
                 if(!start.isBefore(LocalDate.now())&&start.isAfter(vertrag.getVersicherungsbeginn())){
@@ -84,18 +86,18 @@ public class VertragInput {
                     rerun = false;
                 }
                 else{
-                    Output.invalidinput();
+                    output.invalidinput();
                 }
             } catch (Exception e) {
-                Output.invalidinput();
+                output.invalidinput();
             }
         }
     }
-    public static void erstelltam(Vertrag vertrag){
+    public void erstelltam(Vertrag vertrag){
         boolean rerun = true;
         Scanner scanner = new Scanner(System.in);
         while(rerun) {
-            Output.editTime("das neue Antragsdatum");
+            output.editTime("das neue Antragsdatum");
             try {
                 LocalDate start = LocalDate.parse(scanner.next());
                 if(!start.isAfter(vertrag.getVersicherungsbeginn())){
@@ -103,10 +105,10 @@ public class VertragInput {
                     rerun = false;
                 }
                 else{
-                    Output.invalidinput();
+                    output.invalidinput();
                 }
             } catch (Exception e) {
-                Output.invalidinput();
+                output.invalidinput();
             }
         }
     }

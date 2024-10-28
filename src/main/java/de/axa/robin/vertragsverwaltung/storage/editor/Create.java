@@ -6,7 +6,7 @@ import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Checker.AddressValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.FahrzeugInput;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.Allgemein;
+import de.axa.robin.vertragsverwaltung.user_interaction.Input.AllgemeinInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.PersonInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input.VertragInput;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
@@ -14,13 +14,22 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import java.time.LocalDate;
 
 public class Create {
-    public static void createVertrag() {
+    ////Klassen einlesen////
+    private final Output output = new Output();
+    private final VertragInput vertragInput = new VertragInput();
+    private final PersonInput personInput = new PersonInput();
+    private final FahrzeugInput fahrzeugInput = new FahrzeugInput();
+    private final AllgemeinInput allgemeinInput = new AllgemeinInput();
+    private final AddressValidator addressValidator = new AddressValidator();
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+
+    public void createVertrag() {
         Fahrzeug fahrzeug = createFahrzeug();
         Partner partner = createPartner();
-        boolean monatlich = VertragInput.preisYM();
-        double preis = Vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
-        Output.preis(monatlich, preis);
-        LocalDate beginn = VertragInput.beginn();
+        boolean monatlich = vertragInput.preisYM();
+        double preis = vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
+        output.preis(monatlich, preis);
+        LocalDate beginn = vertragInput.beginn();
 
         Vertrag vertrag = new Vertrag(
                 createvsnr(),
@@ -33,36 +42,36 @@ public class Create {
                 partner
         );
 
-        Allgemein.createconfirm(vertrag);
+        allgemeinInput.createconfirm(vertrag);
     }
 
-    public static int createvsnr() {
+    public int createvsnr() {
         int vsnr = 10000000;
-        while(Vertragsverwaltung.getVertrag(vsnr)!=null) {
+        while(vertragsverwaltung.getVertrag(vsnr)!=null) {
             vsnr++;
         }
         if (vsnr>99999999) {
-            Output.errorvalidate("Keine freien Versicherungsnummern mehr!");
+            output.errorvalidate("Keine freien Versicherungsnummern mehr!");
             System.exit(1);
         }
         return vsnr;
     }
 
-    private static Fahrzeug createFahrzeug() {
+    private Fahrzeug createFahrzeug() {
         return new Fahrzeug(
-                FahrzeugInput.kennzeichen(),
-                FahrzeugInput.marke(),
-                FahrzeugInput.typ(),
-                FahrzeugInput.maxspeed(),
-                FahrzeugInput.wkz()
+                fahrzeugInput.kennzeichen(),
+                fahrzeugInput.marke(),
+                fahrzeugInput.typ(),
+                fahrzeugInput.maxspeed(),
+                fahrzeugInput.wkz()
         );
     }
 
-    private static Partner createPartner() {
-        String vorname = PersonInput.name("Vor");
-        String nachname = PersonInput.name("Nach");
-        char geschlecht = PersonInput.geschlecht();
-        LocalDate geburtsdatum = PersonInput.geburtsdatum();
+    private Partner createPartner() {
+        String vorname = personInput.name("Vor");
+        String nachname = personInput.name("Nach");
+        char geschlecht = personInput.geschlecht();
+        LocalDate geburtsdatum = personInput.geburtsdatum();
         String land;
         String strasse;
         String hausnummer;
@@ -71,13 +80,13 @@ public class Create {
         String bundesland;
 
         do {
-            land = PersonInput.land();
-            strasse = PersonInput.strasse();
-            hausnummer = PersonInput.hausnummer();
-            plz = PersonInput.plz();
-            stadt = PersonInput.stadt();
-            bundesland = PersonInput.bundesland();
-        } while (!AddressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land));
+            land = personInput.land();
+            strasse = personInput.strasse();
+            hausnummer = personInput.hausnummer();
+            plz = personInput.plz();
+            stadt = personInput.stadt();
+            bundesland = personInput.bundesland();
+        } while (!addressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land));
         return new Partner(vorname, nachname, geschlecht, geburtsdatum,
                 land, strasse, hausnummer, plz, stadt, bundesland);
     }
