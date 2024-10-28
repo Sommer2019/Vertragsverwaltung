@@ -56,5 +56,15 @@ public class Fahrzeug {
     public void setWagnisskennziffer(int wagnisskennziffer) {
         this.wagnisskennziffer = wagnisskennziffer;
     }
+
+    @Override
+    public String toString() {
+        return "\nPartner: " +
+                "\n\tAmtliches Kennzeichen: " + amtlichesKennzeichen +
+                "\n\tHersteller: " + hersteller +
+                "\n\tTyp: " + typ +
+                "\n\tHöchstgeschwindigkeit: " + hoechstgeschwindigkeit +
+                "\n\tWagnisskennziffer: " + wagnisskennziffer;
+    }
 }
 

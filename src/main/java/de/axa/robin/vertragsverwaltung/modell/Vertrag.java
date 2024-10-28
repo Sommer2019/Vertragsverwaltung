@@ -1,16 +1,11 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
-import de.axa.robin.vertragsverwaltung.user_interaction.Output;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-
-import java.io.FileReader;
+import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import java.time.LocalDate;
 
 public class Vertrag {
     private int vsnr;
-    private static double preis;
+    private double preis;
     boolean monatlich;
     private LocalDate versicherungsbeginn;
     private LocalDate versicherungsablauf;
@@ -21,7 +16,7 @@ public class Vertrag {
     // Konstruktor
     public Vertrag(int vsnr, boolean monatlich, double preis, LocalDate versicherungsbeginn, LocalDate versicherungsablauf, LocalDate antragsDatum, Fahrzeug fahrzeug, Partner partner) {
         this.vsnr = vsnr;
-        Vertrag.preis = preis;
+        this.preis = preis;
         this.monatlich = monatlich;
         this.versicherungsbeginn = versicherungsbeginn;
         this.versicherungsablauf = versicherungsablauf;
@@ -39,33 +34,12 @@ public class Vertrag {
         this.vsnr = vsnr;
     }
 
-    public static double getPreis() {
+    public double getPreis() {
         return preis;
     }
 
-    public static void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
-        double preis = 0;
-        double factor = 1.5;
-        double factoralter = 0.1;
-        double factorspeed = 0.4;
-        int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
-        try (JsonReader reader = Json.createReader(new FileReader("preiscalc.json"))) {
-            JsonObject jsonObject = reader.readObject();
-            factor = jsonObject.getJsonNumber("factor").doubleValue();
-            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
-            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit()  * factorspeed)*factor;
-            if(!monatlich){
-                preis = preis*11;
-            }
-        } catch (Exception e) {
-            Output.invalidinput();
-        }
-        Vertrag.preis = (Math.round(preis * 100) / 100.0);
+    public void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
+        this.preis = Vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
     }
 
     public boolean getMonatlich() {
@@ -114,6 +88,19 @@ public class Vertrag {
 
     public void setPartner(Partner partner) {
         this.partner = partner;
+    }
+
+    @Override
+    public String toString() {
+        return  "Vertragsdaten: " +
+                "\n\tVertragsnummer: " + vsnr +
+                "\n\tPreis: " + preis + "€" +
+                "\n\tAbrechnungszeitraum: " + monatlich +
+                "\n\tVersicherungsbeginn: " + versicherungsbeginn +
+                "\n\tVersicherungsablauf: " + versicherungsablauf +
+                "\n\tAntragsdatum: " + antragsDatum +
+                fahrzeug.toString() +
+                partner.toString();
     }
 }
 

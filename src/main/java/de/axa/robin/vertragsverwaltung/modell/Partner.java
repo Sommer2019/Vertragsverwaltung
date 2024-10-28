@@ -109,4 +109,18 @@ public class Partner {
         this.bundesland = bundesland;
     }
 
+    @Override
+    public String toString() {
+        return  "\nFahrzeug: " +
+                "\n\tVorname: " + vorname +
+                "\n\tNachname: " + nachname +
+                "\n\tGeschlecht: " + geschlecht +
+                "\n\tGeburtsdatum: " + geburtsdatum +
+                "\n\tStrasse: " + strasse +
+                "\n\tHausnummer: " + hausnummer +
+                "\n\tPLZ: " + plz +
+                "\n\tStadt: " + stadt +
+                "\n\tBundesland: " + bundesland +
+                "\n\tLand: " + land;
+    }
 }
