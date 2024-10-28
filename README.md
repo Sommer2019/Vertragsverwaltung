@@ -38,7 +38,7 @@ die zu speichernden Verträge enthalten folgende Daten:
 - Vorname
 - Nachname
 - Geschlecht
-- Adresse (Land, Bundesland, Stadt, Straße, Hausnummer, PLZ): andere Länder außer DE laufen auf Fehlermeldung
+- Adresse (Land, Bundesland, Stadt, Straße, Hausnummer, PLZ): andere Länder außer Deutschland laufen auf Fehlermeldung
 - Geburtsdatum
 
 ## Preisberechnung
