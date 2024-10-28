@@ -13,7 +13,7 @@ public class FahrzeugInput {
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
         String kennzeichen = "";
-        Pattern pattern = Pattern.compile("^[A-Z]{1,3}-[A-Z]{1,2}\\d{1,4}$");
+        Pattern pattern = Pattern.compile("^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}$");
 
         while (rerun) {
             rerun = false;
@@ -69,7 +69,7 @@ public class FahrzeugInput {
             Output.create("die Höchstgeschwindigkeit");
             try {
                 hoechstgeschwindigkeit = scanner.nextInt();
-                if (hoechstgeschwindigkeit <50 || hoechstgeschwindigkeit >300){
+                if (hoechstgeschwindigkeit <50 || hoechstgeschwindigkeit >250){
                     Output.invalidinput();
                     rerun = true;
                 }
