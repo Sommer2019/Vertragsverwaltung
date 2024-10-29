@@ -29,9 +29,6 @@ public class Output {
     public void invalidinput() {
         System.err.println("Ungültige Eingabe!");
     }
-    public void getvsnr(){
-        System.out.println("Bitte gebe die 8-stellige VSNR ein: (oder 0 zum abbrechen) ");
-    }
     public void druckeVertrage(List<Vertrag> vertrage) {
         BigDecimal summe=BigDecimal.ZERO;
         for (Vertrag v : vertrage) {

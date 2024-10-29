@@ -1,12 +1,9 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Checker.AddressValidator;
+import de.axa.robin.vertragsverwaltung.storage.Validator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.FahrzeugInput;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.AllgemeinInput;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.PersonInput;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.VertragInput;
+import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -15,30 +12,28 @@ import jakarta.json.JsonWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Edit {
     ////Klassen einlesen////
     private final Output output = new Output();
-    private final VertragInput vertragInput = new VertragInput();
-    private final PersonInput personInput = new PersonInput();
-    private final FahrzeugInput fahrzeugInput = new FahrzeugInput();
-    private final AllgemeinInput allgemeinInput = new AllgemeinInput();
-    private final AddressValidator addressValidator = new AddressValidator();
+    private final Input input = new Input();
+    private final Validator addressValidator = new Validator();
 
     public void editVertrag(Vertrag vertrag, Vertragsverwaltung vertragsverwaltung) {
         while (true) {
             vertrag.setPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug(), vertragsverwaltung);
             output.druckeVertrag(vertrag);
             output.editMenu();
-            int choice = allgemeinInput.getnumberinput();
+            int choice = input.getNumber(Integer.class,"",-1,-1,-1, vertragsverwaltung, false);
 
             switch (choice) {
                 case 1:
-                    editAllgemeineDaten(vertrag);
+                    editAllgemeineDaten(vertrag, vertragsverwaltung);
                     break;
                 case 2:
-                    editPersonendaten(vertrag);
+                    editPersonendaten(vertrag, vertragsverwaltung);
                     break;
                 case 3:
                     editFahrzeugdaten(vertrag, vertragsverwaltung);
@@ -56,25 +51,31 @@ public class Edit {
         }
     }
 
-    private void editAllgemeineDaten(Vertrag vertrag) {
+    private void editAllgemeineDaten(Vertrag vertrag, Vertragsverwaltung vertragsverwaltung) {
         boolean rerun = true;
         while (rerun) {
             rerun = false;
             output.editDates();
-            int choice = allgemeinInput.getnumberinput();
+            int choice = input.getNumber(Integer.class,"",-1,-1,-1, vertragsverwaltung, false);
 
             switch (choice) {
                 case 1:
-                    vertragInput.editbeginn(vertrag);
+                    vertrag.setVersicherungsbeginn(input.getDate("den Versicherungsbeginn", vertrag.getAntragsDatum(), vertrag.getVersicherungsablauf()));
                     break;
                 case 2:
-                    vertragInput.ende(vertrag);
+                    vertrag.setVersicherungsablauf(input.getDate("das neue Versicherungsende", vertrag.getVersicherungsbeginn(), null));
                     break;
                 case 3:
-                    vertragInput.erstelltam(vertrag);
+                    vertrag.setAntragsDatum(input.getDate("das Antragsdatum", null, vertrag.getVersicherungsbeginn()));
                     break;
                 case 4:
-                    vertrag.setMonatlich(vertragInput.preisYM());
+                    char booking= input.getChar(vertrag,"Abbuchung monatlich oder jährlich? (y/m): ");
+                    if (booking=='m'){
+                        vertrag.setMonatlich(true);
+                    }
+                    else if (booking=='y'){
+                        vertrag.setMonatlich(false);
+                    }
                     break;
                 default:
                     output.invalidinput();
@@ -84,34 +85,34 @@ public class Edit {
         }
     }
 
-    private void editPersonendaten(Vertrag vertrag) {
+    private void editPersonendaten(Vertrag vertrag, Vertragsverwaltung vertragsverwaltung) {
         boolean rerun = true;
         while (rerun) {
             rerun = false;
             output.editPerson();
-            int choice = allgemeinInput.getnumberinput();
+            int choice = input.getNumber(Integer.class,"",-1,-1,-1, vertragsverwaltung, false);
 
             switch (choice) {
                 case 1:
-                    vertrag.getPartner().setVorname(personInput.name("Vor"));
+                    vertrag.getPartner().setVorname(input.getString("den Vornamen des Partners",null,false,vertragsverwaltung,true,false,false));
                     break;
                 case 2:
-                    vertrag.getPartner().setNachname(personInput.name("Nach"));
+                    vertrag.getPartner().setNachname(input.getString("den Nachnamen des Partners",null,false,vertragsverwaltung,true,false,false));
                     break;
                 case 3:
-                    vertrag.getPartner().setGeschlecht(personInput.geschlecht());
+                    vertrag.getPartner().setGeschlecht(input.getChar(null,"das Geschlecht des Partners"));
                     break;
                 case 4:
-                    vertrag.getPartner().setGeburtsdatum(personInput.geburtsdatum());
+                    vertrag.getPartner().setGeburtsdatum(input.getDate("das Geburtsdatum", LocalDate.now().minusYears(18), LocalDate.now().minusYears(110)));
                     break;
                 case 5:
                     while(true){
-                        String land = personInput.land();
-                        String strasse = personInput.strasse();
-                        String hausnummer = personInput.hausnummer();
-                        int plz = personInput.plz();
-                        String stadt = personInput.stadt();
-                        String bundesland = personInput.bundesland();
+                        String land = input.getString("das Land",null,false,vertragsverwaltung,true,true,false);
+                        String strasse = input.getString("die Straße",null,false,vertragsverwaltung,false,false,false);
+                        String hausnummer = input.getString("die Hausnummer", "[a-zA-Z0-9]+", false, vertragsverwaltung, false, false, false);
+                        int plz = input.getNumber(Integer.class,"die PLZ",-1,-1,-1,vertragsverwaltung,false);
+                        String stadt = input.getString("die Stadt", null,false,vertragsverwaltung,true,false,false);
+                        String bundesland = input.getString("das Bundesland", null,false,vertragsverwaltung,true,false,false);
                         if(addressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land)){
                             vertrag.getPartner().setLand(land);
                             vertrag.getPartner().setStrasse(strasse);
@@ -136,23 +137,23 @@ public class Edit {
         while (rerun) {
             rerun = false;
             output.editFahrzeug();
-            int choice = allgemeinInput.getnumberinput();
+            int choice = input.getNumber(Integer.class,"",-1,-1,-1, vertragsverwaltung, false);
 
             switch (choice) {
                 case 1:
-                    vertrag.getFahrzeug().setAmtlichesKennzeichen(fahrzeugInput.kennzeichen(vertragsverwaltung));
+                    vertrag.getFahrzeug().setAmtlichesKennzeichen(input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}$", true, vertragsverwaltung, false, false, false));
                     break;
                 case 2:
-                    vertrag.getFahrzeug().setHersteller(fahrzeugInput.marke());
+                    vertrag.getFahrzeug().setHersteller(input.getString("die Marke", null,false,vertragsverwaltung,false,false,true));
                     break;
                 case 3:
-                    vertrag.getFahrzeug().setTyp(fahrzeugInput.typ());
+                    vertrag.getFahrzeug().setTyp(input.getString("den Typ", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$", false, vertragsverwaltung, false, false, false));
                     break;
                 case 4:
-                    vertrag.getFahrzeug().setHoechstgeschwindigkeit(fahrzeugInput.maxspeed());
+                    vertrag.getFahrzeug().setHoechstgeschwindigkeit(input.getNumber(Integer.class,"die Höchstgeschwindigkeit", 50, 250, -1, vertragsverwaltung, false));
                     break;
                 case 5:
-                    vertrag.getFahrzeug().setWagnisskennziffer(fahrzeugInput.wkz());
+                    vertrag.getFahrzeug().setWagnisskennziffer(input.getNumber(Integer.class,"die Wagnisskennziffer", -1, -1, 112, vertragsverwaltung, false));
                     break;
                 default:
                     output.invalidinput();
@@ -165,10 +166,10 @@ public class Edit {
     public void editmenu(Vertragsverwaltung vertragsverwaltung) {
         while (true) {
             output.editwhat();
-            int choice = allgemeinInput.getnumberinput();
+            int choice = input.getNumber(Integer.class,"",-1,-1,-1, vertragsverwaltung, false);
             switch (choice) {
                 case 1:
-                    int vsnr = allgemeinInput.getvsnr(vertragsverwaltung);
+                    int vsnr = input.getNumber(Integer.class,"8-stellige VSNR oder 0 zum abbrechen",-1,-1,-1, vertragsverwaltung, true);
                     if (vsnr != 0) {
                         editVertrag(vertragsverwaltung.getVertrag(vsnr), vertragsverwaltung);
                     }
@@ -187,11 +188,11 @@ public class Edit {
 
     public void recalcprice(Vertragsverwaltung vertragsverwaltung) {
         output.create("den neuen allgemeinen Faktor");
-        double factor = allgemeinInput.getdoubleinput();
+        double factor = input.getNumber(Double.class,"",-1,-1,-1, vertragsverwaltung, false);
         output.create("den neuen Altersfaktor");
-        double factoralter = allgemeinInput.getdoubleinput();
+        double factoralter = input.getNumber(Double.class,"",-1,-1,-1, vertragsverwaltung, false);
         output.create("den neuen Geschwindigkeitsfaktor");
-        double factorspeed = allgemeinInput.getdoubleinput();
+        double factorspeed = input.getNumber(Double.class,"",-1,-1,-1, vertragsverwaltung, false);
 
         JsonObject jsonObject = Json.createObjectBuilder()
                 .add("factor", factor)

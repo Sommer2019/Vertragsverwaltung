@@ -5,14 +5,13 @@ import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.storage.editor.Delete;
 import de.axa.robin.vertragsverwaltung.storage.editor.Edit;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.AllgemeinInput;
 
 import java.util.List;
 
 public class Menu {
     ////Klassen einlesen////
     private final Output output = new Output();
-    private final AllgemeinInput allgemeinInput = new AllgemeinInput();
+    private final Input input = new Input();
     private final Delete delete = new Delete();
     private final Create create = new Create();
     private final Edit edit = new Edit();
@@ -20,13 +19,14 @@ public class Menu {
 
     public void menu() {
         while (true) {
-            int number = allgemeinInput.menu();
+            output.menu();
+            int number = input.getNumber(Integer.class,"",-1,-1,-1, vertragsverwaltung, false);
             List vertrage = vertragsverwaltung.getVertrage();
             if (number == 1) {
                 output.druckeVertrage(vertrage);
             }
             if (number == 2) {
-                int vsnr = allgemeinInput.getvsnr(vertragsverwaltung);
+                int vsnr = input.getNumber(Integer.class,"8-stellige VSNR oder 0 zum abbrechen",-1,-1,-1, vertragsverwaltung, true);
                 Vertrag vertrag = vertragsverwaltung.getVertrag(vsnr);
                 if(vsnr!=0){
                     output.druckeVertrag(vertrag);
@@ -39,7 +39,7 @@ public class Menu {
                 edit.editmenu(vertragsverwaltung);
             }
             if (number == 5) {
-                int vsnr = allgemeinInput.getvsnr(vertragsverwaltung);
+                int vsnr = input.getNumber(Integer.class,"8-stellige VSNR oder 0 zum abbrechen",-1,-1,-1, vertragsverwaltung, true);
                 if(vsnr!=0){
                     delete.delete(vsnr,vertragsverwaltung);
                     }

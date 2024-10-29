@@ -1,20 +1,18 @@
-package de.axa.robin.vertragsverwaltung.storage.Checker;
+package de.axa.robin.vertragsverwaltung.storage;
 
-import de.axa.robin.vertragsverwaltung.user_interaction.Input.AllgemeinInput;
+import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import jakarta.json.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+
+import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 
-public class AddressValidator {
-    ////Klassen einlesen////
+public class Validator {
+    // Klassen einlesen
     private final Output output = new Output();
-    private final AllgemeinInput allgemeinInput = new AllgemeinInput();
+    private final Input input = new Input();
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search?format=json&q=";
 
     public boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
@@ -32,6 +30,16 @@ public class AddressValidator {
                 System.setProperty("http.proxyPort", String.valueOf(port));
                 System.setProperty("https.proxyHost", host);
                 System.setProperty("https.proxyPort", String.valueOf(port));
+            }
+
+            // Check internet connection
+            if (!isInternetAvailable()) {
+                if (isProxyReachable(host, port)) {
+                    output.errorvalidate("Proxy ist erreichbar, aber keine Internetverbindung.");
+                } else {
+                    output.errorvalidate("Keine Internetverbindung und Proxy ist nicht erreichbar.");
+                }
+                return input.getChar(null, "") != 'n';
             }
 
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
@@ -56,7 +64,7 @@ public class AddressValidator {
                 output.errorvalidate("HTTP-Status Code " + status + " empfangen.");
                 output.eventuell();
                 output.invalidinput();
-                return !allgemeinInput.skip();
+                return input.getChar(null, "") != 'n';
             }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -84,18 +92,19 @@ public class AddressValidator {
                     return true;
                 } else {
                     output.errorvalidate("Eventuell Fehler in Adresse!");
-                    return allgemeinInput.skip();
+                    return input.getChar(null, "") != 'n';
                 }
             } else {
                 output.errorvalidate("Adresse existiert eventuell nicht!");
-                return allgemeinInput.skip();
+                return input.getChar(null, "") != 'n';
             }
 
         } catch (ConnectException | SocketTimeoutException e) {
             output.connection(e.getMessage());
+            e.printStackTrace();
             output.eventuell();
             output.invalidinput();
-            return allgemeinInput.skip();
+            return input.getChar(null, "") != 'n';
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,5 +118,38 @@ public class AddressValidator {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    private boolean isInternetAvailable() {
+        try {
+            HttpURLConnection urlConn = (HttpURLConnection) new URL("http://www.google.com").openConnection();
+            urlConn.setRequestMethod("GET");
+            urlConn.setConnectTimeout(5000); // 5 seconds
+            urlConn.connect();
+            return urlConn.getResponseCode() == 200;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+    public boolean string(String input) {
+        for (char c : input.toCharArray()) {
+            if (Character.isDigit(c)) {
+                return true;
+            }
+        }
+        return input.isEmpty();
+    }
+    public boolean isStringInJsonFile(String searchString) {
+        String filePath = "src/main/resources/brands.json";
+        try (InputStream fis = new FileInputStream(filePath);
+             JsonReader jsonReader = Json.createReader(fis)) {
+            JsonObject jsonObject = jsonReader.readObject();
+            return jsonObject.toString().contains(searchString);
+        } catch (FileNotFoundException e) {
+            output.errorvalidate("File not found: " + filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
