@@ -8,10 +8,9 @@ public class Delete {
     ////Klassen einlesen////
     private static final Output output = new Output();
     private static final AllgemeinInput allgemeinInput = new AllgemeinInput();
-    private static final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
 
-    public void delete(int vsnrdelete) {
-        char input = allgemeinInput.delete(vsnrdelete);
+    public void delete(int vsnrdelete, Vertragsverwaltung vertragsverwaltung) {
+        char input = allgemeinInput.delete(vsnrdelete, vertragsverwaltung);
         switch (Character.toLowerCase(input)) {
             case 'y':
                 vertragsverwaltung.vertragLoeschen(vsnrdelete);

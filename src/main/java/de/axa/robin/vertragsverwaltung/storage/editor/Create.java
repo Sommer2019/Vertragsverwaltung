@@ -21,10 +21,9 @@ public class Create {
     private final FahrzeugInput fahrzeugInput = new FahrzeugInput();
     private final AllgemeinInput allgemeinInput = new AllgemeinInput();
     private final AddressValidator addressValidator = new AddressValidator();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
 
-    public void createVertrag() {
-        Fahrzeug fahrzeug = createFahrzeug();
+    public void createVertrag(Vertragsverwaltung vertragsverwaltung) {
+        Fahrzeug fahrzeug = createFahrzeug(vertragsverwaltung);
         Partner partner = createPartner();
         boolean monatlich = vertragInput.preisYM();
         double preis = vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
@@ -32,7 +31,7 @@ public class Create {
         LocalDate beginn = vertragInput.beginn();
 
         Vertrag vertrag = new Vertrag(
-                createvsnr(),
+                createvsnr(vertragsverwaltung),
                 monatlich,
                 preis,
                 beginn,
@@ -42,10 +41,10 @@ public class Create {
                 partner
         );
 
-        allgemeinInput.createconfirm(vertrag);
+        allgemeinInput.createconfirm(vertrag, vertragsverwaltung);
     }
 
-    public int createvsnr() {
+    public int createvsnr(Vertragsverwaltung vertragsverwaltung) {
         int vsnr = 10000000;
         while(vertragsverwaltung.getVertrag(vsnr)!=null) {
             vsnr++;
@@ -57,9 +56,9 @@ public class Create {
         return vsnr;
     }
 
-    private Fahrzeug createFahrzeug() {
+    private Fahrzeug createFahrzeug(Vertragsverwaltung vertragsverwaltung) {
         return new Fahrzeug(
-                fahrzeugInput.kennzeichen(),
+                fahrzeugInput.kennzeichen(vertragsverwaltung),
                 fahrzeugInput.marke(),
                 fahrzeugInput.typ(),
                 fahrzeugInput.maxspeed(),

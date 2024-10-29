@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class AllgemeinInput {
     ////Klassen einlesen////
     private final Output output = new Output();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
 
     public int menu() {
         boolean rerun = true;
@@ -31,7 +30,7 @@ public class AllgemeinInput {
         return menunumber;
     }
 
-    public int getvsnr() {
+    public int getvsnr(Vertragsverwaltung vertragsverwaltung) {
         boolean rerun = true;
         int vsnr = 0;
         Scanner number = new Scanner(System.in);
@@ -57,7 +56,7 @@ public class AllgemeinInput {
         return vsnr;
     }
 
-    public char delete(int vsnrdelete) {
+    public char delete(int vsnrdelete, Vertragsverwaltung vertragsverwaltung) {
         boolean rerun = true;
         char delete = 'n';
         Scanner character = new Scanner(System.in);
@@ -103,7 +102,7 @@ public class AllgemeinInput {
         return false;
     }
 
-    public void createconfirm(Vertrag vertrag) {
+    public void createconfirm(Vertrag vertrag, Vertragsverwaltung vertragsverwaltung) {
         boolean rerun = true;
         char confirm;
         Scanner character = new Scanner(System.in);

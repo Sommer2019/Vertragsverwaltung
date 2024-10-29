@@ -26,22 +26,22 @@ public class Menu {
                 output.druckeVertrage(vertrage);
             }
             if (number == 2) {
-                int vsnr = allgemeinInput.getvsnr();
+                int vsnr = allgemeinInput.getvsnr(vertragsverwaltung);
                 Vertrag vertrag = vertragsverwaltung.getVertrag(vsnr);
                 if(vsnr!=0){
                     output.druckeVertrag(vertrag);
                 }
             }
             if (number == 3) {
-                create.createVertrag();
+                create.createVertrag(vertragsverwaltung);
             }
             if (number == 4) {
-                edit.editmenu();
+                edit.editmenu(vertragsverwaltung);
             }
             if (number == 5) {
-                int vsnr = allgemeinInput.getvsnr();
+                int vsnr = allgemeinInput.getvsnr(vertragsverwaltung);
                 if(vsnr!=0){
-                    delete.delete(vsnr);
+                    delete.delete(vsnr,vertragsverwaltung);
                     }
             }
             if (number == 6) {

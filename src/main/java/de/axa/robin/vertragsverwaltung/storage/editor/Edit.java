@@ -25,11 +25,10 @@ public class Edit {
     private final FahrzeugInput fahrzeugInput = new FahrzeugInput();
     private final AllgemeinInput allgemeinInput = new AllgemeinInput();
     private final AddressValidator addressValidator = new AddressValidator();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
 
-    public void editVertrag(Vertrag vertrag) {
+    public void editVertrag(Vertrag vertrag, Vertragsverwaltung vertragsverwaltung) {
         while (true) {
-            vertrag.setPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug());
+            vertrag.setPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug(), vertragsverwaltung);
             output.druckeVertrag(vertrag);
             output.editMenu();
             int choice = allgemeinInput.getnumberinput();
@@ -42,7 +41,7 @@ public class Edit {
                     editPersonendaten(vertrag);
                     break;
                 case 3:
-                    editFahrzeugdaten(vertrag);
+                    editFahrzeugdaten(vertrag, vertragsverwaltung);
                     break;
                 case 4:
                     vertragsverwaltung.vertragLoeschen(vertrag.getVsnr());
@@ -132,7 +131,7 @@ public class Edit {
         }
     }
 
-    private void editFahrzeugdaten(Vertrag vertrag) {
+    private void editFahrzeugdaten(Vertrag vertrag, Vertragsverwaltung vertragsverwaltung) {
         boolean rerun = true;
         while (rerun) {
             rerun = false;
@@ -141,7 +140,7 @@ public class Edit {
 
             switch (choice) {
                 case 1:
-                    vertrag.getFahrzeug().setAmtlichesKennzeichen(fahrzeugInput.kennzeichen());
+                    vertrag.getFahrzeug().setAmtlichesKennzeichen(fahrzeugInput.kennzeichen(vertragsverwaltung));
                     break;
                 case 2:
                     vertrag.getFahrzeug().setHersteller(fahrzeugInput.marke());
@@ -163,19 +162,19 @@ public class Edit {
         }
     }
 
-    public void editmenu() {
+    public void editmenu(Vertragsverwaltung vertragsverwaltung) {
         while (true) {
             output.editwhat();
             int choice = allgemeinInput.getnumberinput();
             switch (choice) {
                 case 1:
-                    int vsnr = allgemeinInput.getvsnr();
+                    int vsnr = allgemeinInput.getvsnr(vertragsverwaltung);
                     if (vsnr != 0) {
-                        editVertrag(vertragsverwaltung.getVertrag(vsnr));
+                        editVertrag(vertragsverwaltung.getVertrag(vsnr), vertragsverwaltung);
                     }
                     return;
                 case 2:
-                    recalcprice();
+                    recalcprice(vertragsverwaltung);
                     return;
                 case 3:
                     return; // Zurück zum Hauptmenü
@@ -186,7 +185,7 @@ public class Edit {
         }
     }
 
-    public void recalcprice() {
+    public void recalcprice(Vertragsverwaltung vertragsverwaltung) {
         output.create("den neuen allgemeinen Faktor");
         double factor = allgemeinInput.getdoubleinput();
         output.create("den neuen Altersfaktor");
@@ -208,7 +207,7 @@ public class Edit {
         List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
         BigDecimal summe=BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
-            v.setPreis(v.getMonatlich(), v.getPartner(), v.getFahrzeug());
+            v.setPreis(v.getMonatlich(), v.getPartner(), v.getFahrzeug(), vertragsverwaltung);
             if(!v.getMonatlich()){
                 summe = summe.add(BigDecimal.valueOf(v.getPreis()));
             }

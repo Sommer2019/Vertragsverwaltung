@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 public class Vertragsverwaltung {
     ////Klassen einlesen////
     private final Output output = new Output();
-    private static final List<Vertrag> vertrage = new ArrayList<>();
-    private static final Logger logger = Logger.getLogger(Vertragsverwaltung.class.getName());
-    static {
+    private final List<Vertrag> vertrage = new ArrayList<>();
+    private final Logger logger = Logger.getLogger(Vertragsverwaltung.class.getName());
+    {
         ladeVertrage();
     }
     public void vertragAnlegen(Vertrag vertrag) {
@@ -104,7 +104,7 @@ public class Vertragsverwaltung {
         }
     }
 
-    public static void ladeVertrage() {
+    public void ladeVertrage() {
         try (FileReader file = new FileReader("vertrage.json")) {
             JsonReader reader = Json.createReader(file);
             JsonArray jsonArray = reader.readArray();

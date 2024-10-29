@@ -12,7 +12,6 @@ public class Vertrag {
     private LocalDate antragsDatum;
     private Fahrzeug fahrzeug;
     private Partner partner;
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
 
     // Konstruktor
     public Vertrag(int vsnr, boolean monatlich, double preis, LocalDate versicherungsbeginn, LocalDate versicherungsablauf, LocalDate antragsDatum, Fahrzeug fahrzeug, Partner partner) {
@@ -39,7 +38,7 @@ public class Vertrag {
         return preis;
     }
 
-    public void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
+    public void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug, Vertragsverwaltung vertragsverwaltung) {
         this.preis = vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
     }
 

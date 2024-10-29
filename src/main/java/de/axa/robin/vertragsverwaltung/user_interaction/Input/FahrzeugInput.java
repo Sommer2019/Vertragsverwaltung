@@ -13,9 +13,8 @@ public class FahrzeugInput {
     private final Output output = new Output();
     private final Checker checker = new Checker();
     private final AllgemeinInput allgemeinInput = new AllgemeinInput();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
 
-    public String kennzeichen() {
+    public String kennzeichen(Vertragsverwaltung vertragsverwaltung) {
         Scanner scanner = new Scanner(System.in);
         boolean rerun = true;
         String kennzeichen = "";
