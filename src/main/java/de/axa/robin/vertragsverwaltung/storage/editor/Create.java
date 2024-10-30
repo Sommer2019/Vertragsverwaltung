@@ -71,8 +71,8 @@ public class Create {
     }
 
     private Partner createPartner(Vertragsverwaltung vertragsverwaltung) {
-        String vorname = input.getString("den Vornamen des Partners",null,false,vertragsverwaltung,true,false,false);
-        String nachname = input.getString("den Nachnamen des Partners",null,false,vertragsverwaltung,true,false,false);
+        String vorname = input.getString("den Vornamen des Partners","^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$",false,vertragsverwaltung,false,false,false);
+        String nachname = input.getString("den Nachnamen des Partners","^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$",false,vertragsverwaltung,false,false,false);
         char geschlecht = input.getChar(null,"das Geschlecht des Partners");
         LocalDate geburtsdatum = input.getDate("das Geburtsdatum", LocalDate.now().minusYears(110),LocalDate.now().minusYears(18));
         String land;

@@ -94,10 +94,10 @@ public class Edit {
 
             switch (choice) {
                 case 1:
-                    vertrag.getPartner().setVorname(input.getString("den Vornamen des Partners",null,false,vertragsverwaltung,true,false,false));
+                    vertrag.getPartner().setVorname(input.getString("den Vornamen des Partners","^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$",false,vertragsverwaltung,false,false,false));
                     break;
                 case 2:
-                    vertrag.getPartner().setNachname(input.getString("den Nachnamen des Partners",null,false,vertragsverwaltung,true,false,false));
+                    vertrag.getPartner().setNachname(input.getString("den Nachnamen des Partners","^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$",false,vertragsverwaltung,false,false,false));
                     break;
                 case 3:
                     vertrag.getPartner().setGeschlecht(input.getChar(null,"das Geschlecht des Partners"));
