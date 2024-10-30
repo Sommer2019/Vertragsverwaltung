@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+
 import java.time.LocalDate;
 
 public class Vertrag {
@@ -92,7 +93,7 @@ public class Vertrag {
 
     @Override
     public String toString() {
-        return  "Vertragsdaten: " +
+        return "Vertragsdaten: " +
                 "\n\tVertragsnummer: " + vsnr +
                 "\n\tPreis: " + preis + "€" +
                 "\n\tAbrechnungszeitraum monatlich: " + monatlich +

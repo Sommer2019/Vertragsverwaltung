@@ -83,11 +83,11 @@ public class AdressValidator {
                 JsonObject address = jsonArray.getJsonObject(0);
                 String displayName = address.getString("display_name").toLowerCase();
 
-                if (displayName.contains(street.toLowerCase()+",") &&
-                        displayName.contains(houseNumber.toLowerCase()+",") &&
-                        displayName.contains(plz.toLowerCase()+",") &&
-                        displayName.contains(place.toLowerCase()+",") &&
-                        displayName.contains(bundesland.toLowerCase()+",") &&
+                if (displayName.contains(street.toLowerCase() + ",") &&
+                        displayName.contains(houseNumber.toLowerCase() + ",") &&
+                        displayName.contains(plz.toLowerCase() + ",") &&
+                        displayName.contains(place.toLowerCase() + ",") &&
+                        displayName.contains(bundesland.toLowerCase() + ",") &&
                         displayName.contains(land.toLowerCase())) {
                     return true;
                 } else {

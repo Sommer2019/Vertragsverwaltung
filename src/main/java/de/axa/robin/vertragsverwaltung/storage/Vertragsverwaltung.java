@@ -6,6 +6,7 @@ import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import jakarta.json.*;
+
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -17,13 +18,16 @@ public class Vertragsverwaltung {
     private final Output output = new Output();
     private final List<Vertrag> vertrage = new ArrayList<>();
     private final Logger logger = Logger.getLogger(Vertragsverwaltung.class.getName());
+
     {
         ladeVertrage();
     }
+
     public void vertragAnlegen(Vertrag vertrag) {
         vertrage.add(vertrag);
         speichereVertrage();
     }
+
     public double calcPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         double preis = 0;
         double factor = 1.5;
@@ -39,15 +43,16 @@ public class Vertragsverwaltung {
             e.printStackTrace();
         }
         try {
-            preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit()  * factorspeed)*factor;
-            if(!monatlich){
-                preis = preis*11;
+            preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit() * factorspeed) * factor;
+            if (!monatlich) {
+                preis = preis * 11;
             }
         } catch (Exception e) {
             output.invalidinput();
         }
         return Math.round(preis * 100.0) / 100.0;
     }
+
     public void vertragLoeschen(int vsnr) {
         vertrage.removeIf(v -> v.getVsnr() == vsnr);
         speichereVertrage();
@@ -60,12 +65,15 @@ public class Vertragsverwaltung {
     public Vertrag getVertrag(int vsnr) {
         return vertrage.stream().filter(v -> v.getVsnr() == vsnr).findFirst().orElse(null);
     }
+
     public boolean vertragExistiert(int vsnr) {
         return vertrage.stream().anyMatch(v -> v.getVsnr() == vsnr);
     }
+
     public boolean kennzeichenExistiert(String kennzeichen) {
         return vertrage.stream().anyMatch(v -> v.getFahrzeug().getAmtlichesKennzeichen().equals(kennzeichen));
     }
+
     public void speichereVertrage() {
         try (FileWriter file = new FileWriter("src/main/resources/vertrage.json", false)) {
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -94,7 +102,7 @@ public class Vertragsverwaltung {
                                 .add("plz", v.getPartner().getPlz())
                                 .add("stadt", v.getPartner().getStadt())
                                 .add("bundesland", v.getPartner().getBundesland())
-                                ));
+                        ));
             }
             JsonArray jsonArray = arrayBuilder.build();
             JsonWriter writer = Json.createWriter(file);

@@ -16,11 +16,11 @@ public class Input {
 
     public String getString(String prompt, String regex, boolean checkExistence, Vertragsverwaltung vertragsverwaltung, boolean isStringCheck, boolean isCountryCheck, boolean isBrandCheck) {
         boolean rerun = true;
-        String input="";
+        String input = "";
         Pattern pattern = regex != null ? Pattern.compile(regex) : null;
 
         while (rerun) {
-            input="";
+            input = "";
             rerun = false;
             output.create(prompt);
             while (input.isEmpty()) {
@@ -43,9 +43,8 @@ public class Input {
                 output.invalidinput();
                 if (getChar(null, "") == 'y') {
                     return input;
-                }
-                else {
-                    rerun=true;
+                } else {
+                    rerun = true;
                 }
             }
         }
@@ -64,11 +63,11 @@ public class Input {
                 output.preisMJ();
             } else if (vertrag == null && beschreibung.isEmpty()) {
                 output.skip();
-            }  else {
+            } else {
                 output.confirm(vertrag, beschreibung);
             }
             try {
-                while(input=='q'){
+                while (input == 'q') {
                     input = Character.toLowerCase(scanner.next(".").charAt(0));
                 }
                 if (beschreibung.equals("das Geschlecht des Partners")) {
@@ -112,7 +111,7 @@ public class Input {
                         output.invalidinput();
                         rerun = true;
                     } else if (checkExistence && !vertragsverwaltung.vertragExistiert(value)) {
-                        if (prompt.equals("8-stellige VSNR oder 0 zum abbrechen")&& (Integer) input ==0){
+                        if (prompt.equals("8-stellige VSNR oder 0 zum abbrechen") && (Integer) input == 0) {
                             return input;
                         }
                         output.invalidinput();

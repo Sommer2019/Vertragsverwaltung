@@ -20,14 +20,14 @@ public class Menu {
     public void menu() {
         while (true) {
             output.menu();
-            int number = input.getNumber(Integer.class,"",-1,-1,-1, vertragsverwaltung, false);
+            int number = input.getNumber(Integer.class, "", -1, -1, -1, vertragsverwaltung, false);
             List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
             if (number == 1) {
                 output.druckeVertrage(vertrage);
             }
             if (number == 2) {
-                int vsnr = input.getNumber(Integer.class,"8-stellige VSNR oder 0 zum abbrechen",-1,-1,-1, vertragsverwaltung, true);
-                if(vsnr!=0){
+                int vsnr = input.getNumber(Integer.class, "8-stellige VSNR oder 0 zum abbrechen", -1, -1, -1, vertragsverwaltung, true);
+                if (vsnr != 0) {
                     Vertrag vertrag = vertragsverwaltung.getVertrag(vsnr);
                     output.druckeVertrag(vertrag);
                 }
@@ -39,10 +39,10 @@ public class Menu {
                 edit.editmenu(vertragsverwaltung);
             }
             if (number == 5) {
-                int vsnr = input.getNumber(Integer.class,"8-stellige VSNR oder 0 zum abbrechen",-1,-1,-1, vertragsverwaltung, true);
-                if(vsnr!=0){
-                    delete.delete(vsnr,vertragsverwaltung);
-                    }
+                int vsnr = input.getNumber(Integer.class, "8-stellige VSNR oder 0 zum abbrechen", -1, -1, -1, vertragsverwaltung, true);
+                if (vsnr != 0) {
+                    delete.delete(vsnr, vertragsverwaltung);
+                }
             }
             if (number == 6) {
                 System.exit(0);

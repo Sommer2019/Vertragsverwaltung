@@ -10,7 +10,7 @@ public class Delete {
     private final Input input = new Input();
 
     public void delete(int vsnrdelete, Vertragsverwaltung vertragsverwaltung) {
-        char inputresult = input.getChar(vertragsverwaltung.getVertrag(vsnrdelete),"gelöscht");
+        char inputresult = input.getChar(vertragsverwaltung.getVertrag(vsnrdelete), "gelöscht");
         switch (Character.toLowerCase(inputresult)) {
             case 'y':
                 vertragsverwaltung.vertragLoeschen(vsnrdelete);

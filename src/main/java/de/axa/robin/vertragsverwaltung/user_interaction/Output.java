@@ -19,94 +19,107 @@ public class Output {
     }
 
     public void newsum(BigDecimal summe) {
-        System.out.println("Neue Summe aller Beiträge im Jahr: "+summe.setScale(2, RoundingMode.HALF_DOWN)+"€");
+        System.out.println("Neue Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
         System.out.println("-------------------------------");
     }
+
     public void eventuell() {
         System.out.println();
         System.err.print("Eventuell ");
     }
+
     public void invalidinput() {
         System.err.println("Ungültige Eingabe!");
     }
+
     public void druckeVertrage(List<Vertrag> vertrage) {
-        BigDecimal summe=BigDecimal.ZERO;
+        BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
             druckeVertrag(v);
-            if(!v.getMonatlich()){
+            if (!v.getMonatlich()) {
                 summe = summe.add(BigDecimal.valueOf(v.getPreis()));
-            }
-            else{
-                summe = summe.add(BigDecimal.valueOf(v.getPreis()*12));
+            } else {
+                summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
             }
         }
-        System.out.println("Summe aller Beiträge im Jahr: "+summe.setScale(2, RoundingMode.HALF_DOWN)+"€");
+        System.out.println("Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
         System.out.println("-------------------------------");
     }
 
-    public void create(String input){
-        System.out.println("Geben Sie "+input+" ein:");
+    public void create(String input) {
+        System.out.println("Geben Sie " + input + " ein:");
     }
+
     public void error(String errorMessage) {
-        System.err.println(errorMessage+" existiert bereits.");
+        System.err.println(errorMessage + " existiert bereits.");
     }
-    public void confirm(Vertrag v,String handle){
+
+    public void confirm(Vertrag v, String handle) {
         druckeVertrag(v);
-        System.out.println("Soll dieser Vertrag wirklich "+handle+" werden? (y/n): ");
+        System.out.println("Soll dieser Vertrag wirklich " + handle + " werden? (y/n): ");
     }
-    public void skip(){
+
+    public void skip() {
         System.err.println("Überprüfung überspringen? (y/n): ");
     }
-    public void done(String verarbeitet){
-        System.out.println("Vertrag "+verarbeitet);
+
+    public void done(String verarbeitet) {
+        System.out.println("Vertrag " + verarbeitet);
     }
-    public void cancel(){
+
+    public void cancel() {
         System.out.println("Abgebrochen");
     }
 
     public void druckeVertrag(Vertrag v) {
         System.out.println(v.toString());
-        if(v.getVersicherungsablauf().isBefore(LocalDate.now())){
+        if (v.getVersicherungsablauf().isBefore(LocalDate.now())) {
             System.err.println("Vertrag abgelaufen!");
         }
         System.out.println("-------------------------------");
     }
-    public void preisMJ(){
+
+    public void preisMJ() {
         System.out.println("Abbuchung monatlich oder jährlich? (y/m): ");
     }
-    public void preis(boolean monatlich, double preis){
-        System.out.print("Berechneter Preis: "+preis+"€");
-        if (monatlich){
+
+    public void preis(boolean monatlich, double preis) {
+        System.out.print("Berechneter Preis: " + preis + "€");
+        if (monatlich) {
             System.out.print(" im Monat.");
-        }
-        else{
+        } else {
             System.out.print(" im Jahr.");
         }
         System.out.println();
     }
-    public void editwhat(){
+
+    public void editwhat() {
         System.out.println("Was möchten Sie bearbeiten?");
         System.out.println("1. Bestimmten Vertrag");
         System.out.println("2. Preisneuberechnung (alle Verträge)");
         System.out.println("3. Abbrechen");
     }
-    public void editMenu(){
+
+    public void editMenu() {
         System.out.println("Was möchten Sie bearbeiten?");
         System.out.println("1. Allgemeine Daten");
         System.out.println("2. Personendaten");
         System.out.println("3. Fahrzeugdaten");
         System.out.println("4. Bearbeitung abschließen");
     }
-    public void editDates(){
+
+    public void editDates() {
         System.out.println("Welche allgemeinen Daten möchten Sie bearbeiten?");
         System.out.println("1. Versicherungsbeginn");
         System.out.println("2. Versicherungsablauf");
         System.out.println("3. Antragsdatum");
         System.out.println("4. Abrechnungszeitraum");
     }
-    public void editTime(String thing){
-        System.out.println("Geben Sie "+thing+" ein (YYYY-MM-DD):");
+
+    public void editTime(String thing) {
+        System.out.println("Geben Sie " + thing + " ein (YYYY-MM-DD):");
     }
+
     public void editPerson() {
         System.out.println("Welche Personendaten möchten Sie bearbeiten?");
         System.out.println("1. Vorname");
@@ -115,6 +128,7 @@ public class Output {
         System.out.println("4. Geburtsdatum");
         System.out.println("5. Adresse");
     }
+
     public void editFahrzeug() {
         System.out.println("Welche Fahrzeugdaten möchten Sie bearbeiten?");
         System.out.println("1. Kennzeichen");
@@ -127,7 +141,8 @@ public class Output {
     public void connection(String errormessage) {
         System.err.println("Connection timed out: " + errormessage);
     }
+
     public void errorvalidate(String message) {
-        System.err.println("Error: "+message);
+        System.err.println("Error: " + message);
     }
 }

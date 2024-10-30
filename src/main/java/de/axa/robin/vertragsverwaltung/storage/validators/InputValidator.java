@@ -20,6 +20,7 @@ public class InputValidator {
         }
         return input.isEmpty();
     }
+
     public boolean isStringInJsonFile(String searchString) {
         String filePath = "src/main/resources/brands.json";
         try (InputStream fis = new FileInputStream(filePath);

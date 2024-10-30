@@ -1,4 +1,5 @@
 package de.axa.robin.vertragsverwaltung.modell;
+
 import java.time.LocalDate;
 
 public class Partner {
@@ -111,7 +112,7 @@ public class Partner {
 
     @Override
     public String toString() {
-        return  "\nFahrzeug: " +
+        return "\nFahrzeug: " +
                 "\n\tVorname: " + vorname +
                 "\n\tNachname: " + nachname +
                 "\n\tGeschlecht: " + geschlecht +
