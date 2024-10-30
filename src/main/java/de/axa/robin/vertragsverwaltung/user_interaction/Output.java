@@ -18,8 +18,8 @@ public class Output {
         System.out.println("6 -- beenden");
     }
 
-    public void newsum(BigDecimal summe) {
-        System.out.println("Neue Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
+    public void sum(String string, BigDecimal summe) {
+        System.out.println(string+" Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
         System.out.println("-------------------------------");
     }
 
@@ -42,8 +42,7 @@ public class Output {
                 summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
             }
         }
-        System.out.println("Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
-        System.out.println("-------------------------------");
+        sum("", summe);
     }
 
     public void create(String input) {

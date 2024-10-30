@@ -214,7 +214,7 @@ public class Edit {
                 summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
             }
         }
-        output.newsum(summe);
+        output.sum("Neue",summe);
     }
 }
 
