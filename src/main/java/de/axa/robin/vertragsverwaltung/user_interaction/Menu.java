@@ -27,8 +27,8 @@ public class Menu {
             }
             if (number == 2) {
                 int vsnr = input.getNumber(Integer.class,"8-stellige VSNR oder 0 zum abbrechen",-1,-1,-1, vertragsverwaltung, true);
-                Vertrag vertrag = vertragsverwaltung.getVertrag(vsnr);
                 if(vsnr!=0){
+                    Vertrag vertrag = vertragsverwaltung.getVertrag(vsnr);
                     output.druckeVertrag(vertrag);
                 }
             }

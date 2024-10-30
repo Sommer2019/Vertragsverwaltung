@@ -63,7 +63,7 @@ public class Create {
     private Fahrzeug createFahrzeug(Vertragsverwaltung vertragsverwaltung) {
         return new Fahrzeug(
                 input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}$", true, vertragsverwaltung, false, false, false),
-                input.getString("die Marke",null, false, vertragsverwaltung, true,false, false),
+                input.getString("die Marke",null, false, vertragsverwaltung, true,false, true),
                 input.getString("den Typ", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$", false, vertragsverwaltung, false, false, false),
                 input.getNumber(Integer.class,"die Höchstgeschwindigkeit", 50, 250, -1, vertragsverwaltung, false),
                 input.getNumber(Integer.class,"die Wagnisskennziffer", -1, -1, 112, vertragsverwaltung, false)

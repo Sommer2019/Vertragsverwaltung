@@ -200,7 +200,7 @@ public class Edit {
                 .add("factorspeed", factorspeed)
                 .build();
 
-        try (JsonWriter writer = Json.createWriter(new FileWriter("preiscalc.json"))) {
+        try (JsonWriter writer = Json.createWriter(new FileWriter("src/main/resources/preiscalc.json"))) {
             writer.writeObject(jsonObject);
         } catch (IOException e) {
             e.printStackTrace();

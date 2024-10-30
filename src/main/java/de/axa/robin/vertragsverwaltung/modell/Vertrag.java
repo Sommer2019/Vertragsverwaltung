@@ -95,7 +95,7 @@ public class Vertrag {
         return  "Vertragsdaten: " +
                 "\n\tVertragsnummer: " + vsnr +
                 "\n\tPreis: " + preis + "€" +
-                "\n\tAbrechnungszeitraum: " + monatlich +
+                "\n\tAbrechnungszeitraum monatlich: " + monatlich +
                 "\n\tVersicherungsbeginn: " + versicherungsbeginn +
                 "\n\tVersicherungsablauf: " + versicherungsablauf +
                 "\n\tAntragsdatum: " + antragsDatum +

@@ -76,7 +76,7 @@ public class Input {
                         output.invalidinput();
                         rerun = true;
                     }
-                } else if (beschreibung.equals("Preis monatlich oder jährlich")) {
+                } else if (beschreibung.equals("Abbuchung monatlich oder jährlich? (y/m): ")) {
                     if (input != 'y' && input != 'm') {
                         output.invalidinput();
                         rerun = true;
@@ -112,6 +112,9 @@ public class Input {
                         output.invalidinput();
                         rerun = true;
                     } else if (checkExistence && !vertragsverwaltung.vertragExistiert(value)) {
+                        if (prompt.equals("8-stellige VSNR oder 0 zum abbrechen")&& (Integer) input ==0){
+                            return input;
+                        }
                         output.invalidinput();
                         rerun = true;
                     } else if (prompt.equals("die PLZ") && String.valueOf(value).length() != 5) {

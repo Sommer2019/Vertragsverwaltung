@@ -30,7 +30,7 @@ public class Vertragsverwaltung {
         double factoralter = 0.1;
         double factorspeed = 0.4;
         int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
-        try (JsonReader reader = Json.createReader(new FileReader("preiscalc.json"))) {
+        try (JsonReader reader = Json.createReader(new FileReader("src/main/resources/preiscalc.json"))) {
             JsonObject jsonObject = reader.readObject();
             factor = jsonObject.getJsonNumber("factor").doubleValue();
             factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
@@ -67,7 +67,7 @@ public class Vertragsverwaltung {
         return vertrage.stream().anyMatch(v -> v.getFahrzeug().getAmtlichesKennzeichen().equals(kennzeichen));
     }
     public void speichereVertrage() {
-        try (FileWriter file = new FileWriter("vertrage.json", false)) {
+        try (FileWriter file = new FileWriter("src/main/resources/vertrage.json", false)) {
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             for (Vertrag v : vertrage) {
                 arrayBuilder.add(Json.createObjectBuilder()
@@ -105,7 +105,7 @@ public class Vertragsverwaltung {
     }
 
     public void ladeVertrage() {
-        try (FileReader file = new FileReader("vertrage.json")) {
+        try (FileReader file = new FileReader("src/main/resources/vertrage.json")) {
             JsonReader reader = Json.createReader(file);
             JsonArray jsonArray = reader.readArray();
             for (JsonValue jsonValue : jsonArray) {
