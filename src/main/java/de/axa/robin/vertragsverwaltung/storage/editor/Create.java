@@ -3,7 +3,7 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Validator;
+import de.axa.robin.vertragsverwaltung.storage.validators.AdressValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
@@ -14,7 +14,7 @@ public class Create {
     ////Klassen einlesen////
     private final Output output = new Output();
     private final Input input = new Input();
-    private final Validator addressValidator = new Validator();
+    private final AdressValidator addressAdressValidator = new AdressValidator();
 
     public void createVertrag(Vertragsverwaltung vertragsverwaltung) {
         Fahrzeug fahrzeug = createFahrzeug(vertragsverwaltung);
@@ -89,7 +89,7 @@ public class Create {
             plz = input.getNumber(Integer.class,"die PLZ",-1,-1,-1,vertragsverwaltung,false);
             stadt = input.getString("die Stadt",null,false,vertragsverwaltung,true,false,false);
             bundesland = input.getString("das Bundesland", null,false,vertragsverwaltung,true,false,false);
-        } while (!addressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land));
+        } while (!addressAdressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land));
         return new Partner(vorname, nachname, geschlecht, geburtsdatum,
                 land, strasse, hausnummer, plz, stadt, bundesland);
     }

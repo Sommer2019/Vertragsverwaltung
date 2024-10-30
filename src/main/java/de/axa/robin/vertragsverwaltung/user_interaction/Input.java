@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Validator;
+import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class Input {
     private final Output output = new Output();
-    private final Validator validator = new Validator();
+    private final InputValidator inputValidator = new InputValidator();
     private final Scanner scanner = new Scanner(System.in);
 
     public String getString(String prompt, String regex, boolean checkExistence, Vertragsverwaltung vertragsverwaltung, boolean isStringCheck, boolean isCountryCheck, boolean isBrandCheck) {
@@ -32,13 +32,13 @@ public class Input {
             } else if (checkExistence && vertragsverwaltung.kennzeichenExistiert(input)) {
                 output.error("Das Kennzeichen");
                 rerun = true;
-            } else if (isStringCheck && validator.string(input)) {
+            } else if (isStringCheck && inputValidator.string(input)) {
                 output.invalidinput();
                 rerun = true;
             } else if (isCountryCheck && !input.equals("Deutschland")) {
                 output.invalidinput();
                 rerun = true;
-            } else if (isBrandCheck && !validator.isStringInJsonFile("'" + input + "'")) {
+            } else if (isBrandCheck && !inputValidator.isStringInJsonFile("'" + input + "'")) {
                 output.eventuell();
                 output.invalidinput();
                 if (getChar(null, "") == 'y') {

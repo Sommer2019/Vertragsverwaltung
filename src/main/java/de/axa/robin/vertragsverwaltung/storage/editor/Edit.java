@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Validator;
+import de.axa.robin.vertragsverwaltung.storage.validators.AdressValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
@@ -19,7 +19,7 @@ public class Edit {
     ////Klassen einlesen////
     private final Output output = new Output();
     private final Input input = new Input();
-    private final Validator addressValidator = new Validator();
+    private final AdressValidator addressAdressValidator = new AdressValidator();
 
     public void editVertrag(Vertrag vertrag, Vertragsverwaltung vertragsverwaltung) {
         while (true) {
@@ -113,7 +113,7 @@ public class Edit {
                         int plz = input.getNumber(Integer.class,"die PLZ",-1,-1,-1,vertragsverwaltung,false);
                         String stadt = input.getString("die Stadt", null,false,vertragsverwaltung,true,false,false);
                         String bundesland = input.getString("das Bundesland", null,false,vertragsverwaltung,true,false,false);
-                        if(addressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land)){
+                        if(addressAdressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land)){
                             vertrag.getPartner().setLand(land);
                             vertrag.getPartner().setStrasse(strasse);
                             vertrag.getPartner().setHausnummer(hausnummer);
