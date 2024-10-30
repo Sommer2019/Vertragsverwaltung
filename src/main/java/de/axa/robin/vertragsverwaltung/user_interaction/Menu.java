@@ -21,7 +21,7 @@ public class Menu {
         while (true) {
             output.menu();
             int number = input.getNumber(Integer.class,"",-1,-1,-1, vertragsverwaltung, false);
-            List vertrage = vertragsverwaltung.getVertrage();
+            List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
             if (number == 1) {
                 output.druckeVertrage(vertrage);
             }
