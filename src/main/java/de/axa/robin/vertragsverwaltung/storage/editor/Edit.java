@@ -141,7 +141,7 @@ public class Edit {
 
             switch (choice) {
                 case 1:
-                    vertrag.getFahrzeug().setAmtlichesKennzeichen(input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}$", true, vertragsverwaltung, false, false, false));
+                    vertrag.getFahrzeug().setAmtlichesKennzeichen(input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}[EH]?$", true, vertragsverwaltung, false, false, false));
                     break;
                 case 2:
                     vertrag.getFahrzeug().setHersteller(input.getString("die Marke", null,false,vertragsverwaltung,false,false,true));
