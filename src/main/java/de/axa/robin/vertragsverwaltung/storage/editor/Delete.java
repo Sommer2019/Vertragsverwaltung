@@ -20,7 +20,7 @@ public class Delete {
                 output.cancel();
                 break;
             default:
-                output.invalidinput();
+                output.error("Ungültige Eingabe!");
                 break;
         }
     }

@@ -54,7 +54,7 @@ public class Create {
             vsnr++;
         }
         if (vsnr > 99999999) {
-            output.errorvalidate("Keine freien Versicherungsnummern mehr!");
+            output.error("Keine freien Versicherungsnummern mehr!");
             System.exit(1);
         }
         return vsnr;

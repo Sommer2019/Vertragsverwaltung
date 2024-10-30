@@ -35,9 +35,9 @@ public class AdressValidator {
             // Check internet connection
             if (!isInternetAvailable()) {
                 if (isProxyReachable(host, port)) {
-                    output.errorvalidate("Proxy ist erreichbar, aber keine Internetverbindung.");
+                    output.error("Proxy ist erreichbar, aber keine Internetverbindung.");
                 } else {
-                    output.errorvalidate("Keine Internetverbindung und Proxy ist nicht erreichbar.");
+                    output.error("Keine Internetverbindung und Proxy ist nicht erreichbar.");
                 }
                 return input.getChar(null, "") != 'n';
             }
@@ -61,9 +61,8 @@ public class AdressValidator {
             }
 
             if (status != HttpURLConnection.HTTP_OK) {
-                output.errorvalidate("HTTP-Status Code " + status + " empfangen.");
-                output.eventuell();
-                output.invalidinput();
+                output.error("HTTP-Status Code " + status + " empfangen.");
+                output.error("Eventuell ungültige Eingabe!");
                 return input.getChar(null, "") != 'n';
             }
 
@@ -91,19 +90,18 @@ public class AdressValidator {
                         displayName.contains(land.toLowerCase())) {
                     return true;
                 } else {
-                    output.errorvalidate("Eventuell Fehler in Adresse!");
+                    output.error("Eventuell Fehler in Adresse!");
                     return input.getChar(null, "") != 'n';
                 }
             } else {
-                output.errorvalidate("Adresse existiert eventuell nicht!");
+                output.error("Adresse existiert eventuell nicht!");
                 return input.getChar(null, "") != 'n';
             }
 
         } catch (ConnectException | SocketTimeoutException e) {
-            output.connection(e.getMessage());
+            output.error("Connection timed out: "+e.getMessage());
             e.printStackTrace();
-            output.eventuell();
-            output.invalidinput();
+            output.error("Eventuell ungültige Eingabe!");
             return input.getChar(null, "") != 'n';
         } catch (Exception e) {
             e.printStackTrace();

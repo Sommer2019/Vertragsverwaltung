@@ -23,34 +23,8 @@ public class Output {
         System.out.println("-------------------------------");
     }
 
-    public void eventuell() {
-        System.out.println();
-        System.err.print("Eventuell ");
-    }
-
-    public void invalidinput() {
-        System.err.println("Ungültige Eingabe!");
-    }
-
-    public void druckeVertrage(List<Vertrag> vertrage) {
-        BigDecimal summe = BigDecimal.ZERO;
-        for (Vertrag v : vertrage) {
-            druckeVertrag(v);
-            if (!v.getMonatlich()) {
-                summe = summe.add(BigDecimal.valueOf(v.getPreis()));
-            } else {
-                summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
-            }
-        }
-        sum("", summe);
-    }
-
     public void create(String input) {
         System.out.println("Geben Sie " + input + " ein:");
-    }
-
-    public void error(String errorMessage) {
-        System.err.println(errorMessage + " existiert bereits.");
     }
 
     public void confirm(Vertrag v, String handle) {
@@ -76,6 +50,19 @@ public class Output {
             System.err.println("Vertrag abgelaufen!");
         }
         System.out.println("-------------------------------");
+    }
+
+    public void druckeVertrage(List<Vertrag> vertrage) {
+        BigDecimal summe = BigDecimal.ZERO;
+        for (Vertrag v : vertrage) {
+            druckeVertrag(v);
+            if (!v.getMonatlich()) {
+                summe = summe.add(BigDecimal.valueOf(v.getPreis()));
+            } else {
+                summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
+            }
+        }
+        sum("", summe);
     }
 
     public void preisMJ() {
@@ -115,7 +102,7 @@ public class Output {
         System.out.println("4. Abrechnungszeitraum");
     }
 
-    public void editTime(String thing) {
+    public void inputDate(String thing) {
         System.out.println("Geben Sie " + thing + " ein (YYYY-MM-DD):");
     }
 
@@ -137,11 +124,7 @@ public class Output {
         System.out.println("5. Wagnisskennziffer");
     }
 
-    public void connection(String errormessage) {
-        System.err.println("Connection timed out: " + errormessage);
-    }
-
-    public void errorvalidate(String message) {
+    public void error(String message) {
         System.err.println("Error: " + message);
     }
 }

@@ -27,20 +27,19 @@ public class Input {
                 input = scanner.nextLine();
             }
             if (pattern != null && !pattern.matcher(input).matches()) {
-                output.invalidinput();
+                output.error("Ungültige Eingabe!");
                 rerun = true;
             } else if (checkExistence && vertragsverwaltung.kennzeichenExistiert(input)) {
-                output.error("Das Kennzeichen");
+                output.error("Das Kennzeichen existiert bereits.");
                 rerun = true;
             } else if (isStringCheck && inputValidator.string(input)) {
-                output.invalidinput();
+                output.error("Ungültige Eingabe!");
                 rerun = true;
             } else if (isCountryCheck && !input.equals("Deutschland")) {
-                output.invalidinput();
+                output.error("Ungültige Eingabe!");
                 rerun = true;
             } else if (isBrandCheck && !inputValidator.isStringInJsonFile("'" + input + "'")) {
-                output.eventuell();
-                output.invalidinput();
+                output.error("Eventuell ungültige Eingabe!");
                 if (getChar(null, "") == 'y') {
                     return input;
                 } else {
@@ -72,22 +71,22 @@ public class Input {
                 }
                 if (beschreibung.equals("das Geschlecht des Partners")) {
                     if (input != 'm' && input != 'w' && input != 'd') {
-                        output.invalidinput();
+                        output.error("Ungültige Eingabe!");
                         rerun = true;
                     }
                 } else if (beschreibung.equals("Abbuchung monatlich oder jährlich? (y/m): ")) {
                     if (input != 'y' && input != 'm') {
-                        output.invalidinput();
+                        output.error("Ungültige Eingabe!");
                         rerun = true;
                     }
                 } else {
                     if (input != 'y' && input != 'n') {
-                        output.invalidinput();
+                        output.error("Ungültige Eingabe!");
                         rerun = true;
                     }
                 }
             } catch (Exception e) {
-                output.invalidinput();
+                output.error("Ungültige Eingabe!");
                 rerun = true;
             }
         }
@@ -108,28 +107,28 @@ public class Input {
                     input = type.cast(scanner.nextInt());
                     int value = (Integer) input;
                     if ((min != -1 && value < min) || (max != -1 && value > max) || (exact != -1 && value != exact)) {
-                        output.invalidinput();
+                        output.error("Ungültige Eingabe!");
                         rerun = true;
                     } else if (checkExistence && !vertragsverwaltung.vertragExistiert(value)) {
                         if (prompt.equals("8-stellige VSNR oder 0 zum abbrechen") && (Integer) input == 0) {
                             return input;
                         }
-                        output.invalidinput();
+                        output.error("Ungültige Eingabe!");
                         rerun = true;
                     } else if (prompt.equals("die PLZ") && String.valueOf(value).length() != 5) {
-                        output.invalidinput();
+                        output.error("Ungültige Eingabe!");
                         rerun = true;
                     }
                 } else if (type == Double.class) {
                     input = type.cast(scanner.nextDouble());
                     double value = (Double) input;
                     if ((min != -1 && value < min) || (max != -1 && value > max) || (exact != -1 && value != exact)) {
-                        output.invalidinput();
+                        output.error("Ungültige Eingabe!");
                         rerun = true;
                     }
                 }
             } catch (InputMismatchException e) {
-                output.invalidinput();
+                output.error("Ungültige Eingabe!");
                 rerun = true;
                 scanner.next();
             }
@@ -142,16 +141,16 @@ public class Input {
         boolean rerun = true;
         LocalDate datum = LocalDate.now();
         while (rerun) {
-            output.editTime(beschreibung);
+            output.inputDate(beschreibung);
             try {
                 datum = LocalDate.parse(scanner.next());
                 if ((minDatum == null || !datum.isBefore(minDatum)) && (maxDatum == null || !datum.isAfter(maxDatum))) {
                     rerun = false;
                 } else {
-                    output.invalidinput();
+                    output.error("Ungültige Eingabe!");
                 }
             } catch (Exception e) {
-                output.invalidinput();
+                output.error("Ungültige Eingabe!");
             }
         }
         return datum;

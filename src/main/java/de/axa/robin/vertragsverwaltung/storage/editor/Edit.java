@@ -45,7 +45,7 @@ public class Edit {
                     output.preis(vertrag.getMonatlich(), vertrag.getPreis());
                     return; // Zurück zum Hauptmenü
                 default:
-                    output.invalidinput();
+                    output.error("Ungültige Eingabe!");
                     break;
             }
         }
@@ -77,7 +77,7 @@ public class Edit {
                     }
                     break;
                 default:
-                    output.invalidinput();
+                    output.error("Ungültige Eingabe!");
                     rerun = true;
                     break;
             }
@@ -124,7 +124,7 @@ public class Edit {
                     }
                     break;
                 default:
-                    output.invalidinput();
+                    output.error("Ungültige Eingabe!");
                     rerun = true;
                     break;
             }
@@ -155,7 +155,7 @@ public class Edit {
                     vertrag.getFahrzeug().setWagnisskennziffer(input.getNumber(Integer.class, "die Wagnisskennziffer", -1, -1, 112, vertragsverwaltung, false));
                     break;
                 default:
-                    output.invalidinput();
+                    output.error("Ungültige Eingabe!");
                     rerun = true;
                     break;
             }
@@ -179,7 +179,7 @@ public class Edit {
                 case 3:
                     return; // Zurück zum Hauptmenü
                 default:
-                    output.invalidinput();
+                    output.error("Ungültige Eingabe!");
                     break;
             }
         }

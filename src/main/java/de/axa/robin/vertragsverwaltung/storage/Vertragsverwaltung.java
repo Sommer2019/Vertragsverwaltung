@@ -48,7 +48,7 @@ public class Vertragsverwaltung {
                 preis = preis * 11;
             }
         } catch (Exception e) {
-            output.invalidinput();
+            output.error("Ungültige Eingabe!");
         }
         return Math.round(preis * 100.0) / 100.0;
     }

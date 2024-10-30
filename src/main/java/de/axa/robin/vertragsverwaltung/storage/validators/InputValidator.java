@@ -28,7 +28,7 @@ public class InputValidator {
             JsonObject jsonObject = jsonReader.readObject();
             return jsonObject.toString().contains(searchString);
         } catch (FileNotFoundException e) {
-            output.errorvalidate("File not found: " + filePath);
+            output.error("File not found: " + filePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
