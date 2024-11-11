@@ -53,18 +53,6 @@ public class Create {
         }
     }
 
-    public int createvsnr() {
-        int vsnr = 10000000;
-        while (vertragsverwaltung.getVertrag(vsnr) != null) {
-            vsnr++;
-        }
-        if (vsnr > 99999999) {
-            output.error("Keine freien Versicherungsnummern mehr!");
-            System.exit(1);
-        }
-        return vsnr;
-    }
-
     private Fahrzeug createFahrzeug() {
         return new Fahrzeug(
                 input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}[EH]?$", true, false, false, false),
@@ -98,6 +86,19 @@ public class Create {
         return new Partner(vorname, nachname, geschlecht, geburtsdatum,
                 land, strasse, hausnummer, plz, stadt, bundesland);
     }
+
+    public int createvsnr() {
+        int vsnr = 10000000;
+        while (vertragsverwaltung.getVertrag(vsnr) != null) {
+            vsnr++;
+        }
+        if (vsnr > 99999999) {
+            output.error("Keine freien Versicherungsnummern mehr!");
+            System.exit(1);
+        }
+        return vsnr;
+    }
+
     public double createPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         double preis = 0;
         double factor = 1.5;
