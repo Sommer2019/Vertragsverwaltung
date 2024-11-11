@@ -17,7 +17,8 @@ public class Vertragsverwaltung {
     private final Output output = new Output();
     private final Repository repository = new Repository();
 
-    public void vertragAnlegen(Vertrag vertrag, List<Vertrag> vertrage) {
+    public void vertragAnlegen(Vertrag vertrag) {
+        List<Vertrag> vertrage = repository.ladeVertrage();
         vertrage.add(vertrag);
         repository.speichereVertrage(vertrage);
     }
@@ -47,7 +48,8 @@ public class Vertragsverwaltung {
         return Math.round(preis * 100.0) / 100.0;
     }
 
-    public void vertragLoeschen(int vsnr, List<Vertrag> vertrage) {
+    public void vertragLoeschen(int vsnr) {
+        List<Vertrag> vertrage = repository.ladeVertrage();
         vertrage.removeIf(v -> v.getVsnr() == vsnr);
         repository.speichereVertrage(vertrage);
     }
@@ -56,15 +58,18 @@ public class Vertragsverwaltung {
         return repository.ladeVertrage();
     }
 
-    public Vertrag getVertrag(int vsnr, List<Vertrag> vertrage) {
+    public Vertrag getVertrag(int vsnr) {
+        List<Vertrag> vertrage = repository.ladeVertrage();
         return vertrage.stream().filter(v -> v.getVsnr() == vsnr).findFirst().orElse(null);
     }
 
-    public boolean vertragExistiert(int vsnr, List<Vertrag> vertrage) {
+    public boolean vertragExistiert(int vsnr) {
+        List<Vertrag> vertrage = repository.ladeVertrage();
         return vertrage.stream().anyMatch(v -> v.getVsnr() == vsnr);
     }
 
-    public boolean kennzeichenExistiert(String kennzeichen, List<Vertrag> vertrage) {
+    public boolean kennzeichenExistiert(String kennzeichen) {
+        List<Vertrag> vertrage = repository.ladeVertrage();
         return vertrage.stream().anyMatch(v -> v.getFahrzeug().getAmtlichesKennzeichen().equals(kennzeichen));
     }
 }

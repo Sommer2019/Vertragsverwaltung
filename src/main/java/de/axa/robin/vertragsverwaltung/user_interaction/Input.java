@@ -16,7 +16,7 @@ public class Input {
     private final InputValidator inputValidator = new InputValidator();
     private final Scanner scanner = new Scanner(System.in);
 
-    public String getString(String prompt, String regex, boolean checkExistence, boolean isStringCheck, boolean isCountryCheck, boolean isBrandCheck, List<Vertrag> vertrage) {
+    public String getString(String prompt, String regex, boolean checkExistence, boolean isStringCheck, boolean isCountryCheck, boolean isBrandCheck) {
         boolean rerun = true;
         String input = "";
         Pattern pattern = regex != null ? Pattern.compile(regex) : null;
@@ -31,7 +31,7 @@ public class Input {
             if (pattern != null && !pattern.matcher(input).matches()) {
                 output.error("Ungültige Eingabe!");
                 rerun = true;
-            } else if (checkExistence && vertragsverwaltung.kennzeichenExistiert(input, vertrage)) {
+            } else if (checkExistence && vertragsverwaltung.kennzeichenExistiert(input)) {
                 output.error("Das Kennzeichen existiert bereits.");
                 rerun = true;
             } else if (isStringCheck && inputValidator.string(input)) {
@@ -95,7 +95,7 @@ public class Input {
         return input;
     }
 
-    public <T> T getNumber(Class<T> type, String prompt, int min, int max, int exact, boolean checkExistence, List<Vertrag> vertrage) {
+    public <T> T getNumber(Class<T> type, String prompt, int min, int max, int exact, boolean checkExistence) {
         boolean rerun = true;
         T input = null;
 
@@ -111,7 +111,7 @@ public class Input {
                     if ((min != -1 && value < min) || (max != -1 && value > max) || (exact != -1 && value != exact)) {
                         output.error("Ungültige Eingabe!");
                         rerun = true;
-                    } else if (checkExistence && !vertragsverwaltung.vertragExistiert(value, vertrage)) {
+                    } else if (checkExistence && !vertragsverwaltung.vertragExistiert(value)) {
                         if (prompt.equals("8-stellige VSNR oder 0 zum abbrechen") && (Integer) input == 0) {
                             return input;
                         }

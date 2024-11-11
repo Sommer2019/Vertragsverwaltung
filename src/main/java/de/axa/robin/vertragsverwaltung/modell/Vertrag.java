@@ -101,7 +101,7 @@ public class Vertrag {
                 "\n\tVersicherungsbeginn: " + versicherungsbeginn +
                 "\n\tVersicherungsablauf: " + versicherungsablauf +
                 "\n\tAntragsdatum: " + antragsDatum +
-                fahrzeug+
+                fahrzeug +
                 partner;
     }
 }

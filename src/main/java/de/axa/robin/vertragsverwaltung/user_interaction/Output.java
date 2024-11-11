@@ -19,7 +19,7 @@ public class Output {
     }
 
     public void sum(String string, BigDecimal summe) {
-        System.out.println(string+" Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
+        System.out.println(string + " Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
         System.out.println("-------------------------------");
     }
 

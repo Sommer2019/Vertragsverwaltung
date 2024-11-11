@@ -13,11 +13,11 @@ public class Delete {
     private final Output output = new Output();
     private final Input input = new Input();
 
-    public void delete(int vsnrdelete, List<Vertrag> vertrage) {
-        char inputresult = input.getChar(vertragsverwaltung.getVertrag(vsnrdelete, vertrage), "gelöscht");
+    public void delete(int vsnrdelete) {
+        char inputresult = input.getChar(vertragsverwaltung.getVertrag(vsnrdelete), "gelöscht");
         switch (Character.toLowerCase(inputresult)) {
             case 'y':
-                vertragsverwaltung.vertragLoeschen(vsnrdelete, vertrage);
+                vertragsverwaltung.vertragLoeschen(vsnrdelete);
                 output.done("Vertrag erfolgreich gelöscht.");
                 break;
             case 'n':

@@ -99,7 +99,7 @@ public class AdressValidator {
             }
 
         } catch (ConnectException | SocketTimeoutException e) {
-            output.error("Connection timed out: "+e.getMessage());
+            output.error("Connection timed out: " + e.getMessage());
             e.printStackTrace();
             output.error("Eventuell ungültige Eingabe!");
             return input.getChar(null, "") != 'n';
