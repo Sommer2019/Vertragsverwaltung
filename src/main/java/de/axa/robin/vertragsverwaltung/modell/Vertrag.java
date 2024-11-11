@@ -100,8 +100,8 @@ public class Vertrag {
                 "\n\tVersicherungsbeginn: " + versicherungsbeginn +
                 "\n\tVersicherungsablauf: " + versicherungsablauf +
                 "\n\tAntragsdatum: " + antragsDatum +
-                fahrzeug.toString() +
-                partner.toString();
+                fahrzeug+
+                partner;
     }
 }
 

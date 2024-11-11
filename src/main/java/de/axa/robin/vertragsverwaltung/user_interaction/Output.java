@@ -102,8 +102,8 @@ public class Output {
         System.out.println("4. Abrechnungszeitraum");
     }
 
-    public void inputDate(String thing) {
-        System.out.println("Geben Sie " + thing + " ein (YYYY-MM-DD):");
+    public void inputDate(String datename) {
+        System.out.println("Geben Sie " + datename + " ein (YYYY-MM-DD):");
     }
 
     public void editPerson() {
