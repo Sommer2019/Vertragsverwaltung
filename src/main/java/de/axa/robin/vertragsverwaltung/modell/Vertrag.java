@@ -5,6 +5,7 @@ import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import java.time.LocalDate;
 
 public class Vertrag {
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
     private int vsnr;
     private double preis;
     boolean monatlich;
@@ -39,7 +40,7 @@ public class Vertrag {
         return preis;
     }
 
-    public void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug, Vertragsverwaltung vertragsverwaltung) {
+    public void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         this.preis = vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
     }
 

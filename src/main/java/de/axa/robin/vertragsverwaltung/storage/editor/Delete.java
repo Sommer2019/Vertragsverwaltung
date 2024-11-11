@@ -1,19 +1,23 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
+import java.util.List;
+
 public class Delete {
     ////Klassen einlesen////
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
     private final Output output = new Output();
     private final Input input = new Input();
 
-    public void delete(int vsnrdelete, Vertragsverwaltung vertragsverwaltung) {
-        char inputresult = input.getChar(vertragsverwaltung.getVertrag(vsnrdelete), "gelöscht");
+    public void delete(int vsnrdelete, List<Vertrag> vertrage) {
+        char inputresult = input.getChar(vertragsverwaltung.getVertrag(vsnrdelete, vertrage), "gelöscht");
         switch (Character.toLowerCase(inputresult)) {
             case 'y':
-                vertragsverwaltung.vertragLoeschen(vsnrdelete);
+                vertragsverwaltung.vertragLoeschen(vsnrdelete, vertrage);
                 output.done("Vertrag erfolgreich gelöscht.");
                 break;
             case 'n':

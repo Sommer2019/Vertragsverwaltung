@@ -9,16 +9,18 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Create {
     ////Klassen einlesen////
     private final Output output = new Output();
     private final Input input = new Input();
     private final AdressValidator addressAdressValidator = new AdressValidator();
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
 
-    public void createVertrag(Vertragsverwaltung vertragsverwaltung) {
-        Fahrzeug fahrzeug = createFahrzeug(vertragsverwaltung);
-        Partner partner = createPartner(vertragsverwaltung);
+    public void createVertrag(List<Vertrag> vertrage) {
+        Fahrzeug fahrzeug = createFahrzeug(vertrage);
+        Partner partner = createPartner(vertrage);
         boolean monatlich = false;
         char booking = input.getChar(null, "Abbuchung monatlich oder jährlich? (y/m): ");
         if (booking == 'm') {
@@ -29,7 +31,7 @@ public class Create {
         LocalDate beginn = input.getDate("den Versicherungsbeginn", LocalDate.now(), null);
 
         Vertrag vertrag = new Vertrag(
-                createvsnr(vertragsverwaltung),
+                createvsnr(vertrage),
                 monatlich,
                 preis,
                 beginn,
@@ -41,16 +43,16 @@ public class Create {
 
         char confirm = input.getChar(vertrag, "erstellt");
         if (confirm == 'y' || confirm == 'Y') {
-            vertragsverwaltung.vertragAnlegen(vertrag);
+            vertragsverwaltung.vertragAnlegen(vertrag, vertrage);
             output.done("erfolgreich erstellt.");
         } else {
             output.done("wurde nicht erstellt.");
         }
     }
 
-    public int createvsnr(Vertragsverwaltung vertragsverwaltung) {
+    public int createvsnr(List<Vertrag> vertrage) {
         int vsnr = 10000000;
-        while (vertragsverwaltung.getVertrag(vsnr) != null) {
+        while (vertragsverwaltung.getVertrag(vsnr, vertrage) != null) {
             vsnr++;
         }
         if (vsnr > 99999999) {
@@ -60,19 +62,19 @@ public class Create {
         return vsnr;
     }
 
-    private Fahrzeug createFahrzeug(Vertragsverwaltung vertragsverwaltung) {
+    private Fahrzeug createFahrzeug(List<Vertrag> vertrage) {
         return new Fahrzeug(
-                input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}[EH]?$", true, vertragsverwaltung, false, false, false),
-                input.getString("die Marke", null, false, vertragsverwaltung, true, false, true),
-                input.getString("den Typ", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$", false, vertragsverwaltung, false, false, false),
-                input.getNumber(Integer.class, "die Höchstgeschwindigkeit", 50, 250, -1, vertragsverwaltung, false),
-                input.getNumber(Integer.class, "die Wagnisskennziffer", -1, -1, 112, vertragsverwaltung, false)
+                input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}[EH]?$", true, false, false, false, vertrage),
+                input.getString("die Marke", null, false, true, false, true, vertrage),
+                input.getString("den Typ", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$", false, false, false, false, vertrage),
+                input.getNumber(Integer.class, "die Höchstgeschwindigkeit", 50, 250, -1, false, vertrage),
+                input.getNumber(Integer.class, "die Wagnisskennziffer", -1, -1, 112, false, vertrage)
         );
     }
 
-    private Partner createPartner(Vertragsverwaltung vertragsverwaltung) {
-        String vorname = input.getString("den Vornamen des Partners", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$", false, vertragsverwaltung, false, false, false);
-        String nachname = input.getString("den Nachnamen des Partners", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$", false, vertragsverwaltung, false, false, false);
+    private Partner createPartner(List<Vertrag> vertrage) {
+        String vorname = input.getString("den Vornamen des Partners", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$", false, false, false, false, vertrage);
+        String nachname = input.getString("den Nachnamen des Partners", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$", false, false, false, false, vertrage);
         char geschlecht = input.getChar(null, "das Geschlecht des Partners");
         LocalDate geburtsdatum = input.getDate("das Geburtsdatum", LocalDate.now().minusYears(110), LocalDate.now().minusYears(18));
         String land;
@@ -83,12 +85,12 @@ public class Create {
         String bundesland;
 
         do {
-            land = input.getString("das Land", null, false, vertragsverwaltung, true, true, false);
-            strasse = input.getString("die Straße", null, false, vertragsverwaltung, false, false, false);
-            hausnummer = input.getString("die Hausnummer", "[a-zA-Z0-9]+", false, vertragsverwaltung, false, false, false);
-            plz = input.getNumber(Integer.class, "die PLZ", -1, -1, -1, vertragsverwaltung, false);
-            stadt = input.getString("die Stadt", null, false, vertragsverwaltung, true, false, false);
-            bundesland = input.getString("das Bundesland", null, false, vertragsverwaltung, true, false, false);
+            land = input.getString("das Land", null, false, true, true, false, vertrage);
+            strasse = input.getString("die Straße", null, false, false, false, false, vertrage);
+            hausnummer = input.getString("die Hausnummer", "[a-zA-Z0-9]+", false, false, false, false, vertrage);
+            plz = input.getNumber(Integer.class, "die PLZ", -1, -1, -1, false, vertrage);
+            stadt = input.getString("die Stadt", null, false, true, false, false, vertrage);
+            bundesland = input.getString("das Bundesland", null, false, true, false, false, vertrage);
         } while (!addressAdressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land));
         return new Partner(vorname, nachname, geschlecht, geburtsdatum,
                 land, strasse, hausnummer, plz, stadt, bundesland);
