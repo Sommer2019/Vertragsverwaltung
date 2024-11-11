@@ -1,11 +1,11 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.editor.Create;
 
 import java.time.LocalDate;
 
 public class Vertrag {
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private final Create create = new Create();
     private int vsnr;
     private double preis;
     boolean monatlich;
@@ -41,7 +41,7 @@ public class Vertrag {
     }
 
     public void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
-        this.preis = vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
+        this.preis = create.createPreis(monatlich, partner, fahrzeug);
     }
 
     public boolean getMonatlich() {

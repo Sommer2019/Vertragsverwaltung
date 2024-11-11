@@ -7,7 +7,11 @@ import de.axa.robin.vertragsverwaltung.storage.validators.AdressValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 
+import java.io.FileReader;
 import java.time.LocalDate;
 
 public class Create {
@@ -25,7 +29,7 @@ public class Create {
         if (booking == 'm') {
             monatlich = true;
         }
-        double preis = vertragsverwaltung.calcPreis(monatlich, partner, fahrzeug);
+        double preis = createPreis(monatlich, partner, fahrzeug);
         output.preis(monatlich, preis);
         LocalDate beginn = input.getDate("den Versicherungsbeginn", LocalDate.now(), null);
 
@@ -93,5 +97,29 @@ public class Create {
         } while (!addressAdressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land));
         return new Partner(vorname, nachname, geschlecht, geburtsdatum,
                 land, strasse, hausnummer, plz, stadt, bundesland);
+    }
+    public double createPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
+        double preis = 0;
+        double factor = 1.5;
+        double factoralter = 0.1;
+        double factorspeed = 0.4;
+        int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
+        try (JsonReader reader = Json.createReader(new FileReader("src/main/resources/preiscalc.json"))) {
+            JsonObject jsonObject = reader.readObject();
+            factor = jsonObject.getJsonNumber("factor").doubleValue();
+            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
+            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit() * factorspeed) * factor;
+            if (!monatlich) {
+                preis = preis * 11;
+            }
+        } catch (Exception e) {
+            output.error("Ungültige Eingabe!");
+        }
+        return Math.round(preis * 100.0) / 100.0;
     }
 }
