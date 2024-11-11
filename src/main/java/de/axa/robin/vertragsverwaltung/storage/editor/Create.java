@@ -9,7 +9,6 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class Create {
     ////Klassen einlesen////

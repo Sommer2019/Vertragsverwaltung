@@ -6,7 +6,6 @@ import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 
 import java.time.LocalDate;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 

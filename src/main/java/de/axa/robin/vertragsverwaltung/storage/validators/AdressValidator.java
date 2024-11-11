@@ -18,7 +18,7 @@ public class AdressValidator {
     public boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
         try {
             String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland + ", " + land, StandardCharsets.UTF_8);
-            String url = NOMINATIM_URL + query;
+            URI uri = new URI(NOMINATIM_URL + query);
 
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
 
@@ -42,7 +42,7 @@ public class AdressValidator {
                 return input.getChar(null, "") != 'n';
             }
 
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
             conn.setRequestMethod("GET");
             conn.setInstanceFollowRedirects(true);
             conn.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -52,7 +52,7 @@ public class AdressValidator {
             int status = conn.getResponseCode();
             if (status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_MOVED_TEMP) {
                 String newUrl = conn.getHeaderField("Location");
-                conn = (HttpURLConnection) new URL(newUrl).openConnection();
+                conn = (HttpURLConnection) new URI(newUrl).toURL().openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("User-Agent", "Mozilla/5.0");
                 conn.setConnectTimeout(5000);
@@ -120,12 +120,13 @@ public class AdressValidator {
 
     private boolean isInternetAvailable() {
         try {
-            HttpURLConnection urlConn = (HttpURLConnection) new URL("http://www.google.com").openConnection();
+            URI uri = new URI("https://www.google.com");
+            HttpURLConnection urlConn = (HttpURLConnection) uri.toURL().openConnection();
             urlConn.setRequestMethod("GET");
             urlConn.setConnectTimeout(5000); // 5 seconds
             urlConn.connect();
             return urlConn.getResponseCode() == 200;
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             return false;
         }
     }

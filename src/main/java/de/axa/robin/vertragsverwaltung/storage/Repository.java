@@ -16,8 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Repository {
-    private String link;
-    private final Logger logger = Logger.getLogger(Vertragsverwaltung.class.getName());
+    private final Logger logger = Logger.getLogger(Repository.class.getName());
 
     public void speichereVertrage(List<Vertrag> vertrage) {
         try (FileWriter file = new FileWriter("src/main/resources/vertrage.json", false)) {
