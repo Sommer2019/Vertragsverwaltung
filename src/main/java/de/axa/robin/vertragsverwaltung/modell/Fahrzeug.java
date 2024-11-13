@@ -59,7 +59,7 @@ public class Fahrzeug {
 
     @Override
     public String toString() {
-        return "\nPartner: " +
+        return "\nFahrzeug: " +
                 "\n\tAmtliches Kennzeichen: " + amtlichesKennzeichen +
                 "\n\tHersteller: " + hersteller +
                 "\n\tTyp: " + typ +
