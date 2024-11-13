@@ -112,7 +112,7 @@ public class Partner {
 
     @Override
     public String toString() {
-        return "\nFahrzeug: " +
+        return "\nPartner: " +
                 "\n\tVorname: " + vorname +
                 "\n\tNachname: " + nachname +
                 "\n\tGeschlecht: " + geschlecht +
