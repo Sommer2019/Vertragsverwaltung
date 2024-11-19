@@ -17,15 +17,6 @@ public class AdressValidator {
     private final Scanner scanner = new Scanner(System.in);
     private final Input input = new Input(scanner);
     private final Setup setup = new Setup();
-    private int port;
-
-    public AdressValidator() {
-        this.port = setup.getPort();
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
 
     public boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
         try {
@@ -44,8 +35,8 @@ public class AdressValidator {
             }
 
             // Check internet connection
-            if (!isInternetAvailable()) {
-                if (isProxyReachable(setup.getHost(), port)) {
+            if (!isInternetAvailable(setup.getPort())) {
+                if (isProxyReachable(setup.getHost(), setup.getPort())) {
                     output.error("Proxy ist erreichbar, aber keine Internetverbindung.");
                 } else {
                     output.error("Keine Internetverbindung und Proxy ist nicht erreichbar.");
@@ -129,12 +120,12 @@ public class AdressValidator {
         }
     }
 
-    public boolean isInternetAvailable() {
-        if (isProxyReachable(setup.getHost(), port)) {
+    public boolean isInternetAvailable(int portfix) {
+        if (isProxyReachable(setup.getHost(), portfix)) {
             System.setProperty("http.proxyHost", setup.getHost());
-            System.setProperty("http.proxyPort", String.valueOf(port));
+            System.setProperty("http.proxyPort", String.valueOf(portfix));
             System.setProperty("https.proxyHost", setup.getHost());
-            System.setProperty("https.proxyPort", String.valueOf(port));
+            System.setProperty("https.proxyPort", String.valueOf(portfix));
         }
         try {
             URI uri = new URI(setup.getTestURL());

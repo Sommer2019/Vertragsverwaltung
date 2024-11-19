@@ -8,6 +8,7 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -15,50 +16,60 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class EditTest {
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private Edit edit;
     private Input mockInput;
     private Output mockOutput;
     private Vertragsverwaltung mockVertragsverwaltung;
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
     public void setUp() {
+        System.setOut(new PrintStream(outContent));
         mockInput = mock(Input.class);
         mockOutput = mock(Output.class);
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
         mockVertragsverwaltung = mock(Vertragsverwaltung.class);
-        edit = new Edit(mockInput);
+        edit = new Edit(mockInput, mockVertragsverwaltung, mockOutput);
     }
 
     @Test
     void editVertrag() {
         // Arrange
-        Vertrag mockVertrag = mock(Vertrag.class);
-        when(mockVertrag.getMonatlich()).thenReturn(true);
-        when(mockVertrag.getPartner()).thenReturn(null); // You can mock a Partner object if needed
-        when(mockVertrag.getFahrzeug()).thenReturn(null); // You can mock a Fahrzeug object if needed
-        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1);
+        Vertrag vertrag = new Vertrag(12345678, true, 100.0, LocalDate.now(), LocalDate.now().plusYears(1), LocalDate.now(),
+                new Fahrzeug("GL-GL123", "Toyota", "Corolla", 150, 112),
+                new Partner("John", "Doe", 'M', LocalDate.of(1980, 1, 1), "Deutschland", "Hauptstraße", "11", 51465, "Bergisch Gladbach", "Nordrhein-Westfalen"));
+
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(4);
+        when(mockInput.getChar(any(), eq("erstellt"))).thenReturn('y');
 
         // Act
-        edit.editVertrag(mockVertrag);
+        edit.editVertrag(vertrag);
 
         // Assert
-        verify(mockOutput, times(1)).druckeVertrag(mockVertrag);
-        verify(mockOutput, times(1)).editMenu();
+        ArgumentCaptor<Vertrag> vertragCaptor = ArgumentCaptor.forClass(Vertrag.class);
+        verify(mockVertragsverwaltung).vertragAnlegen(vertragCaptor.capture());
+        Vertrag capturedVertrag = vertragCaptor.getValue();
+
+        assertNotNull(capturedVertrag);
+        assertEquals(12345678, capturedVertrag.getVsnr());
+        assertEquals("GL-GL123", capturedVertrag.getFahrzeug().getAmtlichesKennzeichen());
+        assertEquals("John", capturedVertrag.getPartner().getVorname());
+        assertTrue(capturedVertrag.getMonatlich());
+        assertEquals(LocalDate.now(), capturedVertrag.getVersicherungsbeginn());
+        assertEquals(LocalDate.now().plusYears(1), capturedVertrag.getVersicherungsablauf());
+        assertTrue(capturedVertrag.getPreis() >= 0); // Assuming a valid calculation should return a positive price
     }
 
     @Test
-    void editAllgemeineDaten() {
+    void editAllgemeineDaten_setVersicherungsbeginn() {
         // Arrange
         Vertrag mockVertrag = mock(Vertrag.class);
         when(mockVertrag.getAntragsDatum()).thenReturn(LocalDate.now());
-        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1, 2); // First 1, then 2
+        when(mockVertrag.getVersicherungsablauf()).thenReturn(LocalDate.now().plusYears(1));
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1); // Simulate user choice for Versicherungsbeginn
 
         // Act
         edit.editAllgemeineDaten(mockVertrag);
@@ -66,45 +77,199 @@ public class EditTest {
         // Assert
         verify(mockOutput, times(1)).editDates();
         verify(mockVertrag, times(1)).setVersicherungsbeginn(any());
+    }
+
+    @Test
+    void editAllgemeineDaten_setVersicherungsablauf() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        when(mockVertrag.getVersicherungsbeginn()).thenReturn(LocalDate.now());
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(2); // Simulate user choice for Versicherungsablauf
+
+        // Act
+        edit.editAllgemeineDaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editDates();
         verify(mockVertrag, times(1)).setVersicherungsablauf(any());
+    }
+
+    @Test
+    void editAllgemeineDaten_setAntragsDatum() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(3); // Simulate user choice for AntragsDatum
+
+        // Act
+        edit.editAllgemeineDaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editDates();
         verify(mockVertrag, times(1)).setAntragsDatum(any());
     }
 
     @Test
-    void editPersonendaten() {
+    void editAllgemeineDaten_setMonatlich() {
         // Arrange
         Vertrag mockVertrag = mock(Vertrag.class);
-        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1, 2); // First 1, then 2
-        when(mockVertrag.getPartner()).thenReturn(new Partner("John", "Doe", 'M', LocalDate.of(1980, 1, 1), "Germany", "Main St", "1", 12345, "Berlin", "Berlin"));
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(4); // Simulate user choice for Monatlich
+        when(mockInput.getChar(any(), anyString())).thenReturn('m'); // Simulate user input for monthly booking
+
+        // Act
+        edit.editAllgemeineDaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editDates();
+        verify(mockVertrag, times(1)).setMonatlich(true);
+    }
+
+
+    @Test
+    void editPersonendaten_setVorname() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        Partner mockPartner = mock(Partner.class);
+        when(mockVertrag.getPartner()).thenReturn(mockPartner);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1); // Simulate user choice for Vorname
+        when(mockInput.getString(anyString(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean()))
+                .thenReturn("John");
 
         // Act
         edit.editPersonendaten(mockVertrag);
 
         // Assert
         verify(mockOutput, times(1)).editPerson();
-        verify(mockVertrag.getPartner(), times(1)).setVorname(anyString());
-        verify(mockVertrag.getPartner(), times(1)).setNachname(anyString());
-        verify(mockVertrag.getPartner(), times(1)).setGeschlecht(anyChar());
-        verify(mockVertrag.getPartner(), times(1)).setGeburtsdatum(any());
+        verify(mockPartner, times(1)).setVorname("John");
     }
 
     @Test
-    void editFahrzeugdaten() {
+    void editPersonendaten_setNachname() {
         // Arrange
         Vertrag mockVertrag = mock(Vertrag.class);
-        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1, 2); // First 1, then 2
-        when(mockVertrag.getFahrzeug()).thenReturn(new Fahrzeug("ABC-1234", "Toyota", "Corolla", 150, 112));
+        Partner mockPartner = mock(Partner.class);
+        when(mockVertrag.getPartner()).thenReturn(mockPartner);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(2); // Simulate user choice for Nachname
+        when(mockInput.getString(anyString(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean()))
+                .thenReturn("Doe");
+
+        // Act
+        edit.editPersonendaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editPerson();
+        verify(mockPartner, times(1)).setNachname("Doe");
+    }
+
+    @Test
+    void editPersonendaten_setGeschlecht() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        Partner mockPartner = mock(Partner.class);
+        when(mockVertrag.getPartner()).thenReturn(mockPartner);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(3); // Simulate user choice for Geschlecht
+        when(mockInput.getChar(any(), anyString())).thenReturn('M');
+
+        // Act
+        edit.editPersonendaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editPerson();
+        verify(mockPartner, times(1)).setGeschlecht('M');
+    }
+
+    @Test
+    void editPersonendaten_setGeburtsdatum() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        Partner mockPartner = mock(Partner.class);
+        when(mockVertrag.getPartner()).thenReturn(mockPartner);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(4); // Simulate user choice for Geburtsdatum
+        when(mockInput.getDate(anyString(), any(), any())).thenReturn(LocalDate.of(1980, 1, 1));
+
+        // Act
+        edit.editPersonendaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editPerson();
+        verify(mockPartner, times(1)).setGeburtsdatum(LocalDate.of(1980, 1, 1));
+    }
+    @Test
+    void editFahrzeugdaten_setAmtlichesKennzeichen() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        Fahrzeug mockFahrzeug = mock(Fahrzeug.class);
+        when(mockVertrag.getFahrzeug()).thenReturn(mockFahrzeug);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1); // Simulate user choice for Geburtsdatum
+        when(mockInput.getString(anyString(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean())).thenReturn("GL-GL1234");
 
         // Act
         edit.editFahrzeugdaten(mockVertrag);
 
         // Assert
         verify(mockOutput, times(1)).editFahrzeug();
-        verify(mockVertrag.getFahrzeug(), times(1)).setAmtlichesKennzeichen(anyString());
-        verify(mockVertrag.getFahrzeug(), times(1)).setHersteller(anyString());
-        verify(mockVertrag.getFahrzeug(), times(1)).setTyp(anyString());
-        verify(mockVertrag.getFahrzeug(), times(1)).setHoechstgeschwindigkeit(anyInt());
-        verify(mockVertrag.getFahrzeug(), times(1)).setWagnisskennziffer(anyInt());
+        verify(mockFahrzeug, times(1)).setAmtlichesKennzeichen("GL-GL1234");
+    }
+    @Test
+    void editFahrzeugdaten_setHersteller() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        Fahrzeug mockFahrzeug = mock(Fahrzeug.class);
+        when(mockVertrag.getFahrzeug()).thenReturn(mockFahrzeug);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(2); // Simulate user choice for Geburtsdatum
+        when(mockInput.getString(anyString(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean())).thenReturn("Toyota");
+
+        // Act
+        edit.editFahrzeugdaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editFahrzeug();
+        verify(mockFahrzeug, times(1)).setHersteller("Toyota");
+    }
+    @Test
+    void editFahrzeugdaten_setTyp() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        Fahrzeug mockFahrzeug = mock(Fahrzeug.class);
+        when(mockVertrag.getFahrzeug()).thenReturn(mockFahrzeug);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(3); // Simulate user choice for Geburtsdatum
+        when(mockInput.getString(anyString(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean())).thenReturn("Corolla");
+
+        // Act
+        edit.editFahrzeugdaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editFahrzeug();
+        verify(mockFahrzeug, times(1)).setTyp("Corolla");
+    }
+    @Test
+    void editFahrzeugdaten_setHoechstgeschwindigkeit() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        Fahrzeug mockFahrzeug = mock(Fahrzeug.class);
+        when(mockVertrag.getFahrzeug()).thenReturn(mockFahrzeug);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(200); // Return a valid speed
+
+        // Act
+        edit.editFahrzeugdaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editFahrzeug();
+        verify(mockFahrzeug, times(1)).setHoechstgeschwindigkeit(200);
+    }
+    @Test
+    void editFahrzeugdaten_setWagnisskennziffer() {
+        // Arrange
+        Vertrag mockVertrag = mock(Vertrag.class);
+        Fahrzeug mockFahrzeug = mock(Fahrzeug.class);
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(5);
+        when(mockVertrag.getFahrzeug()).thenReturn(mockFahrzeug);
+
+        // Act
+        edit.editFahrzeugdaten(mockVertrag);
+
+        // Assert
+        verify(mockOutput, times(1)).editFahrzeug();
+        verify(mockFahrzeug, times(1)).setWagnisskennziffer(112);
     }
 
     @Test
@@ -112,14 +277,15 @@ public class EditTest {
         // Arrange
         List<Vertrag> vertrage = new ArrayList<>();
         vertrage.add(mock(Vertrag.class));
-        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1, 3); // First 1, then 3
+        when(mockInput.getNumber(Integer.class, "", -1, -1, -1, false)).thenReturn(1, 0, 3); // First 1, then 0, then 3
+        when(mockVertragsverwaltung.getVertrag(anyInt())).thenReturn(mock(Vertrag.class));
 
         // Act
         edit.editmenu(vertrage);
 
         // Assert
         verify(mockOutput, times(1)).editwhat();
-        verify(mockInput, times(1)).getNumber(Integer.class, "", -1, -1, -1, false);
+        verify(mockInput, times(3)).getNumber(Integer.class, "", -1, -1, -1, false);
         verify(mockVertragsverwaltung, times(1)).getVertrag(anyInt());
     }
 

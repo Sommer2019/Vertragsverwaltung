@@ -2,11 +2,13 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDate;
 
@@ -22,7 +24,8 @@ public class CreateTest {
     public void setUp() {
         mockInput = mock(Input.class);
         mockVertragsverwaltung = mock(Vertragsverwaltung.class);
-        create = new Create(mockInput);
+        Output mockOutput = mock(Output.class);
+        create = new Create(mockInput, mockVertragsverwaltung, mockOutput);
     }
 
     @Test
@@ -55,14 +58,14 @@ public class CreateTest {
         when(mockInput.getString(anyString(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean()))
                 .thenReturn("John")
                 .thenReturn("Doe")
-                .thenReturn("11")
                 .thenReturn("Deutschland")
                 .thenReturn("Hauptstraße")
+                .thenReturn("11")
                 .thenReturn("Bergisch Gladbach")
                 .thenReturn("Nordrhein-Westfalen");
         when(mockInput.getChar(any(), anyString())).thenReturn('M');
         when(mockInput.getDate(anyString(), any(), any())).thenReturn(LocalDate.of(1980, 1, 1));
-        when(mockInput.getNumber(Integer.class, "die PLZ", -1, -1, -1, false)).thenReturn(51469);
+        when(mockInput.getNumber(Integer.class, "die PLZ", -1, -1, -1, false)).thenReturn(51465);
 
         // Act
         Partner partner = create.createPartner();
@@ -76,7 +79,7 @@ public class CreateTest {
         assertEquals("Deutschland", partner.getLand());
         assertEquals("Hauptstraße", partner.getStrasse());
         assertEquals("11", partner.getHausnummer());
-        assertEquals(51469, partner.getPlz());
+        assertEquals(51465, partner.getPlz());
         assertEquals("Bergisch Gladbach", partner.getStadt());
         assertEquals("Nordrhein-Westfalen", partner.getBundesland());
     }
@@ -112,7 +115,45 @@ public class CreateTest {
 
 
     @Test
-    void testCreateVertrag() {
+    void createVertrag() {
+        // Arrange
+        when(mockInput.getString(anyString(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean()))
+                .thenReturn("GL-GL123")
+                .thenReturn("Toyota")
+                .thenReturn("Corolla")
+                .thenReturn("John")
+                .thenReturn("Doe")
+                .thenReturn("Deutschland")
+                .thenReturn("Hauptstraße")
+                .thenReturn("11")
+                .thenReturn("Bergisch Gladbach")
+                .thenReturn("Nordrhein-Westfalen");
+        when(mockInput.getNumber(Integer.class, "die Höchstgeschwindigkeit", 50, 250, -1, false))
+                .thenReturn(150);
+        when(mockInput.getNumber(Integer.class, "die Wagnisskennziffer", -1, -1, 112, false))
+                .thenReturn(112);
+        when(mockInput.getChar(any(), anyString())).thenReturn('M');
+        when(mockInput.getDate(anyString(), any(), any())).thenReturn(LocalDate.of(1980, 1, 1));
+        when(mockInput.getNumber(Integer.class, "die PLZ", -1, -1, -1, false)).thenReturn(51465);
+        when(mockInput.getChar(null, "Abbuchung monatlich oder jährlich? (y/m): ")).thenReturn('m');
+        when(mockInput.getDate("den Versicherungsbeginn", LocalDate.now(), null)).thenReturn(LocalDate.now());
+        when(mockVertragsverwaltung.getVertrag(anyInt())).thenReturn(null);
+        when(mockInput.getChar(any(), eq("erstellt"))).thenReturn('y'); // Ensure confirmation is 'y'
 
+        // Act
+        create.createVertrag();
+
+        // Assert
+        ArgumentCaptor<Vertrag> vertragCaptor = ArgumentCaptor.forClass(Vertrag.class);
+        verify(mockVertragsverwaltung).vertragAnlegen(vertragCaptor.capture());
+        Vertrag vertrag = vertragCaptor.getValue();
+
+        assertNotNull(vertrag);
+        assertEquals("GL-GL123", vertrag.getFahrzeug().getAmtlichesKennzeichen());
+        assertEquals("John", vertrag.getPartner().getVorname());
+        assertTrue(vertrag.getMonatlich());
+        assertEquals(LocalDate.now(), vertrag.getVersicherungsbeginn());
+        assertEquals(LocalDate.now().plusYears(1), vertrag.getVersicherungsablauf());
+        assertTrue(vertrag.getPreis() >= 0); // Assuming a valid calculation should return a positive price
     }
 }

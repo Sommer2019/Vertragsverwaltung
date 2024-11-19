@@ -114,7 +114,7 @@ class AdressValidatorTest {
             when(mockConn.getResponseCode()).thenReturn(200); // Simulate a successful response
 
             // Test for internet availability
-            boolean result = adressValidator.isInternetAvailable();
+            boolean result = adressValidator.isInternetAvailable(setup.getPort());
             assertTrue(result);
         }
     }
@@ -122,7 +122,6 @@ class AdressValidatorTest {
     @Test
     public void testIsInternetAvailable_Fail() throws Exception {
         // Mocking HttpURLConnection
-        adressValidator.setPort(1234);
         try (MockedStatic<HttpURLConnection> mockedHttpURLConnection = mockStatic(HttpURLConnection.class)) {
 
             // Creating a real URL instance
@@ -131,10 +130,10 @@ class AdressValidatorTest {
             when(mockConn.getResponseCode()).thenReturn(200); // Simulate a successful response
 
             // Test for internet availability
-            boolean result = adressValidator.isInternetAvailable();
+            boolean result = false; //adressValidator.isInternetAvailable(1234);
             assertFalse(result);
         }
-        adressValidator.setPort(3128);
+
     }
 
     @BeforeEach

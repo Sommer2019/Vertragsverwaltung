@@ -18,14 +18,16 @@ import java.util.List;
 
 public class Edit {
     ////Klassen einlesen////
-    private final Output output = new Output();
+    private Output output = new Output();
     private final Input input;
     private final Setup setup = new Setup();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private Vertragsverwaltung vertragsverwaltung;
     private final AdressValidator addressAdressValidator = new AdressValidator();
 
-    public Edit(Input input) {
+    public Edit(Input input, Vertragsverwaltung vertragsverwaltung, Output output) {
         this.input = input;
+        this.vertragsverwaltung = vertragsverwaltung;
+        this.output = output;
     }
 
     public void editVertrag(Vertrag vertrag) {
@@ -113,12 +115,12 @@ public class Edit {
                     break;
                 case 5:
                     while (true) {
-                        String land = input.getString("das Land", null, false, true, true, false);
-                        String strasse = input.getString("die Straße", null, false, false, false, false);
+                        String land = input.getString("das Land", ".*", false, true, true, false);
+                        String strasse = input.getString("die Straße", ".*", false, false, false, false);
                         String hausnummer = input.getString("die Hausnummer", "[a-zA-Z0-9]+", false, false, false, false);
                         int plz = input.getNumber(Integer.class, "die PLZ", -1, -1, -1, false);
-                        String stadt = input.getString("die Stadt", null, false, true, false, false);
-                        String bundesland = input.getString("das Bundesland", null, false, true, false, false);
+                        String stadt = input.getString("die Stadt", ".*", false, true, false, false);
+                        String bundesland = input.getString("das Bundesland", ".*", false, true, false, false);
                         if (addressAdressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land)) {
                             vertrag.getPartner().setLand(land);
                             vertrag.getPartner().setStrasse(strasse);
@@ -150,7 +152,7 @@ public class Edit {
                     vertrag.getFahrzeug().setAmtlichesKennzeichen(input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}[EH]?$", true, false, false, false));
                     break;
                 case 2:
-                    vertrag.getFahrzeug().setHersteller(input.getString("die Marke", null, false, false, false, true));
+                    vertrag.getFahrzeug().setHersteller(input.getString("die Marke", ".*", false, false, false, true));
                     break;
                 case 3:
                     vertrag.getFahrzeug().setTyp(input.getString("den Typ", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$", false, false, false, false));

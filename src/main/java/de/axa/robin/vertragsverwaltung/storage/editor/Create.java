@@ -17,14 +17,16 @@ import java.time.LocalDate;
 
 public class Create {
     ////Klassen einlesen////
-    private final Output output = new Output();
+    private final Output output;
     private final Input input;
     private final Setup setup = new Setup();
     private final AdressValidator addressAdressValidator = new AdressValidator();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private final Vertragsverwaltung vertragsverwaltung;
 
-    public Create(Input input) {
+    public Create(Input input, Vertragsverwaltung vertragsverwaltung, Output output) {
         this.input = input;
+        this.vertragsverwaltung = vertragsverwaltung;
+        this.output = output;
     }
 
     public void createVertrag() {
@@ -62,7 +64,7 @@ public class Create {
     public Fahrzeug createFahrzeug() {
         return new Fahrzeug(
                 input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}[EH]?$", true, false, false, false),
-                input.getString("die Marke", null, false, true, false, true),
+                input.getString("die Marke", ".*", false, true, false, true),
                 input.getString("den Typ", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$", false, false, false, false),
                 input.getNumber(Integer.class, "die Höchstgeschwindigkeit", 50, 250, -1, false),
                 input.getNumber(Integer.class, "die Wagnisskennziffer", -1, -1, 112, false)
@@ -82,12 +84,12 @@ public class Create {
         String bundesland;
 
         do {
-            land = input.getString("das Land", null, false, true, true, false);
-            strasse = input.getString("die Straße", null, false, false, false, false);
+            land = input.getString("das Land", ".*", false, true, true, false);
+            strasse = input.getString("die Straße", ".*", false, false, false, false);
             hausnummer = input.getString("die Hausnummer", "[a-zA-Z0-9]+", false, false, false, false);
             plz = input.getNumber(Integer.class, "die PLZ", -1, -1, -1, false);
-            stadt = input.getString("die Stadt", null, false, true, false, false);
-            bundesland = input.getString("das Bundesland", null, false, true, false, false);
+            stadt = input.getString("die Stadt", ".*", false, true, false, false);
+            bundesland = input.getString("das Bundesland", ".*", false, true, false, false);
         } while (!addressAdressValidator.validateAddress(strasse, hausnummer, String.valueOf(plz), stadt, bundesland, land));
         return new Partner(vorname, nachname, geschlecht, geburtsdatum,
                 land, strasse, hausnummer, plz, stadt, bundesland);

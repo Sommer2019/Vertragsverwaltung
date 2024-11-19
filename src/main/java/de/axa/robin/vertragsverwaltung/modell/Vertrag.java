@@ -1,7 +1,9 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
+import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
+import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -10,7 +12,9 @@ import java.util.Scanner;
 public class Vertrag {
     private final Scanner scanner = new Scanner(System.in);
     private final Input input = new Input(scanner);
-    private final Create create = new Create(input);
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private final Output output = new Output();
+    private final Create create = new Create(input, vertragsverwaltung, output);
     private int vsnr;
     private double preis;
     boolean monatlich;

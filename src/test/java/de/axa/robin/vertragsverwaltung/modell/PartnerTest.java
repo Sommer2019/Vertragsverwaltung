@@ -13,7 +13,7 @@ class PartnerTest {
 
     @BeforeEach
     void setUp() {
-        partner = new Partner("John", "Doe", 'm', LocalDate.of(1980, 1, 1), "Germany", "TestStreet", "1", 12345, "TestCity", "TestState");
+        partner = new Partner("John", "Doe", 'm', LocalDate.of(1980, 1, 1), "Germany", "TestStreet", "1", 51469, "TestCity", "TestState");
     }
 
     @Test
@@ -145,7 +145,7 @@ class PartnerTest {
                 
                 \tHausnummer: 1\
                 
-                \tPLZ: 12345\
+                \tPLZ: 51469\
                 
                 \tStadt: TestCity\
                 

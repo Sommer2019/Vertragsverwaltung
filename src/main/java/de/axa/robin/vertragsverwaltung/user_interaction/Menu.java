@@ -13,9 +13,9 @@ public class Menu {
     private Output output = new Output();
     private Input input;
     private Delete delete = new Delete(input);
-    private Create create = new Create(input);
-    private Edit edit = new Edit(input);
     private Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private Create create = new Create(input, vertragsverwaltung, output);
+    private Edit edit = new Edit(input, vertragsverwaltung, output);
 
     public Menu(Input input) {
         this.input = input;

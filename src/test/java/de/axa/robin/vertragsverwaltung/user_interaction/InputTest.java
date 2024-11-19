@@ -32,7 +32,7 @@ class InputTest {
     @Test
     void testGetString() {
         given(scanner.nextLine()).willReturn("TestInput");
-        String result = input.getString("Geben Sie einen Test-String ein:", null, false, false, false, false);
+        String result = input.getString("Geben Sie einen Test-String ein:", ".*", false, false, false, false);
         assertEquals("TestInput", result);
         assertTrue(outContent.toString().contains("Geben Sie einen Test-String ein:"));
     }
@@ -64,7 +64,7 @@ class InputTest {
     @Test
     void testInvalidStringInput() {
         given(scanner.nextLine()).willReturn("a");
-        String result = input.getString("Geben Sie einen Test-String ein:", null, false, false, false, false);
+        String result = input.getString("Geben Sie einen Test-String ein:", ".*", false, false, false, false);
         assertNotEquals("", result);
     }
 
