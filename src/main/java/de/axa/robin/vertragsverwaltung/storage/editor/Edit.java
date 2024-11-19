@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.storage.validators.AdressValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
@@ -18,9 +19,14 @@ import java.util.List;
 public class Edit {
     ////Klassen einlesen////
     private final Output output = new Output();
-    private final Input input = new Input();
+    private final Input input;
+    private final Setup setup = new Setup();
     private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
     private final AdressValidator addressAdressValidator = new AdressValidator();
+
+    public Edit(Input input) {
+        this.input = input;
+    }
 
     public void editVertrag(Vertrag vertrag) {
         while (true) {
@@ -52,7 +58,7 @@ public class Edit {
         }
     }
 
-    private void editAllgemeineDaten(Vertrag vertrag) {
+    void editAllgemeineDaten(Vertrag vertrag) {
         boolean rerun = true;
         while (rerun) {
             rerun = false;
@@ -85,7 +91,7 @@ public class Edit {
         }
     }
 
-    private void editPersonendaten(Vertrag vertrag) {
+    void editPersonendaten(Vertrag vertrag) {
         boolean rerun = true;
         while (rerun) {
             rerun = false;
@@ -132,7 +138,7 @@ public class Edit {
         }
     }
 
-    private void editFahrzeugdaten(Vertrag vertrag) {
+    void editFahrzeugdaten(Vertrag vertrag) {
         boolean rerun = true;
         while (rerun) {
             rerun = false;
@@ -200,7 +206,7 @@ public class Edit {
                 .add("factorspeed", factorspeed)
                 .build();
 
-        try (JsonWriter writer = Json.createWriter(new FileWriter("src/main/resources/preiscalc.json"))) {
+        try (JsonWriter writer = Json.createWriter(new FileWriter(setup.getPreisPath()))) {
             writer.writeObject(jsonObject);
         } catch (IOException e) {
             e.printStackTrace();

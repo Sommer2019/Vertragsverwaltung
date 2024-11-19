@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage.validators;
 
+import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -11,6 +12,7 @@ import java.io.InputStream;
 
 public class InputValidator {
     private final Output output = new Output();
+    private final Setup setup = new Setup();
 
     public boolean string(String input) {
         for (char c : input.toCharArray()) {
@@ -22,7 +24,7 @@ public class InputValidator {
     }
 
     public boolean isStringInJsonFile(String searchString) {
-        String filePath = "src/main/resources/brands.json";
+        String filePath = setup.getBrandsPath();
         try (InputStream fis = new FileInputStream(filePath);
              JsonReader jsonReader = Json.createReader(fis)) {
             JsonObject jsonObject = jsonReader.readObject();

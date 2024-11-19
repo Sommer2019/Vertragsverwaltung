@@ -3,6 +3,7 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.storage.validators.AdressValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
@@ -17,9 +18,14 @@ import java.time.LocalDate;
 public class Create {
     ////Klassen einlesen////
     private final Output output = new Output();
-    private final Input input = new Input();
+    private final Input input;
+    private final Setup setup = new Setup();
     private final AdressValidator addressAdressValidator = new AdressValidator();
     private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+
+    public Create(Input input) {
+        this.input = input;
+    }
 
     public void createVertrag() {
         Fahrzeug fahrzeug = createFahrzeug();
@@ -53,7 +59,7 @@ public class Create {
         }
     }
 
-    private Fahrzeug createFahrzeug() {
+    public Fahrzeug createFahrzeug() {
         return new Fahrzeug(
                 input.getString("das amtliche Kennzeichen", "^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}[EH]?$", true, false, false, false),
                 input.getString("die Marke", null, false, true, false, true),
@@ -63,7 +69,7 @@ public class Create {
         );
     }
 
-    private Partner createPartner() {
+    public Partner createPartner() {
         String vorname = input.getString("den Vornamen des Partners", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$", false, false, false, false);
         String nachname = input.getString("den Nachnamen des Partners", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$", false, false, false, false);
         char geschlecht = input.getChar(null, "das Geschlecht des Partners");
@@ -105,7 +111,7 @@ public class Create {
         double factoralter = 0.1;
         double factorspeed = 0.4;
         int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
-        try (JsonReader reader = Json.createReader(new FileReader("src/main/resources/preiscalc.json"))) {
+        try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
             JsonObject jsonObject = reader.readObject();
             factor = jsonObject.getJsonNumber("factor").doubleValue();
             factoralter = jsonObject.getJsonNumber("factorage").doubleValue();

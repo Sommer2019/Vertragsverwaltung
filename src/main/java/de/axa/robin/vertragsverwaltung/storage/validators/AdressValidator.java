@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage.validators;
 
+import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
@@ -8,33 +9,43 @@ import jakarta.json.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class AdressValidator {
     // Klassen einlesen
     private final Output output = new Output();
-    private final Input input = new Input();
-    private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search?format=json&q=";
+    private final Scanner scanner = new Scanner(System.in);
+    private final Input input = new Input(scanner);
+    private final Setup setup = new Setup();
+    private int port;
+
+    public AdressValidator() {
+        this.port = setup.getPort();
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 
     public boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
         try {
             String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland + ", " + land, StandardCharsets.UTF_8);
+            String NOMINATIM_URL = setup.getCheckURL();
             URI uri = new URI(NOMINATIM_URL + query);
 
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
 
-            String host = "localhost";
-            int port = 3128;
             // Check if proxy is reachable
-            if (isProxyReachable(host, port)) {
-                System.setProperty("http.proxyHost", host);
-                System.setProperty("http.proxyPort", String.valueOf(port));
-                System.setProperty("https.proxyHost", host);
-                System.setProperty("https.proxyPort", String.valueOf(port));
+            if (isProxyReachable(setup.getHost(), setup.getPort())) {
+                System.setProperty("http.proxyHost", setup.getHost());
+                System.setProperty("http.proxyPort", String.valueOf(setup.getPort()));
+                System.setProperty("https.proxyHost", setup.getHost());
+                System.setProperty("https.proxyPort", String.valueOf(setup.getPort()));
             }
 
             // Check internet connection
             if (!isInternetAvailable()) {
-                if (isProxyReachable(host, port)) {
+                if (isProxyReachable(setup.getHost(), port)) {
                     output.error("Proxy ist erreichbar, aber keine Internetverbindung.");
                 } else {
                     output.error("Keine Internetverbindung und Proxy ist nicht erreichbar.");
@@ -109,7 +120,7 @@ public class AdressValidator {
         return false;
     }
 
-    private boolean isProxyReachable(String host, int port) {
+    public boolean isProxyReachable(String host, int port) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), 2000);
             return true;
@@ -118,9 +129,15 @@ public class AdressValidator {
         }
     }
 
-    private boolean isInternetAvailable() {
+    public boolean isInternetAvailable() {
+        if (isProxyReachable(setup.getHost(), port)) {
+            System.setProperty("http.proxyHost", setup.getHost());
+            System.setProperty("http.proxyPort", String.valueOf(port));
+            System.setProperty("https.proxyHost", setup.getHost());
+            System.setProperty("https.proxyPort", String.valueOf(port));
+        }
         try {
-            URI uri = new URI("https://www.google.com");
+            URI uri = new URI(setup.getTestURL());
             HttpURLConnection urlConn = (HttpURLConnection) uri.toURL().openConnection();
             urlConn.setRequestMethod("GET");
             urlConn.setConnectTimeout(5000); // 5 seconds
@@ -130,4 +147,5 @@ public class AdressValidator {
             return false;
         }
     }
+
 }

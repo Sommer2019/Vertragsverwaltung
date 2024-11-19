@@ -44,12 +44,14 @@ public class Output {
         System.out.println("Abgebrochen");
     }
 
-    public void druckeVertrag(Vertrag v) {
+    public boolean druckeVertrag(Vertrag v) {
         System.out.println(v.toString());
         if (v.getVersicherungsablauf().isBefore(LocalDate.now())) {
             System.err.println("Vertrag abgelaufen!");
+            return false;
         }
         System.out.println("-------------------------------");
+        return true;
     }
 
     public void druckeVertrage(List<Vertrag> vertrage) {

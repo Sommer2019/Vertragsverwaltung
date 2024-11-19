@@ -17,9 +17,10 @@ import java.util.logging.Logger;
 
 public class Repository {
     private final Logger logger = Logger.getLogger(Repository.class.getName());
+    private final Setup setup = new Setup();
 
     public void speichereVertrage(List<Vertrag> vertrage) {
-        try (FileWriter file = new FileWriter("src/main/resources/vertrage.json", false)) {
+        try (FileWriter file = new FileWriter(setup.getRepositoryPath(), false)) {
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             for (Vertrag v : vertrage) {
                 arrayBuilder.add(Json.createObjectBuilder()
@@ -58,7 +59,7 @@ public class Repository {
 
     public List<Vertrag> ladeVertrage() {
         List<Vertrag> vertrage = new ArrayList<>();
-        try (FileReader file = new FileReader("src/main/resources/vertrage.json")) {
+        try (FileReader file = new FileReader(setup.getRepositoryPath())) {
             JsonReader reader = Json.createReader(file);
             JsonArray jsonArray = reader.readArray();
             for (JsonValue jsonValue : jsonArray) {

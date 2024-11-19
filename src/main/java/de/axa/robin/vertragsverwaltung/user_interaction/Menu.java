@@ -10,43 +10,98 @@ import java.util.List;
 
 public class Menu {
     ////Klassen einlesen////
-    private final Output output = new Output();
-    private final Input input = new Input();
-    private final Delete delete = new Delete();
-    private final Create create = new Create();
-    private final Edit edit = new Edit();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private Output output = new Output();
+    private Input input;
+    private Delete delete = new Delete(input);
+    private Create create = new Create(input);
+    private Edit edit = new Edit(input);
+    private Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+
+    public Menu(Input input) {
+        this.input = input;
+    }
+
+    public Output getOutput() {
+        return output;
+    }
+
+    public void setOutput(Output output) {
+        this.output = output;
+    }
+
+    public Input getInput() {
+        return input;
+    }
+
+    public void setInput(Input input) {
+        this.input = input;
+    }
+
+    public void setDelete(Delete delete) {
+        this.delete = delete;
+    }
+
+    public Create getCreate() {
+        return create;
+    }
+
+    public void setCreate(Create create) {
+        this.create = create;
+    }
+
+    public void setEdit(Edit edit) {
+        this.edit = edit;
+    }
+
+    public Vertragsverwaltung getVertragsverwaltung() {
+        return vertragsverwaltung;
+    }
+
+    public void setVertragsverwaltung(Vertragsverwaltung vertragsverwaltung) {
+        this.vertragsverwaltung = vertragsverwaltung;
+    }
 
     public void menu() {
         while (true) {
             output.menu();
             List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
-            int number = input.getNumber(Integer.class, "", -1, -1, -1, false);
-            if (number == 1) {
+            int number = input.getNumber(Integer.class, "", 1, 6, -1, false);
+
+            // Handle menu actions
+            handleMenuAction(number, vertrage);
+        }
+    }
+
+    public void handleMenuAction(int number, List<Vertrag> vertrage) {
+        switch (number) {
+            case 1:
                 output.druckeVertrage(vertrage);
-            }
-            if (number == 2) {
+                break;
+            case 2:
                 int vsnr = input.getNumber(Integer.class, "8-stellige VSNR oder 0 zum abbrechen", -1, -1, -1, true);
                 if (vsnr != 0) {
                     Vertrag vertrag = vertragsverwaltung.getVertrag(vsnr);
                     output.druckeVertrag(vertrag);
                 }
-            }
-            if (number == 3) {
+                break;
+            case 3:
                 create.createVertrag();
-            }
-            if (number == 4) {
+                break;
+            case 4:
                 edit.editmenu(vertrage);
-            }
-            if (number == 5) {
-                int vsnr = input.getNumber(Integer.class, "8-stellige VSNR oder 0 zum abbrechen", -1, -1, -1, true);
+                break;
+            case 5:
+                vsnr = input.getNumber(Integer.class, "8-stellige VSNR oder 0 zum abbrechen", -1, -1, -1, true);
                 if (vsnr != 0) {
                     delete.delete(vsnr);
                 }
-            }
-            if (number == 6) {
+                break;
+            case 6:
                 System.exit(0);
-            }
+                break;
+            default:
+                // Handle invalid input if necessary
+                break;
         }
     }
 }

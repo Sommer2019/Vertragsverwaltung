@@ -1,11 +1,16 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
 import de.axa.robin.vertragsverwaltung.storage.editor.Create;
+import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 
 import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class Vertrag {
-    private final Create create = new Create();
+    private final Scanner scanner = new Scanner(System.in);
+    private final Input input = new Input(scanner);
+    private final Create create = new Create(input);
     private int vsnr;
     private double preis;
     boolean monatlich;
@@ -103,6 +108,19 @@ public class Vertrag {
                 "\n\tAntragsdatum: " + antragsDatum +
                 fahrzeug +
                 partner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vertrag vertrag = (Vertrag) o;
+        return vsnr == vertrag.vsnr;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(vsnr);
     }
 }
 

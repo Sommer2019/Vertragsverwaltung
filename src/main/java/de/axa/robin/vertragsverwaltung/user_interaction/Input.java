@@ -13,7 +13,11 @@ public class Input {
     private final Output output = new Output();
     private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
     private final InputValidator inputValidator = new InputValidator();
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
+
+    public Input(Scanner scanner) {
+        this.scanner = scanner;
+    }
 
     public String getString(String prompt, String regex, boolean checkExistence, boolean isStringCheck, boolean isCountryCheck, boolean isBrandCheck) {
         boolean rerun = true;
