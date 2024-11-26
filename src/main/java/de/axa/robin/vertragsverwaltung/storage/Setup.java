@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.storage;
 
 public class Setup {
-    private final String repositoryPath;
+    private String repositoryPath;
     private final String preisPath;
     private final String brandsPath;
     private final String testURL;
@@ -21,6 +21,10 @@ public class Setup {
 
     public String getRepositoryPath() {
         return repositoryPath;
+    }
+
+    public void setRepositoryPath(String repositoryPath) {
+        this.repositoryPath = repositoryPath;
     }
 
     public String getPreisPath() {
