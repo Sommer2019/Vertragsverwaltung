@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.storage.editor.Delete;
@@ -13,9 +14,10 @@ public class Menu {
     ////Klassen einlesen////
     private Output output = new Output();
     private final Scanner scanner = new Scanner(System.in);
+    private final Setup setup = new Setup();
     private Input input = new Input(scanner);
     private Delete delete = new Delete(input);
-    private Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
     private Create create = new Create(input, vertragsverwaltung, output);
     private Edit edit = new Edit(input, vertragsverwaltung, output);
 

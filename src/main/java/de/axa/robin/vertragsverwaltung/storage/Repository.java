@@ -17,7 +17,11 @@ import java.util.logging.Logger;
 
 public class Repository {
     private final Logger logger = Logger.getLogger(Repository.class.getName());
-    private final Setup setup = new Setup();
+    private final Setup setup;
+
+    public Repository(Setup setup) {
+        this.setup = new Setup();
+    }
 
     public void speichereVertrage(List<Vertrag> vertrage) {
         try (FileWriter file = new FileWriter(setup.getRepositoryPath(), false)) {

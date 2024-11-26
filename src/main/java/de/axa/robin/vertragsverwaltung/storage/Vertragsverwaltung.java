@@ -7,7 +7,12 @@ import java.util.*;
 
 public class Vertragsverwaltung {
     ////Klassen einlesen////
-    private final Repository repository = new Repository();
+    private Setup setup = new Setup();
+    private final Repository repository = new Repository(setup);
+
+    public Vertragsverwaltung(Setup setup) {
+        this.setup = setup;
+    }
 
     public List<Vertrag> getVertrage() {
         return repository.ladeVertrage();

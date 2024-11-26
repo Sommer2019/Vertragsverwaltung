@@ -3,6 +3,7 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
@@ -17,12 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 public class EditTest {
     private Edit edit;
     private Input mockInput;
     private Output mockOutput;
+    private Setup setup;
     private Vertragsverwaltung mockVertragsverwaltung;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final Fahrzeug fahrzeug = new Fahrzeug("ABC123", "BMW", "X5", 240, 1234);
@@ -32,6 +35,7 @@ public class EditTest {
 
     @BeforeEach
     public void setUp() {
+        setup = mock(Setup.class);
         System.setOut(new PrintStream(outContent));
         mockInput = mock(Input.class);
         mockOutput = mock(Output.class);
@@ -302,6 +306,7 @@ public class EditTest {
         List<Vertrag> vertrage = new ArrayList<>();
         vertrage.add(mockVertrag);
         when(mockInput.getNumber(Double.class, "", -1, -1, -1, false)).thenReturn(1.0, 2.0, 3.0);
+        given(setup.getPreisPath()).willReturn("src/main/resources/preiscalctest.json");
 
         // Act
         edit.recalcprice(vertrage);

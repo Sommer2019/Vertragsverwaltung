@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
+import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.user_interaction.Output;
@@ -7,7 +8,8 @@ import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 public class Delete {
     ////Klassen einlesen////
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private final Setup setup = new Setup();
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
     private final Output output = new Output();
     private final Input input;
     public static final String DEL = "gelöscht";

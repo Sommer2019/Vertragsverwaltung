@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Nested
 class AdressValidatorTest {
 
+
     private AdressValidator adressValidator;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
@@ -30,9 +31,9 @@ class AdressValidatorTest {
 
     @BeforeEach
     public void setUp() {
+        adressValidator = new AdressValidator();
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
-        adressValidator = new AdressValidator();
     }
 
     @Test

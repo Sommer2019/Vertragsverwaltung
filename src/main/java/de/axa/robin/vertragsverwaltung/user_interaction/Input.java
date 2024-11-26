@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 
@@ -11,7 +12,8 @@ import java.util.regex.Pattern;
 
 public class Input {
     private final Output output = new Output();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung();
+    private final Setup setup = new Setup();
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
     private final InputValidator inputValidator = new InputValidator();
     private final Scanner scanner;
 
