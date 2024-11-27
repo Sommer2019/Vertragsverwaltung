@@ -3,17 +3,18 @@ package de.axa.robin.vertragsverwaltung.user_interaction;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.modell.VertragDTO;
 import de.axa.robin.vertragsverwaltung.storage.Setup;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.storage.editor.Create;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -61,38 +62,24 @@ public class MenuSpring {
     @GetMapping("/createVertrag")
     public String createVertrag(Model model) {
         vsnr = create.createvsnr();
+        VertragDTO vertragDTO = new VertragDTO();
+        vertragDTO.setGender("M");
+        vertragDTO.setAbrechnung("true");
+        model.addAttribute("vertragdto", vertragDTO);
         model.addAttribute("vsnr",vsnr);
         return "createVertrag";
     }
     @PostMapping("/createVertrag")
-    public String calculatePreis(
-            @RequestParam String abrechnung,
-            @RequestParam LocalDate start,
-            @RequestParam LocalDate end,
-            @RequestParam LocalDate create,
-            @RequestParam String kennzeichen,
-            @RequestParam String hersteller,
-            @RequestParam String typ,
-            @RequestParam int speed,
-            @RequestParam int wkz,
-            @RequestParam String vorname,
-            @RequestParam String nachname,
-            @RequestParam String gender,
-            @RequestParam LocalDate birth,
-            @RequestParam String strasse,
-            @RequestParam String hausnummer,
-            @RequestParam String plz,
-            @RequestParam String stadt,
-            @RequestParam String bundesland,
-            @RequestParam String land,
+    public String createVertrag(
+            @ModelAttribute VertragDTO vertragdto,
             Model model) {
 
-        boolean monatlich = Objects.equals(abrechnung, "true");
-        int PLZ = Integer.parseInt(plz);
-        Partner partner = new Partner(vorname, nachname, gender.charAt(0), birth, land, strasse, hausnummer, PLZ, stadt, bundesland);
-        Fahrzeug fahrzeug = new Fahrzeug(kennzeichen, hersteller, typ, speed, wkz);
+        boolean monatlich = Objects.equals(vertragdto.getAbrechnung(), "true");
+        int PLZ = Integer.parseInt(vertragdto.getPlz());
+        Partner partner = new Partner(vertragdto.getVorname(), vertragdto.getNachname(), vertragdto.getGender().charAt(0), vertragdto.getBirth(), vertragdto.getLand(), vertragdto.getStrasse(), vertragdto.getHausnummer(), PLZ, vertragdto.getStadt(), vertragdto.getBundesland());
+        Fahrzeug fahrzeug = new Fahrzeug(vertragdto.getKennzeichen(), vertragdto.getHersteller(), vertragdto.getTyp(), vertragdto.getSpeed(), vertragdto.getWkz());
         double preis = creator.createPreis(monatlich, partner, fahrzeug);
-        Vertrag vertrag = new Vertrag(getVsnr(), monatlich, preis, start, end, create, fahrzeug, partner);
+        Vertrag vertrag = new Vertrag(getVsnr(), monatlich, preis, vertragdto.getStart(), vertragdto.getEnd(), vertragdto.getCreate(), fahrzeug, partner);
         vertragsverwaltung.vertragAnlegen(vertrag);
 
         String confirm = "Vertrag erfolgreich erstellt! Preis: " + preis + "€";

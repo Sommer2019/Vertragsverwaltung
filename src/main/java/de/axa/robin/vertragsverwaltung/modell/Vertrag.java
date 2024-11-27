@@ -37,6 +37,9 @@ public class Vertrag {
         this.fahrzeug = fahrzeug;
         this.partner = partner;
     }
+    public Vertrag() {
+        super();
+    }
 
     // Getter und Setter
     public int getVsnr() {

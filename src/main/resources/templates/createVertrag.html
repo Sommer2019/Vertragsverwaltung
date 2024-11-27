@@ -8,62 +8,163 @@
         .invalid {
             border-color: red;
         }
+
         .valid {
             border-color: green;
         }
+
         .error-message {
             color: red;
             font-size: 0.9em;
+        }
+
+        .form-group {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px; /* Fügt eine Leerzeile nach jedem Eingabefeld hinzu */
+        }
+
+        label {
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"] {
+            width: 200px; /* Hier kannst du die Breite anpassen */
+        }
+
+        .speed-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .speed-group input {
+            width: 100px; /* Breite des Eingabefelds für Höchstgeschwindigkeit */
+        }
+
+        .speed-group span {
+            margin-left: 5px; /* Abstand zwischen Eingabefeld und "km/h" */
         }
     </style>
 </head>
 <body>
 <h1><strong>Vertrag </strong> <span th:if="${vsnr}" th:text="${vsnr}"></span></h1>
 <p></p>
-<form id="myForm" action="/createVertrag" method="post">
+<form id="myForm" th:action="@{/createVertrag}" th:object="${vertragdto}" th:method="post">
     <input type="submit" id="calculateButton" value="Erstellen">
     <p></p>
     <h2>Vertragsdaten</h2>
-    <p>Abrechnungszeitraum:
-        <input type="radio" name="abrechnung" value="true" id="check1" checked>
-        <label for="check1">monatlich</label>
-        <input type="radio" name="abrechnung" value="false" id="check2">
-        <label for="check2">jährlich</label>
-    </p>
-    <p><label for="start">Versicherungsbeginn: </label><input type="date" id="start" name="start" max="9998-12-31" required></p>
-    <p><label for="end">Versicherungsablauf: </label><input type="date" id="end" max="9999-12-31" required></p>
-    <p><label for="create">Antragsdatum: </label><input type="date" id="create" max="9998-12-31" required></p>
+    <div class="form-group">
+        <label>Abrechnungszeitraum:</label>
+        <div>
+            <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="true" id="check1">
+            <label for="check1">monatlich</label>
+            <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="false" id="check2">
+            <label for="check2">jährlich</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="start">Versicherungsbeginn:</label>
+        <input th:field="*{start}" type="date" id="start" name="start" max="9998-12-31" required>
+    </div>
+    <div class="form-group">
+        <label for="end">Versicherungsablauf:</label>
+        <input th:field="*{end}" type="date" id="end" max="9999-12-31" required>
+    </div>
+    <div class="form-group">
+        <label for="create">Antragsdatum:</label>
+        <input th:field="*{create}" type="date" id="create" max="9998-12-31" required>
+    </div>
     <p></p>
     <h2>Fahrzeugdaten:</h2>
-    <p><label for="kennzeichen">Amtliches Kennzeichen: </label> <input type="text" id="kennzeichen" required><span id="kennzeichen-message" class="error-message"></span></p>
-    <p><label for="hersteller">Hersteller: </label><input type="text" id="hersteller" required><span id="hersteller-message" class="error-message"></span></p>
-    <p><label for="typ">Typ: </label><input type="text" id="typ" required><span id="typ-message" class="error-message"></span></p>
-    <p><label for="speed">Höchstgeschwindigkeit: </label><input type="number" id="speed" min="45" value="200" max="250" required> km/h</p>
-    <p><label for="wkz">Wagnisskennziffer: </label><input type="number" id="wkz" value="112" min="112" max="112" required></p>
+    <div class="form-group">
+        <label for="kennzeichen">Amtliches Kennzeichen:</label>
+        <input th:field="*{kennzeichen}" type="text" id="kennzeichen" required>
+        <span id="kennzeichen-message" class="error-message"></span>
+    </div>
+    <div class="form-group">
+        <label for="hersteller">Hersteller:</label>
+        <input th:field="*{hersteller}" type="text" id="hersteller" required>
+        <span id="hersteller-message" class="error-message"></span>
+    </div>
+    <div class="form-group">
+        <label for="typ">Typ:</label>
+        <input th:field="*{typ}" type="text" id="typ" required>
+        <span id="typ-message" class="error-message"></span>
+    </div>
+    <div class="form-group">
+        <label for="speed">Höchstgeschwindigkeit:</label>
+        <div class="speed-group">
+            <input th:field="*{speed}" type="number" id="speed" min="45" max="250" required>
+            <span>km/h</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="wkz">Wagnisskennziffer:</label>
+        <input th:field="*{wkz}" type="number" id="wkz" min="112" max="112" required>
+    </div>
     <p></p>
     <h2>Partnerdaten:</h2>
-    <p><label for="vorname">Vorname: </label><input type="text" id="vorname" required><span id="vorname-message" class="error-message"></span></p>
-    <p><label for="nachname">Nachname: </label><input type="text" id="nachname" required><span id="nachname-message" class="error-message"></span></p>
-    <p>Geschlecht:
-        <input type="radio" name="gender" value="maennlich" id="check3" checked>
-        <label for="check3">M</label>
-        <input type="radio" name="gender" value="weiblich" id="check4">
-        <label for="check4">W</label>
-        <input type="radio" name="gender" value="divers" id="check5">
-        <label for="check5">D</label>
-    </p>
-    <p><label for="birth">Geburtsdatum: </label><input type="date" id="birth" required></p>
-    <p><label for="strasse">Straße: </label><input type="text" id="strasse" required></p>
-    <p><label for="hausnummer">Hausnummer: </label><input type="text" id="hausnummer" required><span id="hausnummer-message" class="error-message"></span></p>
-    <p><label for="plz">PLZ: </label><input type="text" id="plz" required><span id="plz-message" class="error-message"></span></p>
-    <p><label for="stadt">Stadt: </label><input type="text" id="stadt" required></p>
-    <p><label for="bundesland">Bundesland: </label><input type="text" id="bundesland" required></p>
-    <p><label for="land">Land: </label><input type="text" value="Deutschland" id="land" readonly></p>
+    <div class="form-group">
+        <label for="vorname">Vorname:</label>
+        <input th:field="*{vorname}" name="vorname" type="text" id="vorname" required>
+        <span id="vorname-message" class="error-message"></span>
+    </div>
+    <div class="form-group">
+        <label for="nachname">Nachname:</label>
+        <input th:field="*{nachname}" type="text" id="nachname" required>
+        <span id="nachname-message" class="error-message"></span>
+    </div>
+    <div class="form-group">
+        <label>Geschlecht:</label>
+        <div>
+            <input th:field="*{gender}" type="radio" name="gender" value="M" id="check3">
+            <label for="check3">M</label>
+            <input th:field="*{gender}" type="radio" name="gender" value="W" id="check4">
+            <label for="check4">W</label>
+            <input th:field="*{gender}" type="radio" name="gender" value="D" id="check5">
+            <label for="check5">D</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="birth">Geburtsdatum:</label>
+        <input th:field="*{birth}" type="date" id="birth" required>
+    </div>
+    <div class="form-group">
+        <label for="strasse">Straße:</label>
+        <input th:field="*{strasse}" type="text" id="strasse" required>
+    </div>
+    <div class="form-group">
+        <label for="hausnummer">Hausnummer:</label>
+        <input th:field="*{hausnummer}" type="text" id="hausnummer" required>
+        <span id="hausnummer-message" class="error-message"></span>
+    </div>
+    <div class="form-group">
+        <label for="plz">PLZ:</label>
+        <input th:field="*{plz}" type="text" id="plz" required>
+        <span id="plz-message" class="error-message"></span>
+    </div>
+    <div class="form-group">
+        <label for="stadt">Stadt:</label>
+        <input th:field="*{stadt}" type="text" id="stadt" required>
+    </div>
+    <div class="form-group">
+        <label for="bundesland">Bundesland:</label>
+        <input th:field="*{bundesland}" type="text" id="bundesland" required>
+    </div>
+    <div class="form-group">
+        <label for="land">Land:</label>
+        <input th:field="*{land}" type="text" id="land" readonly>
+    </div>
 </form>
 <p></p>
 <a href="/">
     <button>Zurück</button>
 </a>
-<script src="createVertrag.js"></script>
+<script type="text/javascript" th:src="@{/js/createVertrag.js}"></script>
 </body>
 </html>

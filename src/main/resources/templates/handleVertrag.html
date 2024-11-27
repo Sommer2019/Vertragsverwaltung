@@ -13,6 +13,23 @@
             document.getElementById('delete-container').style.display = 'none';
         }
     </script>
+    <style>
+        .vertrag-details {
+            display: table;
+            width: 100%;
+        }
+        .vertrag-details div {
+            display: table-row;
+        }
+        .vertrag-details div span {
+            display: table-cell;
+            padding: 5px 10px;
+        }
+        .vertrag-details div span:first-child {
+            font-weight: bold;
+            width: 200px; /* Adjust this width as needed */
+        }
+    </style>
 </head>
 <body>
 <h1><strong>Vertrag </strong> <span th:text="${vsnr}"></span></h1>
@@ -29,43 +46,43 @@
     </div>
     <p></p>
 </div>
-    <details open>
-        <summary><b>Vertragsdaten</b></summary>
-        <ul>
-            <li><strong>Preis:</strong> <span th:text="${preis} + ' €'"></span></li>
-            <li><strong>Abrechnungszeitraum:</strong> <span th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span></li>
-            <li><strong>Versicherungsbeginn:</strong> <span th:text="${versicherungsbeginn}"></span></li>
-            <li><strong>Versicherungsablauf:</strong> <span th:text="${versicherungsablauf}"></span></li>
-            <li><strong>Antragsdatum:</strong> <span th:text="${antragsdatum}"></span></li>
-        </ul>
-    </details>
-    <p></p>
-    <details open>
-        <summary><b>Fahrzeugdaten:</b></summary>
-        <ul>
-            <li><strong>Amtliches Kennzeichen:</strong> <span th:text="${kennzeichen}"></span></li>
-            <li><strong>Hersteller:</strong> <span th:text="${hersteller}"></span></li>
-            <li><strong>Typ:</strong> <span th:text="${typ}"></span></li>
-            <li><strong>Höchstgeschwindigkeit:</strong> <span th:text="${maxspeed}"></span></li>
-            <li><strong>Wagnisskennziffer:</strong> <span th:text="${wkz}"></span></li>
-        </ul>
-    </details>
-    <p></p>
-    <details open>
-        <summary><b>Partnerdaten:</b></summary>
-        <ul>
-            <li><strong>Vorname:</strong> <span th:text="${vorname}"></span></li>
-            <li><strong>Nachname:</strong> <span th:text="${nachname}"></span></li>
-            <li><strong>Geschlecht:</strong> <span th:text="${geschlecht}"></span></li>
-            <li><strong>Geburtsdatum:</strong> <span th:text="${geburtsdatum}"></span></li>
-            <li><strong>Straße:</strong> <span th:text="${strasse}"></span></li>
-            <li><strong>Hausnummer:</strong> <span th:text="${hausnummer}"></span></li>
-            <li><strong>PLZ:</strong> <span th:text="${plz}"></span></li>
-            <li><strong>Stadt:</strong> <span th:text="${stadt}"></span></li>
-            <li><strong>Bundesland:</strong> <span th:text="${bundesland}"></span></li>
-            <li><strong>Land:</strong> <span th:text="${land}"></span></li>
-        </ul>
-    </details>
+<details open>
+    <summary><b>Vertragsdaten</b></summary>
+    <div class="vertrag-details">
+        <div><span>Preis:</span><span th:text="${preis} + ' €'"></span></div>
+        <div><span>Abrechnungszeitraum:</span><span th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span></div>
+        <div><span>Versicherungsbeginn:</span><span th:text="${versicherungsbeginn}"></span></div>
+        <div><span>Versicherungsablauf:</span><span th:text="${versicherungsablauf}"></span></div>
+        <div><span>Antragsdatum:</span><span th:text="${antragsdatum}"></span></div>
+    </div>
+</details>
+<p></p>
+<details open>
+    <summary><b>Fahrzeugdaten:</b></summary>
+    <div class="vertrag-details">
+        <div><span>Amtliches Kennzeichen:</span><span th:text="${kennzeichen}"></span></div>
+        <div><span>Hersteller:</span><span th:text="${hersteller}"></span></div>
+        <div><span>Typ:</span><span th:text="${typ}"></span></div>
+        <div><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span></div>
+        <div><span>Wagnisskennziffer:</span><span th:text="${wkz}"></span></div>
+    </div>
+</details>
+<p></p>
+<details open>
+    <summary><b>Partnerdaten:</b></summary>
+    <div class="vertrag-details">
+        <div><span>Vorname:</span><span th:text="${vorname}"></span></div>
+        <div><span>Nachname:</span><span th:text="${nachname}"></span></div>
+        <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span></div>
+        <div><span>Geburtsdatum:</span><span th:text="${geburtsdatum}"></span></div>
+        <div><span>Straße:</span><span th:text="${strasse}"></span></div>
+        <div><span>Hausnummer:</span><span th:text="${hausnummer}"></span></div>
+        <div><span>PLZ:</span><span th:text="${plz}"></span></div>
+        <div><span>Stadt:</span><span th:text="${stadt}"></span></div>
+        <div><span>Bundesland:</span><span th:text="${bundesland}"></span></div>
+        <div><span>Land:</span><span th:text="${land}"></span></div>
+    </div>
+</details>
 <p></p>
 <a href="/">
     <button>Zurück</button>

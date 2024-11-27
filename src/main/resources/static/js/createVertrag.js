@@ -6,20 +6,23 @@ function getTodayDate() {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
+
 function getMaxBirth() {
     const today = new Date();
-    const year = today.getFullYear()-100;
+    const year = today.getFullYear() - 100;
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
+
 function getMinBirth() {
     const today = new Date();
-    const year = today.getFullYear()-18;
+    const year = today.getFullYear() - 18;
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
+
 // Setze das heutige Datum als Wert und Mindestdatum für das Datumseingabefeld
 const todayDate = getTodayDate();
 const minbirth = getMinBirth();
@@ -66,12 +69,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
     });
 });
+
 function validateInputHersteller(input, messageElement) {
     fetch('brands.json')
         .then(response => response.json())
         .then(data => {
             const brands = data.brands; // Adjust this based on the structure of your JSON file
-            const inputValue = "'"+input.value.trim()+"'";
+            const inputValue = "'" + input.value.trim() + "'";
             if (brands.includes(inputValue)) {
                 input.classList.remove('invalid');
                 input.classList.add('valid');
@@ -88,6 +92,7 @@ function validateInputHersteller(input, messageElement) {
             messageElement.style.color = 'red';
         });
 }
+
 function validateInput(input, regex, messageElement) {
     if (regex.test(input.value)) {
         input.classList.remove('invalid');
@@ -100,36 +105,36 @@ function validateInput(input, regex, messageElement) {
     }
 }
 
-kennzeichenInput.addEventListener('input', function() {
+kennzeichenInput.addEventListener('input', function () {
     validateInput(kennzeichenInput, regexKennzeichen, document.getElementById('kennzeichen-message'));
 });
 
-herstellerInput.addEventListener('input', function() {
+herstellerInput.addEventListener('input', function () {
     validateInputHersteller(herstellerInput, document.getElementById('hersteller-message'));
 });
 
-vornameInput.addEventListener('input', function() {
+vornameInput.addEventListener('input', function () {
     validateInput(vornameInput, regexName, document.getElementById('vorname-message'));
 });
 
-nachnameInput.addEventListener('input', function() {
+nachnameInput.addEventListener('input', function () {
     validateInput(nachnameInput, regexName, document.getElementById('nachname-message'));
 });
 
-typInput.addEventListener('input', function() {
+typInput.addEventListener('input', function () {
     validateInput(typInput, regexTyp, document.getElementById('typ-message'));
 });
 
-plzInput.addEventListener('input', function() {
+plzInput.addEventListener('input', function () {
     validateInput(plzInput, regexPLZ, document.getElementById('plz-message'));
 });
 
-hausnummerInput.addEventListener('input', function() {
+hausnummerInput.addEventListener('input', function () {
     validateInput(hausnummerInput, regexHausnummer, document.getElementById('hausnummer-message'));
 });
 
 // Event Listener, um die Mindest- und Höchstwerte der anderen Felder basierend auf dem Beginn zu setzen
-startInput.addEventListener('change', function() {
+startInput.addEventListener('change', function () {
     const startDate = startInput.value;
     endInput.min = startDate;
     createInput.max = startDate;
