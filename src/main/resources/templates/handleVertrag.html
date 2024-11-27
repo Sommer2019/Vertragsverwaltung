@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vertrag</title>
+    <script>
+        function toggleDelete() {
+            document.getElementById('delete-container').style.display = 'block';
+        }
+
+        function hideDelete() {
+            document.getElementById('delete-container').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+<h1><strong>Vertrag </strong> <span th:text="${vsnr}"></span></h1>
+<button>Bearbeiten</button>
+<button onclick="toggleDelete()">Löschen</button>
+<p></p>
+<div id="delete-container" style="display: none;">
+    <p>Möchten Sie diesen Vertrag wirklich löschen?</p>
+    <div style="display: flex; gap: 10px;">
+        <form action="/showDelete" method="post">
+            <button type="submit">Bestätigen</button>
+        </form>
+        <button onclick="hideDelete()">Abbrechen</button>
+    </div>
+    <p></p>
+</div>
+    <details open>
+        <summary><b>Vertragsdaten</b></summary>
+        <ul>
+            <li><strong>Preis:</strong> <span th:text="${preis} + ' €'"></span></li>
+            <li><strong>Abrechnungszeitraum:</strong> <span th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span></li>
+            <li><strong>Versicherungsbeginn:</strong> <span th:text="${versicherungsbeginn}"></span></li>
+            <li><strong>Versicherungsablauf:</strong> <span th:text="${versicherungsablauf}"></span></li>
+            <li><strong>Antragsdatum:</strong> <span th:text="${antragsdatum}"></span></li>
+        </ul>
+    </details>
+    <p></p>
+    <details open>
+        <summary><b>Fahrzeugdaten:</b></summary>
+        <ul>
+            <li><strong>Amtliches Kennzeichen:</strong> <span th:text="${kennzeichen}"></span></li>
+            <li><strong>Hersteller:</strong> <span th:text="${hersteller}"></span></li>
+            <li><strong>Typ:</strong> <span th:text="${typ}"></span></li>
+            <li><strong>Höchstgeschwindigkeit:</strong> <span th:text="${maxspeed}"></span></li>
+            <li><strong>Wagnisskennziffer:</strong> <span th:text="${wkz}"></span></li>
+        </ul>
+    </details>
+    <p></p>
+    <details open>
+        <summary><b>Partnerdaten:</b></summary>
+        <ul>
+            <li><strong>Vorname:</strong> <span th:text="${vorname}"></span></li>
+            <li><strong>Nachname:</strong> <span th:text="${nachname}"></span></li>
+            <li><strong>Geschlecht:</strong> <span th:text="${geschlecht}"></span></li>
+            <li><strong>Geburtsdatum:</strong> <span th:text="${geburtsdatum}"></span></li>
+            <li><strong>Straße:</strong> <span th:text="${strasse}"></span></li>
+            <li><strong>Hausnummer:</strong> <span th:text="${hausnummer}"></span></li>
+            <li><strong>PLZ:</strong> <span th:text="${plz}"></span></li>
+            <li><strong>Stadt:</strong> <span th:text="${stadt}"></span></li>
+            <li><strong>Bundesland:</strong> <span th:text="${bundesland}"></span></li>
+            <li><strong>Land:</strong> <span th:text="${land}"></span></li>
+        </ul>
+    </details>
+<p></p>
+<a href="/">
+    <button>Zurück</button>
+</a>
+</body>
+</html>

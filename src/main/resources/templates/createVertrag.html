@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vertrag erstellen</title>
+    <style>
+        .invalid {
+            border-color: red;
+        }
+        .valid {
+            border-color: green;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<h1><strong>Vertrag </strong> <span th:if="${vsnr}" th:text="${vsnr}"></span></h1>
+<p></p>
+<form id="myForm" action="/createVertrag" method="post">
+    <input type="submit" id="calculateButton" value="Erstellen">
+    <p></p>
+    <h2>Vertragsdaten</h2>
+    <p>Abrechnungszeitraum:
+        <input type="radio" name="abrechnung" value="true" id="check1" checked>
+        <label for="check1">monatlich</label>
+        <input type="radio" name="abrechnung" value="false" id="check2">
+        <label for="check2">jährlich</label>
+    </p>
+    <p><label for="start">Versicherungsbeginn: </label><input type="date" id="start" name="start" max="9998-12-31" required></p>
+    <p><label for="end">Versicherungsablauf: </label><input type="date" id="end" max="9999-12-31" required></p>
+    <p><label for="create">Antragsdatum: </label><input type="date" id="create" max="9998-12-31" required></p>
+    <p></p>
+    <h2>Fahrzeugdaten:</h2>
+    <p><label for="kennzeichen">Amtliches Kennzeichen: </label> <input type="text" id="kennzeichen" required><span id="kennzeichen-message" class="error-message"></span></p>
+    <p><label for="hersteller">Hersteller: </label><input type="text" id="hersteller" required><span id="hersteller-message" class="error-message"></span></p>
+    <p><label for="typ">Typ: </label><input type="text" id="typ" required><span id="typ-message" class="error-message"></span></p>
+    <p><label for="speed">Höchstgeschwindigkeit: </label><input type="number" id="speed" min="45" value="200" max="250" required> km/h</p>
+    <p><label for="wkz">Wagnisskennziffer: </label><input type="number" id="wkz" value="112" min="112" max="112" required></p>
+    <p></p>
+    <h2>Partnerdaten:</h2>
+    <p><label for="vorname">Vorname: </label><input type="text" id="vorname" required><span id="vorname-message" class="error-message"></span></p>
+    <p><label for="nachname">Nachname: </label><input type="text" id="nachname" required><span id="nachname-message" class="error-message"></span></p>
+    <p>Geschlecht:
+        <input type="radio" name="gender" value="maennlich" id="check3" checked>
+        <label for="check3">M</label>
+        <input type="radio" name="gender" value="weiblich" id="check4">
+        <label for="check4">W</label>
+        <input type="radio" name="gender" value="divers" id="check5">
+        <label for="check5">D</label>
+    </p>
+    <p><label for="birth">Geburtsdatum: </label><input type="date" id="birth" required></p>
+    <p><label for="strasse">Straße: </label><input type="text" id="strasse" required></p>
+    <p><label for="hausnummer">Hausnummer: </label><input type="text" id="hausnummer" required><span id="hausnummer-message" class="error-message"></span></p>
+    <p><label for="plz">PLZ: </label><input type="text" id="plz" required><span id="plz-message" class="error-message"></span></p>
+    <p><label for="stadt">Stadt: </label><input type="text" id="stadt" required></p>
+    <p><label for="bundesland">Bundesland: </label><input type="text" id="bundesland" required></p>
+    <p><label for="land">Land: </label><input type="text" value="Deutschland" id="land" readonly></p>
+</form>
+<p></p>
+<a href="/">
+    <button>Zurück</button>
+</a>
+<script src="createVertrag.js"></script>
+</body>
+</html>

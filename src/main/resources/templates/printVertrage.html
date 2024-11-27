@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verträge</title>
+</head>
+<body>
+<h1>Verträge</h1>
+<div th:if="${#lists.isEmpty(vertrage)}">
+    <p>Keine Verträge gefunden</p>
+</div>
+<div th:each="vertrag : ${vertrage}">
+    <details>
+        <summary><b><strong>Vertrag </strong> <span th:text="${vertrag.vsnr}"></span></b></summary>
+        <details open>
+            <summary><b>Vertragsdaten</b></summary>
+            <ul>
+                <li><strong>Preis:</strong> <span th:text="${vertrag.preis} + ' €'"></span></li>
+                <li><strong>Abrechnungszeitraum:</strong> <span th:text="${vertrag.monatlich ? 'monatlich' : 'jährlich'}"></span></li>
+                <li><strong>Versicherungsbeginn:</strong> <span th:text="${vertrag.versicherungsbeginn}"></span></li>
+                <li><strong>Versicherungsablauf:</strong> <span th:text="${vertrag.versicherungsablauf}"></span></li>
+                <li><strong>Antragsdatum:</strong> <span th:text="${vertrag.antragsDatum}"></span></li>
+            </ul>
+        </details>
+        <details open>
+            <summary><b>Fahrzeugdaten:</b></summary>
+            <ul>
+                <li><strong>Amtliches Kennzeichen:</strong> <span th:text="${vertrag.fahrzeug.amtlichesKennzeichen}"></span></li>
+                <li><strong>Hersteller:</strong> <span th:text="${vertrag.fahrzeug.hersteller}"></span></li>
+                <li><strong>Typ:</strong> <span th:text="${vertrag.fahrzeug.typ}"></span></li>
+                <li><strong>Höchstgeschwindigkeit:</strong> <span th:text="${vertrag.fahrzeug.hoechstgeschwindigkeit}"></span></li>
+                <li><strong>Wagnisskennziffer:</strong> <span th:text="${vertrag.fahrzeug.wagnisskennziffer}"></span></li>
+            </ul>
+        </details>
+        <details open>
+            <summary><b>Partnerdaten:</b></summary>
+            <ul>
+                <li><strong>Vorname:</strong> <span th:text="${vertrag.partner.vorname}"></span></li>
+                <li><strong>Nachname:</strong> <span th:text="${vertrag.partner.nachname}"></span></li>
+                <li><strong>Geschlecht:</strong> <span th:text="${vertrag.partner.geschlecht}"></span></li>
+                <li><strong>Geburtsdatum:</strong> <span th:text="${vertrag.partner.geburtsdatum}"></span></li>
+                <li><strong>Straße:</strong> <span th:text="${vertrag.partner.strasse}"></span></li>
+                <li><strong>Hausnummer:</strong> <span th:text="${vertrag.partner.hausnummer}"></span></li>
+                <li><strong>PLZ:</strong> <span th:text="${vertrag.partner.plz}"></span></li>
+                <li><strong>Stadt:</strong> <span th:text="${vertrag.partner.stadt}"></span></li>
+                <li><strong>Bundesland:</strong> <span th:text="${vertrag.partner.bundesland}"></span></li>
+                <li><strong>Land:</strong> <span th:text="${vertrag.partner.land}"></span></li>
+            </ul>
+        </details>
+    </details>
+</div>
+<p></p>
+<a href="/">
+    <button>Zurück</button>
+</a>
+</body>
+</html>

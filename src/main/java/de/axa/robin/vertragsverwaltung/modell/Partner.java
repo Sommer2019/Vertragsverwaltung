@@ -117,7 +117,7 @@ public class Partner {
                 "\n\tNachname: " + nachname +
                 "\n\tGeschlecht: " + geschlecht +
                 "\n\tGeburtsdatum: " + geburtsdatum +
-                "\n\tStrasse: " + strasse +
+                "\n\tStraße: " + strasse +
                 "\n\tHausnummer: " + hausnummer +
                 "\n\tPLZ: " + plz +
                 "\n\tStadt: " + stadt +

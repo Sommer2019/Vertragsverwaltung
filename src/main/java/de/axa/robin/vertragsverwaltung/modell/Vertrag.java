@@ -113,7 +113,8 @@ public class Vertrag {
                 "\n\tVersicherungsablauf: " + versicherungsablauf +
                 "\n\tAntragsdatum: " + antragsDatum +
                 fahrzeug +
-                partner;
+                partner +
+                "\n\t-------------------------------";
     }
 
     @Override

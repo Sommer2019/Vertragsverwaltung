@@ -50,7 +50,6 @@ public class Output {
             System.err.println("Vertrag abgelaufen!");
             return false;
         }
-        System.out.println("-------------------------------");
         return true;
     }
 
