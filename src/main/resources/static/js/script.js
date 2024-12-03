@@ -15,20 +15,16 @@ function getMinBirth() {
 
 function toggleDelete() {
     const deleteContainer = document.getElementById('deleteContainer');
-    const deleteButton = document.getElementById("delete");
-    const editButton = document.getElementById("edit");
+    const menuContainer = document.getElementById("menuContainer");
     deleteContainer.style.display = 'block';
-    deleteButton.style.display = deleteButton.style.display === "none" ? "inline-block" : "none";
-    editButton.style.display = editButton.style.display === "none" ? "inline-block" : "none";
+    menuContainer.style.display = menuContainer.style.display === "none" ? "block" : "none";
 }
 
 function hideDelete() {
     const deleteContainer = document.getElementById('deleteContainer');
-    const deleteButton = document.getElementById("delete");
-    const editButton = document.getElementById("edit");
+    const menuContainer = document.getElementById("menuContainer");
     deleteContainer.style.display = 'none';
-    deleteButton.style.display = deleteButton.style.display === "inline-block" ? "none" : "inline-block";
-    editButton.style.display = editButton.style.display === "inline-block" ? "none" : "inline-block";
+    menuContainer.style.display = menuContainer.style.display === "block" ? "none" : "block";
 }
 
 const todayDate = getTodayDate();
@@ -116,10 +112,11 @@ function checkKennzeichen(input, regex) {
 function toggleEdit() {
     const handledVertrag = document.getElementById("handledVertrag");
     const inputs = handledVertrag.querySelectorAll("input, label, #preiscalc, #kmh");
-    inputs.forEach(input => input.style.display = "inline-block");
-    document.getElementById("editContainer").style.display = "inline-block";
-    document.getElementById("edit").style.display = "none";
-    document.getElementById("delete").style.display = "none";
+    const flex = handledVertrag.querySelectorAll(".radio-group, .flex-container");
+    flex.forEach(input => input.style.display = "flex");
+    inputs.forEach(input => input.style.display = "block");
+    document.getElementById("editContainer").style.display = "block";
+    document.getElementById("menuContainer").style.display = "none";
 }
 
 function hideEdit() {
@@ -127,6 +124,5 @@ function hideEdit() {
     const inputs = handledVertrag.querySelectorAll("#editContainer, input, label, #preiscalc, #kmh");
     inputs.forEach(input => input.style.display = "none");
     document.getElementById("editContainer").style.display = "none";
-    document.getElementById("delete").style.display = "inline-block";
-    document.getElementById("edit").style.display = "inline-block";
+    document.getElementById("menuContainer").style.display = "block";
 }

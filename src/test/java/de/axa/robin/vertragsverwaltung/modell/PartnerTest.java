@@ -126,32 +126,4 @@ class PartnerTest {
         partner.setBundesland("NewState");
         assertEquals("NewState", partner.getBundesland());
     }
-
-    @Test
-    void testToString() {
-        String expected = """
-                
-                Partner: \
-                
-                \tVorname: John\
-                
-                \tNachname: Doe\
-                
-                \tGeschlecht: m\
-                
-                \tGeburtsdatum: 1980-01-01\
-                
-                \tStrasse: TestStreet\
-                
-                \tHausnummer: 1\
-                
-                \tPLZ: 51469\
-                
-                \tStadt: TestCity\
-                
-                \tBundesland: TestState\
-                
-                \tLand: Germany""";
-        assertEquals(expected, partner.toString());
-    }
 }

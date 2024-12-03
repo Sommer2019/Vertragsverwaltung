@@ -12,11 +12,11 @@
     <p>Keine Verträge gefunden</p>
 </div>
 <div th:each="vertrag : ${vertrage}">
-    <details>
+    <details class="vertrag-details">
         <summary><b>Vertrag <span th:text="${vertrag.vsnr}"></span></b></summary>
         <details open>
             <summary><b>Vertragsdaten</b></summary>
-            <div class="vertrag-details">
+            <div>
                 <div><span>Preis:</span><span th:text="${vertrag.formattedPreis} + ' €'"></span></div>
                 <div><span>Abrechnungszeitraum:</span><span th:text="${vertrag.monatlich ? 'monatlich' : 'jährlich'}"></span></div>
                 <div><span>Versicherungsbeginn:</span><span th:text="${vertrag.versicherungsbeginn}"></span></div>
@@ -26,7 +26,7 @@
         </details>
         <details open>
             <summary><b>Fahrzeugdaten:</b></summary>
-            <div class="vertrag-details">
+            <div>
                 <div><span>Amtliches Kennzeichen:</span><span th:text="${vertrag.fahrzeug.amtlichesKennzeichen}"></span></div>
                 <div><span>Hersteller:</span><span th:text="${vertrag.fahrzeug.hersteller}"></span></div>
                 <div><span>Typ:</span><span th:text="${vertrag.fahrzeug.typ}"></span></div>
@@ -36,7 +36,7 @@
         </details>
         <details open>
             <summary><b>Partnerdaten:</b></summary>
-            <div class="vertrag-details">
+            <div>
                 <div><span>Vorname:</span><span th:text="${vertrag.partner.vorname}"></span></div>
                 <div><span>Nachname:</span><span th:text="${vertrag.partner.nachname}"></span></div>
                 <div><span>Geschlecht:</span><span th:text="${vertrag.partner.geschlecht}"></span></div>

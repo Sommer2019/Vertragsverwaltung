@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vertrag</title>
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-    <style>
-        input, label, #kmh, #preiscalc, #editContainer, #deleteContainer {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/css/handleVertrag.css">
 </head>
 <body>
 <h1><strong>Vertrag </strong><span th:text="${vsnr}"></span></h1>
-<button type="button" onclick="toggleEdit()" id="edit">Bearbeiten</button>
-<button onclick="toggleDelete()" id="delete">Löschen</button>
+<div id="menuContainer">
+    <p>Menu:</p>
+    <div style="display: flex; gap: 10px;">
+        <button type="button" onclick="toggleEdit()" id="edit">Bearbeiten</button>
+        <button onclick="toggleDelete()" id="delete">Löschen</button>
+    </div>
+</div>
 <div id="deleteContainer">
     <p>Möchten Sie diesen Vertrag wirklich löschen?</p>
     <div style="display: flex; gap: 10px;">
@@ -43,7 +44,7 @@
             </div>
             <div><span>Abrechnungszeitraum:</span><span
                     th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span>
-                <div>
+                <div class="flex-container">
                     <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="true" id="check1">
                     <label for="check1">monatlich</label>
                     <input th:field="*{abrechnung}" type="radio" name="abrechnung" value="false" id="check2">
@@ -71,9 +72,9 @@
             <div><span>Typ:</span><span th:text="${typ}"></span>
                 <input th:field="*{typ}" type="text" id="typ" required>
             </div>
-            <div><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span>
+            <div class="flex-container"><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span>
                 <input th:field="*{speed}" type="number" id="speed" min="45" max="250" required>
-                <div id="kmh">km/h</div>
+                <label for="speed" id="kmh">km/h</label>
             </div>
             <div><span>Wagnisskennziffer:</span><span th:text="${wkz}"></span>
                 <input th:field="*{wkz}" type="number" id="wkz" min="112" max="112" required>
@@ -88,12 +89,14 @@
                 <input th:field="*{nachname}" type="text" id="nachname" required>
             </div>
             <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span>
-                <input th:field="*{gender}" type="radio" name="gender" value="M" id="check3">
-                <label for="check3">M</label>
-                <input th:field="*{gender}" type="radio" name="gender" value="W" id="check4">
-                <label for="check4">W</label>
-                <input th:field="*{gender}" type="radio" name="gender" value="D" id="check5">
-                <label for="check5">D</label>
+                <div class="flex-container">
+                    <input th:field="*{gender}" type="radio" name="gender" value="M" id="check3">
+                    <label for="check3">M</label>
+                    <input th:field="*{gender}" type="radio" name="gender" value="W" id="check4">
+                    <label for="check4">W</label>
+                    <input th:field="*{gender}" type="radio" name="gender" value="D" id="check5">
+                    <label for="check5">D</label>
+                </div>
             </div>
             <div><span>Geburtsdatum:</span><span id="birthSpan" th:text="${birth}"></span>
                 <input th:field="*{birth}" value="2006-01-01" type="date" id="birth" required>

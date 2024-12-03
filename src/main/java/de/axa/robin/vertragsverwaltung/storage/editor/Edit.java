@@ -22,16 +22,18 @@ public class Edit {
     private final Input input;
     private final Setup setup = new Setup();
     private final Vertragsverwaltung vertragsverwaltung;
+    private final Create create;
     private final AdressValidator addressAdressValidator = new AdressValidator();
     public Edit(Input input, Vertragsverwaltung vertragsverwaltung, Output output) {
         this.input = input;
         this.vertragsverwaltung = vertragsverwaltung;
         this.output = output;
+        this.create = new Create(input, vertragsverwaltung, output);
     }
 
     public void editVertrag(Vertrag vertrag) {
         while (true) {
-            vertrag.setPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug());
+            vertrag.setPreis(create.createPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
             output.druckeVertrag(vertrag);
             output.editMenu();
             int choice = input.getNumber(Integer.class, "", -1, -1, -1, false);
@@ -217,7 +219,7 @@ public class Edit {
         }
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
-            v.setPreis(v.getMonatlich(), v.getPartner(), v.getFahrzeug());
+            v.setPreis(create.createPreis(v.getMonatlich(), v.getPartner(), v.getFahrzeug()));
             if (!v.getMonatlich()) {
                 summe = summe.add(BigDecimal.valueOf(v.getPreis()));
             } else {

@@ -27,8 +27,10 @@ label {
 input[type="text"],
 input[type="date"],
 input[type="number"],
+span,
 button {
     width: 200px;
+    height: 25px;
 }
 
 .vertrag-details {
@@ -42,8 +44,8 @@ button {
 
 .vertrag-details div span {
     display: table-cell;
-    padding: 5px 20px;
-    width: 200px;
+    padding: 5px 40px;
+    width: 250px;
 }
 
 .vertrag-details div span:first-child {
@@ -53,5 +55,8 @@ button {
 .flex-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+}
+
+.flex-container input {
+    margin-right: 5px;
 }

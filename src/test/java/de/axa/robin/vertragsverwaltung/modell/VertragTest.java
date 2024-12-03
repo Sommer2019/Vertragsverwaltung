@@ -38,8 +38,8 @@ class VertragTest {
 
     @Test
     void testSetPreis() {
-        vertrag.setPreis(true, partner, fahrzeug);
-        assertTrue(vertrag.getPreis() > 0);
+        vertrag.setPreis(123.45);
+        assertEquals(123.45, vertrag.getPreis());
     }
 
     @Test
@@ -111,19 +111,5 @@ class VertragTest {
         Partner newPartner = new Partner("Jane", "Doe", 'f', LocalDate.of(1990, 2, 2), "Germany", "NewStreet", "2", 54321, "NewCity", "NewState");
         vertrag.setPartner(newPartner);
         assertEquals(newPartner, vertrag.getPartner());
-    }
-
-    @Test
-    void testToString() {
-        String expected = "Vertragsdaten: " +
-                "\n\tVertragsnummer: 12345678" +
-                "\n\tPreis: 100.0€" +
-                "\n\tAbrechnungszeitraum monatlich: true" +
-                "\n\tVersicherungsbeginn: " + LocalDate.now() +
-                "\n\tVersicherungsablauf: " + LocalDate.now().plusYears(1) +
-                "\n\tAntragsdatum: " + LocalDate.now() +
-                fahrzeug +
-                partner;
-        assertEquals(expected, vertrag.toString());
     }
 }

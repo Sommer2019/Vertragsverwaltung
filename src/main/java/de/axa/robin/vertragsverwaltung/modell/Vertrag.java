@@ -1,22 +1,9 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
-import de.axa.robin.vertragsverwaltung.config.Setup;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
-import de.axa.robin.vertragsverwaltung.storage.editor.Create;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input;
-import de.axa.robin.vertragsverwaltung.user_interaction.Output;
-
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Vertrag {
-    private final Scanner scanner = new Scanner(System.in);
-    private final Input input = new Input(scanner);
-    private final Setup setup = new Setup();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
-    private final Output output = new Output();
-    private final Create create = new Create(input, vertragsverwaltung, output);
     private int vsnr;
     private double preis;
     private String formattedPreis;
@@ -55,8 +42,8 @@ public class Vertrag {
         return preis;
     }
 
-    public void setPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
-        this.preis = create.createPreis(monatlich, partner, fahrzeug);
+    public void setPreis(double preis) {
+        this.preis = preis;
     }
 
     public boolean getMonatlich() {
