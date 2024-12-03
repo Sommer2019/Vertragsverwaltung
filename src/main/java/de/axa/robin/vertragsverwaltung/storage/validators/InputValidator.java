@@ -36,4 +36,5 @@ public class InputValidator {
         }
         return false;
     }
+    //ToDo: Input-Validator für Input von Sping
 }

@@ -1,0 +1,57 @@
+.invalid {
+    border-color: red;
+}
+
+.valid {
+    border-color: green;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+}
+
+.form-group {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+label {
+    text-align: right;
+    padding-right: 10px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+button {
+    width: 200px;
+}
+
+.vertrag-details {
+    display: table;
+    width: 100%;
+}
+
+.vertrag-details div {
+    display: table-row;
+}
+
+.vertrag-details div span {
+    display: table-cell;
+    padding: 5px 20px;
+    width: 200px;
+}
+
+.vertrag-details div span:first-child {
+    font-weight: bold;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

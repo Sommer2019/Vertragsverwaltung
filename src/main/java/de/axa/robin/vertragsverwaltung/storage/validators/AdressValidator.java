@@ -10,7 +10,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-
+//ToDo: Adress-Validator für Input von Sping
 public class AdressValidator {
     // Klassen einlesen
     private final Output output = new Output();
