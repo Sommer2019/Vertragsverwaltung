@@ -3,6 +3,7 @@ package de.axa.robin.vertragsverwaltung.modell;
 import java.time.LocalDate;
 
 public class VertragDTO {
+    private double preis;
     private LocalDate start;
     private LocalDate end;
     private LocalDate create;
@@ -22,6 +23,14 @@ public class VertragDTO {
     private String stadt;
     private String bundesland;
     private String land = "Deutschland";
+
+    public double getPreis() {
+        return preis;
+    }
+
+    public void setPreis(double preis) {
+        this.preis = preis;
+    }
 
     public LocalDate getStart() {
         return start;
