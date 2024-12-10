@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -10,8 +11,11 @@ public class Vertrag {
     private double preis;
     private String formattedPreis;
     boolean monatlich;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate versicherungsbeginn;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate versicherungsablauf;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate antragsDatum;
     @Valid
     private Fahrzeug fahrzeug;

@@ -33,6 +33,10 @@ public class CreateVertrag {
         Partner partner = new Partner();
         Fahrzeug fahrzeug = new Fahrzeug();
         Vertrag vertrag = new Vertrag(fahrzeug,partner);
+        vertrag.setVersicherungsbeginn(LocalDate.now());
+        vertrag.setVersicherungsablauf(LocalDate.now());
+        vertrag.setAntragsDatum(LocalDate.now());
+        vertrag.getPartner().setGeburtsdatum(LocalDate.now().minusYears(18));
         vertrag.getPartner().setGeschlecht('M');
         vertrag.getFahrzeug().setHoechstgeschwindigkeit(200);
         vertrag.getFahrzeug().setWagnisskennziffer(112);

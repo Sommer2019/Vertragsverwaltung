@@ -64,13 +64,9 @@ startInput.addEventListener('change', () => {
     createInput.max = startDate;
 });
 
-startInput.value = todayDate;
 startInput.min = todayDate;
 birthInput.min = maxbirth;
-birthInput.value = minbirth;
 birthInput.max = minbirth;
 endInput.min = todayDate;
-endInput.value = todayDate;
 endInput.min = todayDate;
-createInput.value = todayDate;
 createInput.max = todayDate;

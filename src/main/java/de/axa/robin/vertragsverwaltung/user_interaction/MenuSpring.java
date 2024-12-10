@@ -3,9 +3,8 @@ package de.axa.robin.vertragsverwaltung.user_interaction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-//ToDo: on reload no empty fields
-//ToDo: failed Input: keep values
 //ToDo: keep Menu Opened after failed/reload
+//ToDO: Frontend Check
 
 @Controller
 public class MenuSpring {

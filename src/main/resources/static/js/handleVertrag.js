@@ -94,12 +94,8 @@ startInput.addEventListener('change', () => {
 });
 
 startInput.min = document.getElementById('startSpan').textContent.trim();
-startInput.value = document.getElementById('startSpan').textContent.trim();
 birthInput.min = maxbirth;
-birthInput.value = document.getElementById('birthSpan').textContent.trim();
 birthInput.max = minbirth;
 endInput.min = document.getElementById('endSpan').textContent.trim();
-endInput.value = document.getElementById('endSpan').textContent.trim();
 createInput.max = todayDate;
-createInput.value = document.getElementById('createSpan').textContent.trim();
 

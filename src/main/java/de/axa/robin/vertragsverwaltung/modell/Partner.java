@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
 import jakarta.validation.constraints.Pattern;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ public class Partner {
     @Pattern(regexp="^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$")
     private String nachname;
     private char geschlecht;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate geburtsdatum;
     private String land;
     private String strasse;

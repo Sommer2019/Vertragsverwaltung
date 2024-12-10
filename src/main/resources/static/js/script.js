@@ -9,23 +9,12 @@ const hausnummerInput = document.getElementById('hausnummer');
 const plzInput = document.getElementById('plz');
 const stadtInput = document.getElementById('stadt');
 const bundeslandInput = document.getElementById('bundesland');
+
 const regexKennzeichen = /^\p{Lu}{1,3}-\p{Lu}{1,2}\d{1,4}[EH]?$/u;
 const regexName = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$/;
 const regexTyp = /^[a-zA-Z0-9\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$/;
 const regexPLZ = /^\d{5}$/;
 const regexHausnummer = /^\d+[a-zA-Z]?$/;
-
-function validateInputHersteller(input) {
-    fetch('brands.json')
-        .then(response => response.json())
-        .then(data => {
-            const brands = data.brands;
-            const inputValue = `'${input.value.trim()}'`;
-            input.classList.toggle('invalid', !brands.includes(inputValue));
-            input.classList.toggle('valid', brands.includes(inputValue));
-        })
-        .catch(error => console.error('Error loading brands:', error));
-}
 
 function updatePrice() {
     fetch('/calculatePrice', { method: 'GET' })
@@ -41,7 +30,6 @@ function validateInput(input, regex) {
 
 kennzeichenInput.addEventListener('input', () => checkKennzeichen(kennzeichenInput, regexKennzeichen));
 herstellerInput.addEventListener('input', () => validateInputHersteller(herstellerInput));
-updatePreis.addEventListener('click', updatePrice);
 vornameInput.addEventListener('input', () => validateInput(vornameInput, regexName));
 nachnameInput.addEventListener('input', () => validateInput(nachnameInput, regexName));
 typInput.addEventListener('input', () => validateInput(typInput, regexTyp));
@@ -50,7 +38,7 @@ hausnummerInput.addEventListener('input', () => validateInput(hausnummerInput, r
 plzInput.addEventListener('input', () => validateInput(plzInput, regexPLZ));
 stadtInput.addEventListener('input', () => validateInput(stadtInput, regexName));
 bundeslandInput.addEventListener('input', () => validateInput(bundeslandInput, regexName));
-
+updatePreis.addEventListener('click', updatePrice);
 
 function checkKennzeichen(input, regex) {
     if (regex.test(input.value)) {
@@ -68,3 +56,14 @@ function checkKennzeichen(input, regex) {
     }
 }
 
+function validateInputHersteller(input) {
+    fetch('brands.json')
+        .then(response => response.json())
+        .then(data => {
+            const brands = data.brands;
+            const inputValue = input.value.trim();
+            input.classList.toggle('invalid', !brands.includes(inputValue));
+            input.classList.toggle('valid', brands.includes(inputValue));
+        })
+        .catch(error => console.error('Error loading brands:', error));
+}

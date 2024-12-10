@@ -75,7 +75,6 @@ public class AdressValidator {
             if (!jsonArray.isEmpty()) {
                 JsonObject address = jsonArray.getJsonObject(0);
                 String displayName = address.getString("display_name").toLowerCase();
-                System.out.println(plz);
                 if (displayName.contains(street.toLowerCase() + ",") &&
                         displayName.contains(houseNumber.toLowerCase() + ",") &&
                         displayName.contains(plz.toLowerCase() + ",") &&
