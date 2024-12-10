@@ -1,8 +1,12 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
+import jakarta.validation.constraints.Pattern;
+
 public class Fahrzeug {
+    @Pattern(regexp="^[\\p{Lu}]{1,3}-[\\p{Lu}]{1,2}\\d{1,4}[EH]?$")
     private String amtlichesKennzeichen;
     private String hersteller;
+    @Pattern(regexp = "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$")
     private String typ;
     private int hoechstgeschwindigkeit;
     private int wagnisskennziffer;
@@ -14,6 +18,9 @@ public class Fahrzeug {
         this.typ = typ;
         this.hoechstgeschwindigkeit = hoechstgeschwindigkeit;
         this.wagnisskennziffer = wagnisskennziffer;
+    }
+    public Fahrzeug() {
+        super();
     }
 
     // Getter und Setter

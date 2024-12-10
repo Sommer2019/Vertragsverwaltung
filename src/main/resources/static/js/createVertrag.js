@@ -8,6 +8,7 @@ document.getElementById('calculatePrice').addEventListener('click', function () 
         alert('Es gab einen Fehler bei der Berechnung des Preises.');
     });
 });
+
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('myForm');
     const calculateButton = document.getElementById('calculateButton');
@@ -34,6 +35,35 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
     });
 });
+const startInput = document.getElementById('start');
+const endInput = document.getElementById('end');
+const createInput = document.getElementById('create');
+const todayDate = getTodayDate();
+const minbirth = getMinBirth();
+const maxbirth = getMaxBirth();
+const birthInput = document.getElementById('birth');
+
+function getTodayDate() {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+}
+
+function getMaxBirth() {
+    const today = new Date();
+    return `${today.getFullYear() - 100}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+}
+
+function getMinBirth() {
+    const today = new Date();
+    return `${today.getFullYear() - 18}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+}
+
+startInput.addEventListener('change', () => {
+    const startDate = startInput.value;
+    endInput.min = startDate;
+    createInput.max = startDate;
+});
+
 startInput.value = todayDate;
 startInput.min = todayDate;
 birthInput.min = maxbirth;

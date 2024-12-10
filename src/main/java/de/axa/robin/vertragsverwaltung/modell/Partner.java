@@ -1,22 +1,26 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDate;
 
 public class Partner {
+    @Pattern(regexp="^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$")
     private String vorname;
+    @Pattern(regexp="^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$")
     private String nachname;
     private char geschlecht;
     private LocalDate geburtsdatum;
     private String land;
     private String strasse;
     private String hausnummer;
-    private int plz;
+    private String plz;
     private String stadt;
     private String bundesland;
 
     // Konstruktor
     public Partner(String vorname, String nachname, char geschlecht, LocalDate geburtsdatum,
-                   String land, String strasse, String hausnummer, int plz, String stadt, String bundesland) {
+                   String land, String strasse, String hausnummer, String plz, String stadt, String bundesland) {
         this.vorname = vorname;
         this.nachname = nachname;
         this.geschlecht = geschlecht;
@@ -27,6 +31,10 @@ public class Partner {
         this.plz = plz;
         this.stadt = stadt;
         this.bundesland = bundesland;
+    }
+
+    public Partner(){
+        super();
     }
 
     // Getter und Setter
@@ -86,11 +94,11 @@ public class Partner {
         this.hausnummer = hausnummer;
     }
 
-    public int getPlz() {
+    public String getPlz() {
         return plz;
     }
 
-    public void setPlz(int plz) {
+    public void setPlz(String plz) {
         this.plz = plz;
     }
 

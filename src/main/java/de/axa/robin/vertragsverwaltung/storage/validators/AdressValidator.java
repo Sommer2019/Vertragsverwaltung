@@ -1,21 +1,14 @@
 package de.axa.robin.vertragsverwaltung.storage.validators;
 
 import de.axa.robin.vertragsverwaltung.config.Setup;
-import de.axa.robin.vertragsverwaltung.user_interaction.Input;
-import de.axa.robin.vertragsverwaltung.user_interaction.Output;
 
 import jakarta.json.*;
 
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
-//ToDo: Adress-Validator für Input von Sping
 public class AdressValidator {
     // Klassen einlesen
-    private final Output output = new Output();
-    private final Scanner scanner = new Scanner(System.in);
-    private final Input input = new Input(scanner);
     private final Setup setup = new Setup();
 
     public boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
@@ -23,7 +16,6 @@ public class AdressValidator {
             String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland + ", " + land, StandardCharsets.UTF_8);
             String NOMINATIM_URL = setup.getCheckURL();
             URI uri = new URI(NOMINATIM_URL + query);
-
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
 
             // Check if proxy is reachable
@@ -37,11 +29,11 @@ public class AdressValidator {
             // Check internet connection
             if (!isInternetAvailable(setup.getPort())) {
                 if (isProxyReachable(setup.getHost(), setup.getPort())) {
-                    output.error("Proxy ist erreichbar, aber keine Internetverbindung.");
+                    System.err.println("Proxy ist erreichbar, aber keine Internetverbindung.");
                 } else {
-                    output.error("Keine Internetverbindung und Proxy ist nicht erreichbar.");
+                    System.err.println("Keine Internetverbindung und Proxy ist nicht erreichbar.");
                 }
-                return input.getChar(null, "") != 'n';
+                return false;
             }
 
             HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
@@ -63,9 +55,9 @@ public class AdressValidator {
             }
 
             if (status != HttpURLConnection.HTTP_OK) {
-                output.error("HTTP-Status Code " + status + " empfangen.");
-                output.error("Eventuell ungültige Eingabe!");
-                return input.getChar(null, "") != 'n';
+                System.err.println("HTTP-Status Code " + status + " empfangen.");
+                System.err.println("Eventuell ungültige Eingabe!");
+                return false;
             }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -83,7 +75,7 @@ public class AdressValidator {
             if (!jsonArray.isEmpty()) {
                 JsonObject address = jsonArray.getJsonObject(0);
                 String displayName = address.getString("display_name").toLowerCase();
-
+                System.out.println(plz);
                 if (displayName.contains(street.toLowerCase() + ",") &&
                         displayName.contains(houseNumber.toLowerCase() + ",") &&
                         displayName.contains(plz.toLowerCase() + ",") &&
@@ -92,19 +84,19 @@ public class AdressValidator {
                         displayName.contains(land.toLowerCase())) {
                     return true;
                 } else {
-                    output.error("Eventuell Fehler in Adresse!");
-                    return input.getChar(null, "") != 'n';
+                    System.err.println("Eventuell Fehler in Adresse!");
+                    return false;
                 }
             } else {
-                output.error("Adresse existiert eventuell nicht!");
-                return input.getChar(null, "") != 'n';
+                System.err.println("Adresse existiert eventuell nicht!");
+                return false;
             }
 
         } catch (ConnectException | SocketTimeoutException e) {
-            output.error("Connection timed out: " + e.getMessage());
+            System.err.println("Connection timed out: " + e.getMessage());
             e.printStackTrace();
-            output.error("Eventuell ungültige Eingabe!");
-            return input.getChar(null, "") != 'n';
+            System.err.println("Eventuell ungültige Eingabe!");
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
         }

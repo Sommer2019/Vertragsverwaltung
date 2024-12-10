@@ -13,7 +13,7 @@ class PartnerTest {
 
     @BeforeEach
     void setUp() {
-        partner = new Partner("John", "Doe", 'm', LocalDate.of(1980, 1, 1), "Germany", "TestStreet", "1", 51469, "TestCity", "TestState");
+        partner = new Partner("John", "Doe", 'm', LocalDate.of(1980, 1, 1), "Germany", "TestStreet", "1", "51469", "TestCity", "TestState");
     }
 
     @Test
@@ -96,13 +96,13 @@ class PartnerTest {
 
     @Test
     void testGetPlz() {
-        assertEquals(51469, partner.getPlz());
+        assertEquals("51469", partner.getPlz());
     }
 
     @Test
     void testSetPlz() {
-        partner.setPlz(51469);
-        assertEquals(51469, partner.getPlz());
+        partner.setPlz("51469");
+        assertEquals("51469", partner.getPlz());
     }
 
     @Test

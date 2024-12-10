@@ -91,7 +91,7 @@ public class Repository {
                                 jsonObject.getJsonObject("partner").getString("land"),
                                 jsonObject.getJsonObject("partner").getString("strasse"),
                                 jsonObject.getJsonObject("partner").getString("hausnummer"),
-                                jsonObject.getJsonObject("partner").getInt("plz"),
+                                jsonObject.getJsonObject("partner").getString("plz"),
                                 jsonObject.getJsonObject("partner").getString("stadt"),
                                 jsonObject.getJsonObject("partner").getString("bundesland")
                         )

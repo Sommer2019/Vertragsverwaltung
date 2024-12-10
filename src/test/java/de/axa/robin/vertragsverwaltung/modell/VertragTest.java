@@ -16,7 +16,7 @@ class VertragTest {
     @BeforeEach
     void setUp() {
         fahrzeug = new Fahrzeug("ABC-123", "TestBrand", "TestType", 100, 112);
-        partner = new Partner("John", "Doe", 'm', LocalDate.of(1980, 1, 1), "Deutschland", "TestStreet", "11", 51469, "TestCity", "TestState");
+        partner = new Partner("John", "Doe", 'm', LocalDate.of(1980, 1, 1), "Deutschland", "TestStreet", "11", "51469", "TestCity", "TestState");
         vertrag = new Vertrag(12345678, true, 100.0, LocalDate.now(), LocalDate.now().plusYears(1), LocalDate.now(), fahrzeug, partner);
     }
 
@@ -108,7 +108,7 @@ class VertragTest {
 
     @Test
     void testSetPartner() {
-        Partner newPartner = new Partner("Jane", "Doe", 'f', LocalDate.of(1990, 2, 2), "Germany", "NewStreet", "2", 54321, "NewCity", "NewState");
+        Partner newPartner = new Partner("Jane", "Doe", 'f', LocalDate.of(1990, 2, 2), "Germany", "NewStreet", "2", "54321", "NewCity", "NewState");
         vertrag.setPartner(newPartner);
         assertEquals(newPartner, vertrag.getPartner());
     }

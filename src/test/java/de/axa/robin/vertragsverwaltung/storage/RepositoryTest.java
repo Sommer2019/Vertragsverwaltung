@@ -30,7 +30,7 @@ class RepositoryTest {
         vertrage = new ArrayList<>();
         vertrage.add(new Vertrag(12345, true, 299.99, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), LocalDate.of(2022, 12, 1),
                 new Fahrzeug("ABC123", "BMW", "X5", 240, 1234),
-                new Partner("Max", "Mustermann", 'M', LocalDate.of(1980, 1, 1), "Deutschland", "Musterstraße", "11", 51469, "Musterstadt", "NRW")));
+                new Partner("Max", "Mustermann", 'M', LocalDate.of(1980, 1, 1), "Deutschland", "Musterstraße", "11", "51469", "Musterstadt", "NRW")));
         file = new File("src/main/resources/vertragetest.json");
     }
 

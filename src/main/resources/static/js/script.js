@@ -1,39 +1,3 @@
-function getTodayDate() {
-    const today = new Date();
-    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-}
-
-function getMaxBirth() {
-    const today = new Date();
-    return `${today.getFullYear() - 100}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-}
-
-function getMinBirth() {
-    const today = new Date();
-    return `${today.getFullYear() - 18}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-}
-
-function toggleDelete() {
-    const deleteContainer = document.getElementById('deleteContainer');
-    const menuContainer = document.getElementById("menuContainer");
-    deleteContainer.style.display = 'block';
-    menuContainer.style.display = menuContainer.style.display === "none" ? "block" : "none";
-}
-
-function hideDelete() {
-    const deleteContainer = document.getElementById('deleteContainer');
-    const menuContainer = document.getElementById("menuContainer");
-    deleteContainer.style.display = 'none';
-    menuContainer.style.display = menuContainer.style.display === "block" ? "none" : "block";
-}
-
-const todayDate = getTodayDate();
-const minbirth = getMinBirth();
-const maxbirth = getMaxBirth();
-const birthInput = document.getElementById('birth');
-const startInput = document.getElementById('start');
-const endInput = document.getElementById('end');
-const createInput = document.getElementById('create');
 const kennzeichenInput = document.getElementById('kennzeichen');
 const herstellerInput = document.getElementById('hersteller');
 const updatePreis = document.getElementById('preisedit');
@@ -87,11 +51,6 @@ plzInput.addEventListener('input', () => validateInput(plzInput, regexPLZ));
 stadtInput.addEventListener('input', () => validateInput(stadtInput, regexName));
 bundeslandInput.addEventListener('input', () => validateInput(bundeslandInput, regexName));
 
-startInput.addEventListener('change', () => {
-    const startDate = startInput.value;
-    endInput.min = startDate;
-    createInput.max = startDate;
-});
 
 function checkKennzeichen(input, regex) {
     if (regex.test(input.value)) {
@@ -109,20 +68,3 @@ function checkKennzeichen(input, regex) {
     }
 }
 
-function toggleEdit() {
-    const handledVertrag = document.getElementById("handledVertrag");
-    const inputs = handledVertrag.querySelectorAll("input, label, #preiscalc, #kmh");
-    const flex = handledVertrag.querySelectorAll(".radio-group, .flex-container");
-    flex.forEach(input => input.style.display = "flex");
-    inputs.forEach(input => input.style.display = "block");
-    document.getElementById("editContainer").style.display = "block";
-    document.getElementById("menuContainer").style.display = "none";
-}
-
-function hideEdit() {
-    const handledVertrag = document.getElementById("handledVertrag");
-    const inputs = handledVertrag.querySelectorAll("#editContainer, input, label, #preiscalc, #kmh");
-    inputs.forEach(input => input.style.display = "none");
-    document.getElementById("editContainer").style.display = "none";
-    document.getElementById("menuContainer").style.display = "block";
-}

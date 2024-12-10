@@ -1,5 +1,7 @@
 package de.axa.robin.vertragsverwaltung.modell;
 
+import jakarta.validation.Valid;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -11,7 +13,9 @@ public class Vertrag {
     private LocalDate versicherungsbeginn;
     private LocalDate versicherungsablauf;
     private LocalDate antragsDatum;
+    @Valid
     private Fahrzeug fahrzeug;
+    @Valid
     private Partner partner;
 
     // Konstruktor
@@ -25,10 +29,13 @@ public class Vertrag {
         this.fahrzeug = fahrzeug;
         this.partner = partner;
     }
+    public Vertrag(Fahrzeug fahrzeug, Partner partner) {
+        this.fahrzeug = fahrzeug;
+        this.partner = partner;
+    }
     public Vertrag() {
         super();
     }
-
     // Getter und Setter
     public int getVsnr() {
         return vsnr;

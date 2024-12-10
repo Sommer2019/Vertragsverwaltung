@@ -4,6 +4,7 @@ import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,7 +21,7 @@ class VertragsverwaltungTest {
     private Vertragsverwaltung vertragsverwaltung;
     private Setup setup;
     private final Fahrzeug fahrzeug = new Fahrzeug("ABC123", "BMW", "X5", 240, 1234);
-    private final Partner partner = new Partner("Max", "Mustermann", 'M', LocalDate.of(1980, 1, 1), "Deutschland", "Musterstraße", "1", 12345, "Musterstadt", "NRW");
+    private final Partner partner = new Partner("Max", "Mustermann", 'M', LocalDate.of(1980, 1, 1), "Deutschland", "Musterstraße", "1", "12345", "Musterstadt", "NRW");
     private final Vertrag vertrag = new Vertrag(12345, true, 299.99, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), LocalDate.of(2022, 12, 1), fahrzeug, partner);
 
     @BeforeEach

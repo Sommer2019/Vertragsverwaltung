@@ -8,8 +8,8 @@
 </head>
 <body>
 <h1>Preisanpassung</h1>
-<form id="myForm" th:action="@{/editPreis}" th:object="${preisdto}" th:method="post">
-    <input type="submit" id="calculateButton" value="Erstellen">
+<form id="myForm" th:action="@{/editPreis}" th:object="${preismodell}" th:method="post">
+    <button type="submit" id="calculateButton">Erstellen</button>
     <h2>Vertragsdaten</h2>
     <div class="form-group">
         <label>Einnahmenvorberechnung: </label>

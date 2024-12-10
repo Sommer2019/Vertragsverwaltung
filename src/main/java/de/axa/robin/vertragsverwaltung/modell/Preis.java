@@ -7,13 +7,13 @@ import jakarta.json.JsonReader;
 
 import java.io.FileReader;
 
-public class PreisDTO {
+public class Preis {
     private double speed;
     private double age;
     private double faktor;
     private final Setup setup = new Setup();
 
-    public PreisDTO() {
+    public Preis() {
         try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
             JsonObject jsonObject = reader.readObject();
             this.faktor = jsonObject.getJsonNumber("factor").doubleValue();
