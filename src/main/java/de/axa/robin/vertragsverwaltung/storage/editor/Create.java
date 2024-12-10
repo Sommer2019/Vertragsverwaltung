@@ -27,7 +27,7 @@ public class Create {
         }
         if (vsnr > 99999999) {
             System.err.println("Keine freien Versicherungsnummern mehr!");
-            System.exit(1);
+            throw new IllegalStateException("Keine freien Versicherungsnummern mehr!");
         }
         return vsnr;
     }
