@@ -6,6 +6,18 @@
     <title>Vertrag</title>
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
     <link rel="stylesheet" type="text/css" href="/static/css/handleVertrag.css">
+    <style>
+        #bundesland {
+            display: none;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            if ([[${editVisible}]]) {
+                toggleEdit();
+            }
+        };
+    </script>
 </head>
 <body>
 <h1><strong>Vertrag </strong><span th:text="${vsnr}"></span></h1>
@@ -31,6 +43,7 @@
         <div style="display: flex; gap: 10px;">
             <button type="submit">Speichern</button>
             <button type="button" onclick="hideEdit()">Abbrechen</button>
+            <input type="hidden" id="editVisible" name="editVisible" value="false">
         </div>
     </div>
     <div id="handledVertrag" class="vertrag-details">
@@ -143,7 +156,24 @@
                 <input th:field="*{partner.stadt}" type="text" id="stadt" required>
             </div>
             <div><span>Bundesland:</span><span th:text="${bundesland}"></span>
-                <input th:field="*{partner.bundesland}" type="text" id="bundesland" required>
+            <select th:field="*{partner.bundesland}" name="bundeslaender" id="bundesland" required>
+                <option value="Baden-Württemberg">Baden-Württemberg</option>
+                <option value="Bayern">Bayern</option>
+                <option value="Berlin">Berlin</option>
+                <option value="Brandenburg">Brandenburg</option>
+                <option value="Bremen">Bremen</option>
+                <option value="Hamburg">Hamburg</option>
+                <option value="Hessen">Hessen</option>
+                <option value="Mecklenburg-Vorpommern">Mecklenburg-Vorpommern</option>
+                <option value="Niedersachsen">Niedersachsen</option>
+                <option value="Nordrhein-Westfalen">Nordrhein-Westfalen</option>
+                <option value="Rheinland-Pfalz">Rheinland-Pfalz</option>
+                <option value="Saarland">Saarland</option>
+                <option value="Sachsen">Sachsen</option>
+                <option value="Sachsen-Anhalt">Sachsen-Anhalt</option>
+                <option value="Schleswig-Holstein">Schleswig-Holstein</option>
+                <option value="Thüringen">Thüringen</option>
+            </select>
             </div>
             <div><span>Land:</span><span th:text="${land}"></span>
                 <input th:field="*{partner.land}" type="text" id="land" value="Deutschland" readonly>

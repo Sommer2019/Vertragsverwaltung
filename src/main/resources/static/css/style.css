@@ -32,9 +32,10 @@ input[type="text"],
 input[type="date"],
 input[type="number"],
 span,
-button {
-    width: 200px;
-    height: 25px;
+button,
+select {
+    width: 200px !important;
+    height: 25px !important;
 }
 
 .vertrag-details {

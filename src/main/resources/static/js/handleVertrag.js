@@ -1,21 +1,23 @@
 function toggleEdit() {
     const handledVertrag = document.getElementById("handledVertrag");
-    const inputs = handledVertrag.querySelectorAll("input, label, #preiscalc, #kmh");
+    const inputs = handledVertrag.querySelectorAll("input, #bundesland, label, #preiscalc, #kmh");
     const flex = handledVertrag.querySelectorAll(".radio-group, .flex-container");
     flex.forEach(input => input.style.display = "flex");
     inputs.forEach(input => input.style.display = "block");
     document.getElementById("editContainer").style.display = "block";
     document.getElementById("menuContainer").style.display = "none";
+    document.getElementById('editVisible').value = 'true';
 }
 
 
 
 function hideEdit() {
     const handledVertrag = document.getElementById("handledVertrag");
-    const inputs = handledVertrag.querySelectorAll("#editContainer, input, label, #preiscalc, #kmh");
+    const inputs = handledVertrag.querySelectorAll("#editContainer, input, #bundesland, label, #preiscalc, #kmh");
     inputs.forEach(input => input.style.display = "none");
     document.getElementById("editContainer").style.display = "none";
     document.getElementById("menuContainer").style.display = "block";
+    document.getElementById('editVisible').value = 'false';
 }
 
 function toggleDelete() {

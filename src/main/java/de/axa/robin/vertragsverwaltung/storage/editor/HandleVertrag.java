@@ -110,7 +110,7 @@ public class HandleVertrag {
     }
 
     @PostMapping("/showEdit")
-    public String editVertrag(@ModelAttribute @Valid Vertrag vertrag, BindingResult result, Model model) {
+    public String editVertrag(@ModelAttribute @Valid Vertrag vertrag, BindingResult result, @RequestParam("editVisible") boolean editVisible, Model model) {
         inputValidator.validateVertrag(vertrag, result);
         if (result.hasErrors()) {
             Vertrag v = vertragsverwaltung.getVertrag(handledVertrag);
@@ -137,6 +137,7 @@ public class HandleVertrag {
             model.addAttribute("stadt", v.getPartner().getStadt());
             model.addAttribute("bundesland", v.getPartner().getBundesland());
             model.addAttribute("land", v.getPartner().getLand());
+            model.addAttribute("editVisible", editVisible);
             return "handleVertrag";
         }
         vertragsverwaltung.vertragLoeschen(menuSpring.getVsnr());
