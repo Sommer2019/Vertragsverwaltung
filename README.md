@@ -8,7 +8,7 @@ Neben Java wird der Auszubildende Maven nutzen.
 Als IDE nutzt der Auszubildende Intellij.
 
 ## Ziel
-Der Auszubildende soll bei dieser Übung die grundlegende Handhabung von Java erlernen und vertiefen. Dieses Projekt wurde nun mit Java der Bibliothek Spring erweitert und ein Frontend im Web hinzugefügt. Später wird es noch um JPA und Datenbanken, Funktionen werden.
+Der Auszubildende soll bei dieser Übung die grundlegende Handhabung von Java erlernen und vertiefen. Dieses Projekt wurde nun mit Java der Bibliothek Spring erweitert und ein Frontend im Web hinzugefügt. Später wird es noch um JPA und Datenbanken, Funktionen erweitert werden.
 
 # Aufgabenteile
 
