@@ -142,12 +142,8 @@ public class HandleVertrag {
         }
         vertragsverwaltung.vertragLoeschen(menuSpring.getVsnr());
         boolean monatlich = Objects.equals(vertrag.getMonatlich(), true);
-        Partner partner = new Partner(vertrag.getPartner().getVorname(), vertrag.getPartner().getNachname(), vertrag.getPartner().getGeschlecht(), vertrag.getPartner().getGeburtsdatum(), vertrag.getPartner().getLand(), vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(), vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(), vertrag.getPartner().getBundesland());
-        Fahrzeug fahrzeug = new Fahrzeug(vertrag.getFahrzeug().getAmtlichesKennzeichen(), vertrag.getFahrzeug().getHersteller(), vertrag.getFahrzeug().getTyp(), vertrag.getFahrzeug().getHoechstgeschwindigkeit(), vertrag.getFahrzeug().getWagnisskennziffer());
-        double preis = create.createPreis(monatlich, partner, fahrzeug);
-        Vertrag vertragsave = new Vertrag(menuSpring.getVsnr(), monatlich, preis, vertrag.getVersicherungsbeginn(), vertrag.getVersicherungsablauf(), vertrag.getAntragsDatum(), fahrzeug, partner);
-        vertragsverwaltung.vertragAnlegen(vertragsave);
-        model.addAttribute("confirm", "Vertrag mit VSNR " + menuSpring.getVsnr() + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(preis).replace('.', ',') + "€");
+        int vsnr = menuSpring.getVsnr();
+        model.addAttribute("confirm", "Vertrag mit VSNR " + menuSpring.getVsnr() + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(create.createVertragtoSave(vertrag, monatlich, vsnr)).replace('.', ',') + "€");
         return "index";
     }
 

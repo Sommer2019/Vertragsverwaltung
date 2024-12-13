@@ -18,11 +18,11 @@ import java.util.Locale;
 public class PrintVertrage {
     private final Setup setup = new Setup();
     private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
-    private List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
+
     @GetMapping("/printVertrage")
     public String showAll(Model model) {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.GERMANY));
-        vertrage = vertragsverwaltung.getVertrage();
+        List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
             summe = summe.add(BigDecimal.valueOf(v.getPreis() * (v.getMonatlich() ? 12 : 1)));

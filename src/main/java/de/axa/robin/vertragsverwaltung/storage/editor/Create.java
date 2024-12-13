@@ -3,18 +3,18 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.config.Setup;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
+import de.axa.robin.vertragsverwaltung.storage.Repository;
 
-import java.io.FileReader;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Create {
     ////Klassen einlesen////
     private final Setup setup = new Setup();
     private final Vertragsverwaltung vertragsverwaltung;
+    private final Repository repository = new Repository(setup);
 
     public Create(Vertragsverwaltung vertragsverwaltung) {
         this.vertragsverwaltung = vertragsverwaltung;
@@ -34,20 +34,10 @@ public class Create {
 
     public double createPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         double preis = 0;
-        double factor = 1.5;
-        double factoralter = 0.1;
-        double factorspeed = 0.4;
         int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
-        try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
-            JsonObject jsonObject = reader.readObject();
-            factor = jsonObject.getJsonNumber("factor").doubleValue();
-            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
-            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<Double> faktoren = repository.ladeFaktoren();
         try {
-            preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit() * factorspeed) * factor;
+            preis = (alter * faktoren.get(2) + fahrzeug.getHoechstgeschwindigkeit() * faktoren.get(3)) * faktoren.get(1);
             if (!monatlich) {
                 preis = preis * 11;
             }
@@ -55,5 +45,14 @@ public class Create {
             System.err.println("Ungültige Eingabe!");
         }
         return Math.round(preis * 100.0) / 100.0;
+    }
+
+    public double createVertragtoSave(Vertrag vertrag, boolean monatlich, int vsnr) {
+        Partner partner = new Partner(vertrag.getPartner().getVorname(), vertrag.getPartner().getNachname(), vertrag.getPartner().getGeschlecht(), vertrag.getPartner().getGeburtsdatum(), vertrag.getPartner().getLand(), vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(), vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(), vertrag.getPartner().getBundesland());
+        Fahrzeug fahrzeug = new Fahrzeug(vertrag.getFahrzeug().getAmtlichesKennzeichen(), vertrag.getFahrzeug().getHersteller(), vertrag.getFahrzeug().getTyp(), vertrag.getFahrzeug().getHoechstgeschwindigkeit(), vertrag.getFahrzeug().getWagnisskennziffer());
+        double preis = createPreis(monatlich, partner, fahrzeug);
+        Vertrag vertragsave = new Vertrag(vsnr, monatlich, preis, vertrag.getVersicherungsbeginn(), vertrag.getVersicherungsablauf(), vertrag.getAntragsDatum(), fahrzeug, partner);
+        vertragsverwaltung.vertragAnlegen(vertragsave);
+        return preis;
     }
 }

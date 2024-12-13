@@ -21,7 +21,7 @@ public class Repository {
     private final Setup setup;
 
     public Repository(Setup setup) {
-        this.setup = new Setup();
+        this.setup = setup;
     }
 
     public void speichereVertrage(List<Vertrag> vertrage) {
@@ -104,5 +104,36 @@ public class Repository {
             logger.log(Level.SEVERE, "Fehler beim laden", e);
         }
         return vertrage;
+    }
+
+    public List<Double> ladeFaktoren() {
+        double factor = 1.5, factoralter = 0.1, factorspeed = 0.4;
+        try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
+            JsonObject jsonObject = reader.readObject();
+            factor = jsonObject.getJsonNumber("factor").doubleValue();
+            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
+            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<Double> faktoren = new ArrayList<>();
+        faktoren.add(factor);
+        faktoren.add(factoralter);
+        faktoren.add(factorspeed);
+        return faktoren;
+    }
+
+    public void speichereFaktoren(double factor, double factorage, double factorspeed) {
+        try (FileWriter file = new FileWriter(setup.getPreisPath(), false)) {
+            JsonObject jsonObject = Json.createObjectBuilder()
+                    .add("factor", factor)
+                    .add("factorage", factorage)
+                    .add("factorspeed", factorspeed)
+                    .build();
+            JsonWriter writer = Json.createWriter(file);
+            writer.writeObject(jsonObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

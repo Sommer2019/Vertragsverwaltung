@@ -2,7 +2,6 @@ package de.axa.robin.vertragsverwaltung.storage.validators;
 
 import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -15,7 +14,6 @@ import java.time.LocalDate;
 
 public class InputValidator {
     private final Setup setup = new Setup();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
     private final AdressValidator adressValidator = new AdressValidator();
 
     public boolean string(String input) {

@@ -11,9 +11,9 @@ public class Preis {
     private double speed;
     private double age;
     private double faktor;
-    private final Setup setup = new Setup();
 
     public Preis() {
+        Setup setup = new Setup();
         try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
             JsonObject jsonObject = reader.readObject();
             this.faktor = jsonObject.getJsonNumber("factor").doubleValue();
