@@ -1,6 +1,5 @@
 package de.axa.robin.vertragsverwaltung.frontend.user_interaction;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import org.springframework.stereotype.Controller;
@@ -13,11 +12,14 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
 
-
 @Controller
 public class PrintVertrage {
-    private final Setup setup = new Setup();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
+
+    private final Vertragsverwaltung vertragsverwaltung;
+
+    public PrintVertrage(Vertragsverwaltung vertragsverwaltung) {
+        this.vertragsverwaltung = vertragsverwaltung;
+    }
 
     @GetMapping("/printVertrage")
     public String showAll(Model model) {
@@ -28,6 +30,11 @@ public class PrintVertrage {
             summe = summe.add(BigDecimal.valueOf(v.getPreis() * (v.getMonatlich() ? 12 : 1)));
             v.setFormattedPreis(decimalFormat.format(v.getPreis()));
         }
+
+        // Debug statements
+        System.out.println("Contracts: " + vertrage);
+        System.out.println("Total price: " + summe);
+
         model.addAttribute("vertrage", vertrage);
         model.addAttribute("preis", summe);
         return "printVertrage";

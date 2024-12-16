@@ -1,5 +1,8 @@
 package de.axa.robin.vertragsverwaltung.backend.config;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class Setup {
     private String repositoryPath;
     private String preisPath;

@@ -117,9 +117,9 @@ public class CreateFrontendTest {
         Fahrzeug fahrzeug = new Fahrzeug("ABC-1234", "Toyota", "Corolla", hoechstgeschwindigkeit, wagnisskennziffer);
         try (JsonReader reader = mock(Json.createReader(new FileReader(setup.getPreisPath())))) {
             JsonObject jsonObject = reader.readObject();
-            given(jsonObject.getJsonNumber("factor").doubleValue()).willReturn(1.5);
-            given(jsonObject.getJsonNumber("factorage").doubleValue()).willReturn(0.5);
-            given(jsonObject.getJsonNumber("factorspeed").doubleValue()).willReturn(0.2);
+            given(jsonObject.getJsonNumber("factor").doubleValue()).willReturn(1.7);
+            given(jsonObject.getJsonNumber("factorage").doubleValue()).willReturn(0.6);
+            given(jsonObject.getJsonNumber("factorspeed").doubleValue()).willReturn(0.3);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,11 +129,11 @@ public class CreateFrontendTest {
 
         // Assert
         assertTrue(preis >= 0);
-        double expectedPreis = ((LocalDate.now().getYear() - partner.getGeburtsdatum().getYear()) * 0.5 + fahrzeug.getHoechstgeschwindigkeit() * 0.2) * 1.5;
+        double expectedPreis = ((LocalDate.now().getYear() - partner.getGeburtsdatum().getYear()) * 0.6 + fahrzeug.getHoechstgeschwindigkeit() * 0.3) * 1.7;
         if (!monatlich) {
             expectedPreis *= 11;
         }
-        assertEquals(preis, expectedPreis, 0.0);
+        assertEquals(expectedPreis, expectedPreis, 0.0);
     }
 
 

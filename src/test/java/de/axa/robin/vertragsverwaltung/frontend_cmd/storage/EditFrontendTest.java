@@ -10,6 +10,7 @@ import de.axa.robin.vertragsverwaltung.frontend_cmd.user_interaction.Output;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -41,6 +42,7 @@ public class EditFrontendTest {
         mockOutput = mock(Output.class);
         mockVertragsverwaltung = mock(Vertragsverwaltung.class);
         edit = new EditFrontend(mockInput, mockVertragsverwaltung, mockOutput);
+        Mockito.when(setup.getPreisPath()).thenReturn("src/main/resources/preiscalctest.json");
     }
 
     @Test
@@ -300,4 +302,20 @@ public class EditFrontendTest {
         verify(mockOutput, times(1)).editwhat();
     }
 
+    @Test
+    void testRecalcprice() {
+        // Arrange
+        List<Vertrag> vertrage = new ArrayList<>();
+        vertrage.add(mockVertrag);
+        when(mockInput.getNumber(Double.class, "", -1, -1, -1, false)).thenReturn(1.7, 0.3, 0.6);
+
+        // Act
+        edit.recalcprice(vertrage);
+
+        // Assert
+        verify(mockOutput, times(1)).create("den neuen allgemeinen Faktor");
+        verify(mockOutput, times(1)).create("den neuen Altersfaktor");
+        verify(mockOutput, times(1)).create("den neuen Geschwindigkeitsfaktor");
+        verify(mockInput, times(3)).getNumber(Double.class, "", -1, -1, -1, false);
+    }
 }

@@ -2,10 +2,11 @@ package de.axa.robin.vertragsverwaltung.backend.storage;
 
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
+@Service
 public class Vertragsverwaltung {
     private final Repository repository;
     public Vertragsverwaltung(Setup setup) {
