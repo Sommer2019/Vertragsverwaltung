@@ -6,12 +6,16 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 
+import java.io.FileReader;
 import java.time.LocalDate;
 import java.util.List;
 
 public class Create {
-    ////Klassen einlesen////
+    /// /Klassen einlesen////
     private final Setup setup = new Setup();
     private final Vertragsverwaltung vertragsverwaltung;
     private final Repository repository = new Repository(setup);
@@ -34,10 +38,14 @@ public class Create {
 
     public double createPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         double preis = 0;
+        double factor, factoralter, factorspeed;
         int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
-        List<Double> faktoren = repository.ladeFaktoren();
+        JsonObject jsonObject = repository.ladeFaktoren();
+        factor = jsonObject.getJsonNumber("factor").doubleValue();
+        factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
+        factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
         try {
-            preis = (alter * faktoren.get(2) + fahrzeug.getHoechstgeschwindigkeit() * faktoren.get(3)) * faktoren.get(1);
+            preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit() * factorspeed) * factor;
             if (!monatlich) {
                 preis = preis * 11;
             }

@@ -4,8 +4,14 @@ import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonWriter;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,7 +26,7 @@ public class Edit {
         this.create = new Create(vertragsverwaltung);
     }
     public BigDecimal recalcpricerun(double factor, double factoralter, double factorspeed, List<Vertrag> vertrage) {
-        repository.speichereFaktoren(factor, factoralter, factorspeed);
+        repository.speichereFaktoren(factor,factoralter,factorspeed);
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
             v.setPreis(create.createPreis(v.getMonatlich(), v.getPartner(), v.getFahrzeug()));
@@ -34,7 +40,7 @@ public class Edit {
             vertragsverwaltung.vertragLoeschen(v.getVsnr());
             vertragsverwaltung.vertragAnlegen(v);
         }
-        System.out.println("Neue"+ summe);
+        System.out.println("Neue Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
         return summe;
     }
 }

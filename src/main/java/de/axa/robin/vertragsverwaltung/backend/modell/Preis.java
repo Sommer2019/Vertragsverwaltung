@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
+import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -14,14 +15,11 @@ public class Preis {
 
     public Preis() {
         Setup setup = new Setup();
-        try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
-            JsonObject jsonObject = reader.readObject();
-            this.faktor = jsonObject.getJsonNumber("factor").doubleValue();
-            this.age = jsonObject.getJsonNumber("factorage").doubleValue();
-            this.speed = jsonObject.getJsonNumber("factorspeed").doubleValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Repository repo = new Repository(setup);
+        JsonObject jsonObject = repo.ladeFaktoren();
+        this.faktor = jsonObject.getJsonNumber("factor").doubleValue();
+        this.age = jsonObject.getJsonNumber("factorage").doubleValue();
+        this.speed = jsonObject.getJsonNumber("factorspeed").doubleValue();
     }
 
     public double getSpeed() {

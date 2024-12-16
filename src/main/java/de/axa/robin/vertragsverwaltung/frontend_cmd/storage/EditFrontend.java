@@ -108,7 +108,7 @@ public class EditFrontend {
                     vertrag.getPartner().setGeschlecht(input.getChar(null, "das Geschlecht des Partners"));
                     break;
                 case 4:
-                    vertrag.getPartner().setGeburtsdatum(input.getDate("das Geburtsdatum", LocalDate.now().minusYears(18), LocalDate.now().minusYears(110)));
+                    vertrag.getPartner().setGeburtsdatum(input.getDate("das Geburtsdatum",  LocalDate.now().minusYears(110), LocalDate.now().minusYears(18)));
                     break;
                 case 5:
                     while (true) {

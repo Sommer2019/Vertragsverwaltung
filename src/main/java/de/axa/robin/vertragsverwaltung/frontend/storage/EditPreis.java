@@ -6,6 +6,9 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.backend.storage.editor.Edit;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -26,6 +30,7 @@ public class EditPreis {
     private final Repository repository = new Repository(setup);
     private final Edit edit = new Edit(vertragsverwaltung);
     private final List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
+
     @GetMapping("/editPreis")
     public String editPreis(Model model) {
         model.addAttribute("preismodell", new Preis());
@@ -35,11 +40,15 @@ public class EditPreis {
     @PostMapping("/precalcPreis")
     @ResponseBody
     public Map<String, Object> editPreis(@ModelAttribute Preis preismodell) {
-        List<Double> faktoren = repository.ladeFaktoren();
+        double factor, factoralter, factorspeed;
+        JsonObject jsonObject = repository.ladeFaktoren();
+        factor = jsonObject.getJsonNumber("factor").doubleValue();
+        factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
+        factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
         BigDecimal preis = edit.recalcpricerun(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertrage);
         Map<String, Object> response = new HashMap<>();
         response.put("preis", preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + " €");
-        edit.recalcpricerun(faktoren.get(1), faktoren.get(2), faktoren.get(3), vertrage);
+        edit.recalcpricerun(factor, factoralter, factorspeed, vertrage);
         return response;
     }
 

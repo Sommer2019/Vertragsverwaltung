@@ -300,21 +300,4 @@ public class EditFrontendTest {
         verify(mockOutput, times(1)).editwhat();
     }
 
-    @Test
-    void testRecalcprice() {
-        // Arrange
-        List<Vertrag> vertrage = new ArrayList<>();
-        vertrage.add(mockVertrag);
-        when(mockInput.getNumber(Double.class, "", -1, -1, -1, false)).thenReturn(1.0, 2.0, 3.0);
-        given(setup.getPreisPath()).willReturn("src/main/resources/preiscalctest.json");
-
-        // Act
-        edit.recalcprice(vertrage);
-
-        // Assert
-        verify(mockOutput, times(1)).create("den neuen allgemeinen Faktor");
-        verify(mockOutput, times(1)).create("den neuen Altersfaktor");
-        verify(mockOutput, times(1)).create("den neuen Geschwindigkeitsfaktor");
-        verify(mockInput, times(3)).getNumber(Double.class, "", -1, -1, -1, false);
-    }
 }

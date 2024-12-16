@@ -50,6 +50,7 @@ public class CreateVertrag {
 
     @PostMapping("/createVertrag")
     public String createVertrag(@ModelAttribute @Valid Vertrag vertrag, BindingResult result, Model model) {
+        // Custom validation logic
         inputValidator.validateVertrag(vertrag, result);
         if (vertrag.getVersicherungsbeginn().isBefore(LocalDate.now())) {
             result.rejectValue("versicherungsbeginn", "error.versicherungsbeginn", "Ungültiger Versicherungsbeginn");
@@ -57,14 +58,22 @@ public class CreateVertrag {
         if (vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen())) {
             result.rejectValue("fahrzeug.amtlichesKennzeichen", "error.fahrzeug.amtlichesKennzeichen", "Ungültiges Kennzeichen");
         }
+        // Check for errors
         if (result.hasErrors()) {
             model.addAttribute("vsnr", menuSpring.getVsnr());
             return "createVertrag";
         }
 
+        // Proceed with creating the contract if no errors
         boolean monatlich = Objects.equals(vertrag.getMonatlich(), true);
         int vsnr = create.createvsnr();
-        model.addAttribute("confirm", "Vertrag mit VSNR " + vsnr + " erfolgreich erstellt! Preis: " + String.valueOf(create.createVertragtoSave(vertrag, monatlich, vsnr)).replace('.', ',') + "€");
+        Partner partner = new Partner(vertrag.getPartner().getVorname(), vertrag.getPartner().getNachname(), vertrag.getPartner().getGeschlecht(), vertrag.getPartner().getGeburtsdatum(), vertrag.getPartner().getLand(), vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(), vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(), vertrag.getPartner().getBundesland());
+        Fahrzeug fahrzeug = new Fahrzeug(vertrag.getFahrzeug().getAmtlichesKennzeichen(), vertrag.getFahrzeug().getHersteller(), vertrag.getFahrzeug().getTyp(), vertrag.getFahrzeug().getHoechstgeschwindigkeit(), vertrag.getFahrzeug().getWagnisskennziffer());
+        double preis = create.createPreis(monatlich, partner, fahrzeug);
+        Vertrag vertragsave = new Vertrag(vsnr, monatlich, preis, vertrag.getVersicherungsbeginn(), vertrag.getVersicherungsablauf(), vertrag.getAntragsDatum(), fahrzeug, partner);
+
+        vertragsverwaltung.vertragAnlegen(vertragsave);
+        model.addAttribute("confirm", "Vertrag mit VSNR " + vsnr + " erfolgreich erstellt! Preis: " + String.valueOf(preis).replace('.', ',') + "€");
         return "index";
     }
 

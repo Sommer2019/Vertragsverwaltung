@@ -106,21 +106,14 @@ public class Repository {
         return vertrage;
     }
 
-    public List<Double> ladeFaktoren() {
-        double factor = 1.5, factoralter = 0.1, factorspeed = 0.4;
+    public JsonObject ladeFaktoren() {
+        JsonObject jsonObject = null;
         try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
-            JsonObject jsonObject = reader.readObject();
-            factor = jsonObject.getJsonNumber("factor").doubleValue();
-            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
-            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
+            jsonObject = reader.readObject();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        List<Double> faktoren = new ArrayList<>();
-        faktoren.add(factor);
-        faktoren.add(factoralter);
-        faktoren.add(factorspeed);
-        return faktoren;
+        return jsonObject;
     }
 
     public void speichereFaktoren(double factor, double factorage, double factorspeed) {

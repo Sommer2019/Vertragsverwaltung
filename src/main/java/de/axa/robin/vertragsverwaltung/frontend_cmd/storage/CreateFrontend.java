@@ -4,6 +4,7 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
+import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.validators.AdressValidator;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.frontend_cmd.user_interaction.Input;
@@ -16,10 +17,11 @@ import java.io.FileReader;
 import java.time.LocalDate;
 
 public class CreateFrontend {
-    ////Klassen einlesen////
+    /// /Klassen einlesen////
     private final Output output;
     private final Input input;
     private final Setup setup = new Setup();
+    private final Repository repository = new Repository(setup);
     private final AdressValidator addressAdressValidator = new AdressValidator();
     private final Vertragsverwaltung vertragsverwaltung;
 
@@ -109,18 +111,12 @@ public class CreateFrontend {
 
     public double createPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
         double preis = 0;
-        double factor = 1.5;
-        double factoralter = 0.1;
-        double factorspeed = 0.4;
+        double factor, factoralter, factorspeed;
         int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
-        try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
-            JsonObject jsonObject = reader.readObject();
-            factor = jsonObject.getJsonNumber("factor").doubleValue();
-            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
-            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        JsonObject jsonObject = repository.ladeFaktoren();
+        factor = jsonObject.getJsonNumber("factor").doubleValue();
+        factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
+        factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
         try {
             preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit() * factorspeed) * factor;
             if (!monatlich) {

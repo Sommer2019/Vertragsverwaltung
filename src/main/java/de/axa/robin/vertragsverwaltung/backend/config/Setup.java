@@ -1,8 +1,8 @@
 package de.axa.robin.vertragsverwaltung.backend.config;
 
 public class Setup {
-    private final String repositoryPath;
-    private final String preisPath;
+    private String repositoryPath;
+    private String preisPath;
     private final String brandsPath;
     private final String testURL;
     private final String checkURL;
@@ -45,5 +45,13 @@ public class Setup {
 
     public int getPort() {
         return port;
+    }
+
+    public void setRepositoryPath(String repositoryPath) {
+        this.repositoryPath=repositoryPath;
+    }
+
+    public void setPreisPath(String preisPath) {
+        this.preisPath = preisPath;
     }
 }
