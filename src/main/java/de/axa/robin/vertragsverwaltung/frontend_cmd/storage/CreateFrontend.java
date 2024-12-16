@@ -9,11 +9,8 @@ import de.axa.robin.vertragsverwaltung.backend.storage.validators.AdressValidato
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.frontend_cmd.user_interaction.Input;
 import de.axa.robin.vertragsverwaltung.frontend_cmd.user_interaction.Output;
-import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 
-import java.io.FileReader;
 import java.time.LocalDate;
 
 public class CreateFrontend {
@@ -42,7 +39,6 @@ public class CreateFrontend {
         double preis = createPreis(monatlich, partner, fahrzeug);
         output.preis(monatlich, preis);
         LocalDate beginn = input.getDate("den Versicherungsbeginn", LocalDate.now(), null);
-
         Vertrag vertrag = new Vertrag(
                 createvsnr(),
                 monatlich,
