@@ -42,14 +42,18 @@ class PrintVertrageTest {
         Fahrzeug fahrzeug2 = new Fahrzeug("XYZ789", "Audi", "A4", 200, 5678);
 
         Partner partner1 = new Partner("Max", "Mustermann", 'M', LocalDate.of(1980, 1, 1), "Deutschland", "Musterstraße", "1", "12345", "Musterstadt", "NRW");
+        List<Vertrag> vertrage = getVertrags(fahrzeug1, partner1, fahrzeug2);
+
+        given(vertragsverwaltung.getVertrage()).willReturn(vertrage);
+    }
+
+    private static List<Vertrag> getVertrags(Fahrzeug fahrzeug1, Partner partner1, Fahrzeug fahrzeug2) {
         Partner partner2 = new Partner("Erika", "Mustermann", 'F', LocalDate.of(1985, 5, 15), "Deutschland", "Beispielstraße", "2", "54321", "Beispielstadt", "NRW");
 
         Vertrag vertrag1 = new Vertrag(12345, true, 299.99, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), LocalDate.of(2022, 12, 1), fahrzeug1, partner1);
         Vertrag vertrag2 = new Vertrag(67890, false, 199.99, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), LocalDate.of(2022, 12, 1), fahrzeug2, partner2);
 
-        List<Vertrag> vertrage = Arrays.asList(vertrag1, vertrag2);
-
-        given(vertragsverwaltung.getVertrage()).willReturn(vertrage);
+        return Arrays.asList(vertrag1, vertrag2);
     }
 
     @Test
