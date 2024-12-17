@@ -1,8 +1,8 @@
 package de.axa.robin.vertragsverwaltung.backend.storage.editor;
 
+import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -15,7 +15,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.io.FileReader;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 

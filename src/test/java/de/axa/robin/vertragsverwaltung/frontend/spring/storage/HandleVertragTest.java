@@ -4,7 +4,6 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

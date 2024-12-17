@@ -9,14 +9,10 @@ import org.mockito.Mockito;
 
 import java.io.*;
 import java.net.*;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 @Nested
 class AdressValidatorTest {

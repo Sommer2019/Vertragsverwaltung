@@ -2,11 +2,7 @@ package de.axa.robin.vertragsverwaltung.backend.modell;
 
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
-import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-
-import java.io.FileReader;
 
 public class Preis {
     private double speed;

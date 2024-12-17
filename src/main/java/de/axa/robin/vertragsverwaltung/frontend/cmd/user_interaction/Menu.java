@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.frontend.cmd.user_interaction;
 
-import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
+import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.frontend.cmd.storage.CreateFrontend;
 import de.axa.robin.vertragsverwaltung.frontend.cmd.storage.DeleteFrontend;

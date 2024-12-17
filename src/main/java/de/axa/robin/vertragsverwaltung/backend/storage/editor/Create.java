@@ -6,13 +6,9 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
-import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 
-import java.io.FileReader;
 import java.time.LocalDate;
-import java.util.List;
 
 public class Create {
     /// /Klassen einlesen////

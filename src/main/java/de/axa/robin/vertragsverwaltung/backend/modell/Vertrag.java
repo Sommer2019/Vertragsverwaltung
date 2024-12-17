@@ -11,11 +11,11 @@ public class Vertrag {
     private double preis;
     private String formattedPreis;
     boolean monatlich;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate versicherungsbeginn;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate versicherungsablauf;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate antragsDatum;
     @Valid
     private Fahrzeug fahrzeug;
@@ -33,13 +33,16 @@ public class Vertrag {
         this.fahrzeug = fahrzeug;
         this.partner = partner;
     }
+
     public Vertrag(Fahrzeug fahrzeug, Partner partner) {
         this.fahrzeug = fahrzeug;
         this.partner = partner;
     }
+
     public Vertrag() {
         super();
     }
+
     // Getter und Setter
     public int getVsnr() {
         return vsnr;
@@ -104,6 +107,7 @@ public class Vertrag {
     public void setPartner(Partner partner) {
         this.partner = partner;
     }
+
     public String getFormattedPreis() {
         return formattedPreis;
     }
