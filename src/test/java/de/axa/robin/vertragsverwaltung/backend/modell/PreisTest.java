@@ -11,16 +11,15 @@ import static org.mockito.Mockito.*;
 
 public class PreisTest {
 
-    private Repository repository;
     private Preis preis;
 
     @BeforeEach
     public void setUp() {
-        repository = mock(Repository.class);
+        Repository repository = mock(Repository.class);
         JsonObject jsonObject = Json.createObjectBuilder()
-                .add("factor", 1.0)
-                .add("factorage", 1.0)
-                .add("factorspeed", 1.0)
+                .add("factor", 1.7)
+                .add("factorage", 0.3)
+                .add("factorspeed", 0.6)
                 .build();
         when(repository.ladeFaktoren()).thenReturn(jsonObject);
 
@@ -29,9 +28,9 @@ public class PreisTest {
 
     @Test
     public void testConstructor() {
-        assertEquals(1.0, preis.getFaktor());
-        assertEquals(1.0, preis.getAge());
-        assertEquals(1.0, preis.getSpeed());
+        assertEquals(1.7, preis.getFaktor());
+        assertEquals(0.3, preis.getAge());
+        assertEquals(0.6, preis.getSpeed());
     }
 
     @Test

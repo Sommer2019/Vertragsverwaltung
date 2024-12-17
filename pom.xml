@@ -14,7 +14,6 @@
     <version>1.0-SNAPSHOT</version>
     <name>Vertragsverwaltung</name>
     <description>Vertragsverwaltung in Spring Boot</description>
-
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -38,6 +37,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>6.2.1</version> <!-- Update to a version that has the fix -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
