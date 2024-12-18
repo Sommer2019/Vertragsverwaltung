@@ -30,66 +30,75 @@ public class HandleVertrag {
     private int handledVertrag = 0;
 
     @PostMapping("/")
-    public String processPrintVertrag(@RequestParam int VSNR, Model model) {
-        menuSpring.setVsnr(VSNR);
-        handledVertrag=VSNR;
-        Vertrag v = vertragsverwaltung.getVertrag(VSNR);
-        if (v == null) {
-            model.addAttribute("result", "Vertrag nicht gefunden!");
+    public String processPrintVertrag(@RequestParam(required = false) String vsnr, Model model) {
+        if (vsnr == null || vsnr.isEmpty()) {
             return "index";
         }
-        Partner partner = new Partner();
-        Fahrzeug fahrzeug = new Fahrzeug();
-        Vertrag vertrag = new Vertrag(fahrzeug,partner);
-        vertrag.getFahrzeug().setHoechstgeschwindigkeit(200);
-        vertrag.getFahrzeug().setWagnisskennziffer(112);
-        vertrag.getPartner().setLand("Deutschland");
-        model.addAttribute("vertrag", vertrag);
-        model.addAttribute("vsnr", VSNR);
-        model.addAttribute("preis", String.valueOf(v.getPreis()).replace('.', ','));
-        model.addAttribute("preisnew", String.valueOf(v.getPreis()).replace('.', ','));
-        model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
-        vertrag.setMonatlich(v.getMonatlich());
-        model.addAttribute("start", v.getVersicherungsbeginn());
-        vertrag.setVersicherungsbeginn(v.getVersicherungsbeginn());
-        model.addAttribute("end", v.getVersicherungsablauf());
-        vertrag.setVersicherungsablauf(v.getVersicherungsablauf());
-        model.addAttribute("create", v.getAntragsDatum());
-        vertrag.setAntragsDatum(v.getAntragsDatum());
-        model.addAttribute("kennzeichen", v.getFahrzeug().getAmtlichesKennzeichen());
-        vertrag.getFahrzeug().setAmtlichesKennzeichen(v.getFahrzeug().getAmtlichesKennzeichen());
-        model.addAttribute("hersteller", v.getFahrzeug().getHersteller());
-        vertrag.getFahrzeug().setHersteller(v.getFahrzeug().getHersteller());
-        model.addAttribute("typ", v.getFahrzeug().getTyp());
-        vertrag.getFahrzeug().setTyp(v.getFahrzeug().getTyp());
-        model.addAttribute("maxspeed", v.getFahrzeug().getHoechstgeschwindigkeit());
-        vertrag.getFahrzeug().setHoechstgeschwindigkeit(v.getFahrzeug().getHoechstgeschwindigkeit());
-        model.addAttribute("wkz", v.getFahrzeug().getWagnisskennziffer());
-        vertrag.getFahrzeug().setWagnisskennziffer(v.getFahrzeug().getWagnisskennziffer());
-        model.addAttribute("vorname", v.getPartner().getVorname());
-        vertrag.getPartner().setVorname(v.getPartner().getVorname());
-        model.addAttribute("nachname", v.getPartner().getNachname());
-        vertrag.getPartner().setNachname(v.getPartner().getNachname());
-        model.addAttribute("geschlecht", v.getPartner().getGeschlecht());
-        vertrag.getPartner().setGeschlecht(v.getPartner().getGeschlecht());
-        model.addAttribute("birth", v.getPartner().getGeburtsdatum());
-        vertrag.getPartner().setGeburtsdatum(v.getPartner().getGeburtsdatum());
-        model.addAttribute("strasse", v.getPartner().getStrasse());
-        vertrag.getPartner().setStrasse(v.getPartner().getStrasse());
-        model.addAttribute("hausnummer", v.getPartner().getHausnummer());
-        vertrag.getPartner().setHausnummer(v.getPartner().getHausnummer());
-        model.addAttribute("plz", v.getPartner().getPlz());
-        vertrag.getPartner().setPlz(v.getPartner().getPlz());
-        model.addAttribute("stadt", v.getPartner().getStadt());
-        vertrag.getPartner().setStadt(v.getPartner().getStadt());
-        model.addAttribute("bundesland", v.getPartner().getBundesland());
-        vertrag.getPartner().setBundesland(v.getPartner().getBundesland());
-        model.addAttribute("land", v.getPartner().getLand());
-        vertrag.getPartner().setLand(v.getPartner().getLand());
-        if (v.getVersicherungsablauf().isBefore(LocalDate.now())) {
-            model.addAttribute("gueltig", "Vertrag abgelaufen!");
+        try {
+            int vsnrInt = Integer.parseInt(vsnr);
+            menuSpring.setVsnr(vsnrInt);
+            handledVertrag = vsnrInt;
+            Vertrag v = vertragsverwaltung.getVertrag(vsnrInt);
+            if (v == null) {
+                model.addAttribute("result", "Vertrag nicht gefunden!");
+                return "index";
+            }
+            Partner partner = new Partner();
+            Fahrzeug fahrzeug = new Fahrzeug();
+            Vertrag vertrag = new Vertrag(fahrzeug, partner);
+            vertrag.getFahrzeug().setHoechstgeschwindigkeit(200);
+            vertrag.getFahrzeug().setWagnisskennziffer(112);
+            vertrag.getPartner().setLand("Deutschland");
+            model.addAttribute("vertrag", vertrag);
+            model.addAttribute("vsnr", vsnrInt);
+            model.addAttribute("preis", String.valueOf(v.getPreis()).replace('.', ','));
+            model.addAttribute("preisnew", String.valueOf(v.getPreis()).replace('.', ','));
+            model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
+            vertrag.setMonatlich(v.getMonatlich());
+            model.addAttribute("start", v.getVersicherungsbeginn());
+            vertrag.setVersicherungsbeginn(v.getVersicherungsbeginn());
+            model.addAttribute("end", v.getVersicherungsablauf());
+            vertrag.setVersicherungsablauf(v.getVersicherungsablauf());
+            model.addAttribute("create", v.getAntragsDatum());
+            vertrag.setAntragsDatum(v.getAntragsDatum());
+            model.addAttribute("kennzeichen", v.getFahrzeug().getAmtlichesKennzeichen());
+            vertrag.getFahrzeug().setAmtlichesKennzeichen(v.getFahrzeug().getAmtlichesKennzeichen());
+            model.addAttribute("hersteller", v.getFahrzeug().getHersteller());
+            vertrag.getFahrzeug().setHersteller(v.getFahrzeug().getHersteller());
+            model.addAttribute("typ", v.getFahrzeug().getTyp());
+            vertrag.getFahrzeug().setTyp(v.getFahrzeug().getTyp());
+            model.addAttribute("maxspeed", v.getFahrzeug().getHoechstgeschwindigkeit());
+            vertrag.getFahrzeug().setHoechstgeschwindigkeit(v.getFahrzeug().getHoechstgeschwindigkeit());
+            model.addAttribute("wkz", v.getFahrzeug().getWagnisskennziffer());
+            vertrag.getFahrzeug().setWagnisskennziffer(v.getFahrzeug().getWagnisskennziffer());
+            model.addAttribute("vorname", v.getPartner().getVorname());
+            vertrag.getPartner().setVorname(v.getPartner().getVorname());
+            model.addAttribute("nachname", v.getPartner().getNachname());
+            vertrag.getPartner().setNachname(v.getPartner().getNachname());
+            model.addAttribute("geschlecht", v.getPartner().getGeschlecht());
+            vertrag.getPartner().setGeschlecht(v.getPartner().getGeschlecht());
+            model.addAttribute("birth", v.getPartner().getGeburtsdatum());
+            vertrag.getPartner().setGeburtsdatum(v.getPartner().getGeburtsdatum());
+            model.addAttribute("strasse", v.getPartner().getStrasse());
+            vertrag.getPartner().setStrasse(v.getPartner().getStrasse());
+            model.addAttribute("hausnummer", v.getPartner().getHausnummer());
+            vertrag.getPartner().setHausnummer(v.getPartner().getHausnummer());
+            model.addAttribute("plz", v.getPartner().getPlz());
+            vertrag.getPartner().setPlz(v.getPartner().getPlz());
+            model.addAttribute("stadt", v.getPartner().getStadt());
+            vertrag.getPartner().setStadt(v.getPartner().getStadt());
+            model.addAttribute("bundesland", v.getPartner().getBundesland());
+            vertrag.getPartner().setBundesland(v.getPartner().getBundesland());
+            model.addAttribute("land", v.getPartner().getLand());
+            vertrag.getPartner().setLand(v.getPartner().getLand());
+            if (v.getVersicherungsablauf().isBefore(LocalDate.now())) {
+                model.addAttribute("gueltig", "Vertrag abgelaufen!");
+            }
+            return "handleVertrag";
+        } catch (NumberFormatException e) {
+            model.addAttribute("result", "Ungültige VSNR!");
+            return "index";
         }
-        return "handleVertrag";
     }
 
     @GetMapping("/showVertrag")

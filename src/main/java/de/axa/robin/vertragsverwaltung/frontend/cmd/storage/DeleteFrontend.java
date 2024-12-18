@@ -12,14 +12,14 @@ public class DeleteFrontend {
     private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
     private final Output output = new Output();
     private final Input input;
-    public static final String DEL = "gelöscht";
+    public static final String del = "gelöscht";
 
     public DeleteFrontend(Input input) {
         this.input = input;
     }
 
     public void delete(int vsnrdelete) {
-        char inputresult = input.getChar(vertragsverwaltung.getVertrag(vsnrdelete), DEL);
+        char inputresult = input.getChar(vertragsverwaltung.getVertrag(vsnrdelete), del);
         switch (Character.toLowerCase(inputresult)) {
             case 'y':
                 vertragsverwaltung.vertragLoeschen(vsnrdelete);

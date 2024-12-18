@@ -54,7 +54,7 @@ class DeleteFrontendTest {
         assertNotNull(retrievedVertrag, "Contract should not be null");
 
         // Simulate user input for confirmation
-        given(input.getChar(retrievedVertrag, DeleteFrontend.DEL)).willReturn('y');
+        given(input.getChar(retrievedVertrag, DeleteFrontend.del)).willReturn('y');
         given(setup.getRepositoryPath()).willReturn("src/main/resources/vertragetest.json");
 
         // Perform delete operation
@@ -71,7 +71,7 @@ class DeleteFrontendTest {
         vertrag.setVsnr(12345678);
         vertragsverwaltung.vertragAnlegen(vertrag);
         // Simulate user input for cancellation
-        given(input.getChar(vertragsverwaltung.getVertrag(12345678), DeleteFrontend.DEL)).willReturn('n');
+        given(input.getChar(vertragsverwaltung.getVertrag(12345678), DeleteFrontend.del)).willReturn('n');
         given(setup.getRepositoryPath()).willReturn("src/main/resources/vertragetest.json");
         // Perform delete operation
         delete.delete(12345678);
@@ -86,7 +86,7 @@ class DeleteFrontendTest {
         vertrag.setVsnr(12345678);
         vertragsverwaltung.vertragAnlegen(vertrag);
         // Simulate user input for invalid input
-        given(input.getChar(vertragsverwaltung.getVertrag(12345678), DeleteFrontend.DEL)).willReturn('x');
+        given(input.getChar(vertragsverwaltung.getVertrag(12345678), DeleteFrontend.del)).willReturn('x');
         given(setup.getRepositoryPath()).willReturn("src/main/resources/vertragetest.json");
         // Perform delete operation
         delete.delete(12345678);
