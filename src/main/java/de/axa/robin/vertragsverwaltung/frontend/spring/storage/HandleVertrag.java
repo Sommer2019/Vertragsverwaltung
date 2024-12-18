@@ -29,10 +29,10 @@ public class HandleVertrag {
     private final InputValidator inputValidator = new InputValidator();
     private int handledVertrag = 0;
 
-    @PostMapping("/")
+    @PostMapping("/home")
     public String processPrintVertrag(@RequestParam(required = false) String vsnr, Model model) {
         if (vsnr == null || vsnr.isEmpty()) {
-            return "index";
+            return "home";
         }
         try {
             int vsnrInt = Integer.parseInt(vsnr);
@@ -41,7 +41,7 @@ public class HandleVertrag {
             Vertrag v = vertragsverwaltung.getVertrag(vsnrInt);
             if (v == null) {
                 model.addAttribute("result", "Vertrag nicht gefunden!");
-                return "index";
+                return "home";
             }
             Partner partner = new Partner();
             Fahrzeug fahrzeug = new Fahrzeug();
@@ -97,7 +97,7 @@ public class HandleVertrag {
             return "handleVertrag";
         } catch (NumberFormatException e) {
             model.addAttribute("result", "Ungültige VSNR!");
-            return "index";
+            return "home";
         }
     }
 
@@ -116,7 +116,7 @@ public class HandleVertrag {
     public String deleteVertrag(Model model) {
         vertragsverwaltung.vertragLoeschen(menuSpring.getVsnr());
         model.addAttribute("confirm", "Vertrag erfolgreich gelöscht!");
-        return "index";
+        return "home";
     }
 
     @PostMapping("/showEdit")
@@ -154,7 +154,7 @@ public class HandleVertrag {
         boolean monatlich = Objects.equals(vertrag.getMonatlich(), true);
         int vsnr = menuSpring.getVsnr();
         model.addAttribute("confirm", "Vertrag mit VSNR " + menuSpring.getVsnr() + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(create.createVertragtoSave(vertrag, monatlich, vsnr)).replace('.', ',') + "€");
-        return "index";
+        return "home";
     }
 
 }

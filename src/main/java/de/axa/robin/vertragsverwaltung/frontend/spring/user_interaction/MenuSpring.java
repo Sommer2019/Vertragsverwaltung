@@ -19,4 +19,9 @@ public class MenuSpring {
     public String startWebsite() {
         return "index";
     }
+
+    @GetMapping("/home")
+    public String home() {
+        return "home";
+    }
 }

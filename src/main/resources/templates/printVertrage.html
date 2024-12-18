@@ -52,8 +52,9 @@
         <b style="color: red;" th:if="${vertrag.versicherungsablauf.isBefore(T(java.time.LocalDate).now())}">Vertrag abgelaufen</b>
     </details>
 </div>
-<a href="/">
+<p></p>
+<form action="/home" method="get">
     <button>Zurück</button>
-</a>
+</form>
 </body>
 </html>

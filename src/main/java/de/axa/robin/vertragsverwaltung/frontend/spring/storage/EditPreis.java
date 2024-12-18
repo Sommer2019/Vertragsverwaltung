@@ -53,6 +53,6 @@ public class EditPreis {
     public String editPreis(@ModelAttribute Preis preismodell, Model model) {
         BigDecimal preis = edit.recalcpricerun(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertrage);
         model.addAttribute("confirm", "Preise erfolgreich aktualisiert! neue Preissumme: " + preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + "€ pro Jahr");
-        return "index";
+        return "home";
     }
 }

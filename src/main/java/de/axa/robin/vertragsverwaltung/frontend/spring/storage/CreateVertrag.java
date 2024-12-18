@@ -77,7 +77,7 @@ public class CreateVertrag {
 
         vertragsverwaltung.vertragAnlegen(vertragsave);
         model.addAttribute("confirm", "Vertrag mit VSNR " + vsnr + " erfolgreich erstellt! Preis: " + String.valueOf(preis).replace('.', ',') + "€");
-        return "index";
+        return "home";
     }
 
     @PostMapping("/createPreis")
