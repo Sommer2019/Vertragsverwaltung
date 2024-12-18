@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>6.2.1</version> <!-- Update to a version that has the fix -->
+            <version>6.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
