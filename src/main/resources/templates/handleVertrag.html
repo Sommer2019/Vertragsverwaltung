@@ -12,7 +12,7 @@
         }
     </style>
     <script>
-        window.onload = function() {
+        window.onload = function () {
             if ([[${editVisible}]]) {
                 toggleEdit();
             }
@@ -51,7 +51,8 @@
             <summary><b>Vertragsdaten</b></summary>
             <div><span>Preis:</span><span th:text="${preis} + ' €'"></span>
                 <div id="preiscalc">
-                    <button type="button" id="calculatePrice"><span id="preis" th:text="${preis} + ' €'"></span>
+                    <button type="button" id="calculatePrice">
+                        <span id="preis" th:text="${preis} + ' €'"></span>
                     </button>
                 </div>
             </div>
@@ -102,7 +103,8 @@
             <b th:if="${#fields.hasErrors('fahrzeug.typ')}" th:class="${#fields.hasErrors('fahrzeug.typ')}? error">
                 Ungültiger Typ</b>
             <div class="flex-container"><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span>
-                <input th:field="*{fahrzeug.hoechstgeschwindigkeit}" type="number" id="speed" min="45" max="250" required>
+                <input th:field="*{fahrzeug.hoechstgeschwindigkeit}" type="number" id="speed" min="45" max="250"
+                       required>
                 <label for="speed" id="kmh">km/h</label>
             </div>
             <b th:if="${#fields.hasErrors('fahrzeug.hoechstgeschwindigkeit')}"
@@ -120,12 +122,14 @@
             <div><span>Vorname:</span><span th:text="${vorname}"></span>
                 <input th:field="*{partner.vorname}" name="vorname" type="text" id="vorname" required>
             </div>
-            <b th:if="${#fields.hasErrors('partner.vorname')}" th:class="${#fields.hasErrors('partner.vorname')}? error">
+            <b th:if="${#fields.hasErrors('partner.vorname')}"
+               th:class="${#fields.hasErrors('partner.vorname')}? error">
                 Ungültiger Vorname</b>
             <div><span>Nachname:</span><span th:text="${nachname}"></span>
                 <input th:field="*{partner.nachname}" type="text" id="nachname" required>
             </div>
-            <b th:if="${#fields.hasErrors('partner.nachname')}" th:class="${#fields.hasErrors('partner.nachname')}? error">
+            <b th:if="${#fields.hasErrors('partner.nachname')}"
+               th:class="${#fields.hasErrors('partner.nachname')}? error">
                 Ungültiger Nachname</b>
             <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span>
                 <div class="flex-container">
@@ -138,7 +142,7 @@
                 </div>
             </div>
             <div><span>Geburtsdatum:</span><span id="birthSpan" th:text="${birth}"></span>
-                <input th:field="*{partner.geburtsdatum}"  type="date" id="birth" required>
+                <input th:field="*{partner.geburtsdatum}" type="date" id="birth" required>
             </div>
             <b th:if="${#fields.hasErrors('partner.geburtsdatum')}"
                th:class="${#fields.hasErrors('partner.geburtsdatum')}? error">
@@ -156,24 +160,24 @@
                 <input th:field="*{partner.stadt}" type="text" id="stadt" required>
             </div>
             <div><span>Bundesland:</span><span th:text="${bundesland}"></span>
-            <select th:field="*{partner.bundesland}" name="bundeslaender" id="bundesland" required>
-                <option value="Baden-Württemberg">Baden-Württemberg</option>
-                <option value="Bayern">Bayern</option>
-                <option value="Berlin">Berlin</option>
-                <option value="Brandenburg">Brandenburg</option>
-                <option value="Bremen">Bremen</option>
-                <option value="Hamburg">Hamburg</option>
-                <option value="Hessen">Hessen</option>
-                <option value="Mecklenburg-Vorpommern">Mecklenburg-Vorpommern</option>
-                <option value="Niedersachsen">Niedersachsen</option>
-                <option value="Nordrhein-Westfalen">Nordrhein-Westfalen</option>
-                <option value="Rheinland-Pfalz">Rheinland-Pfalz</option>
-                <option value="Saarland">Saarland</option>
-                <option value="Sachsen">Sachsen</option>
-                <option value="Sachsen-Anhalt">Sachsen-Anhalt</option>
-                <option value="Schleswig-Holstein">Schleswig-Holstein</option>
-                <option value="Thüringen">Thüringen</option>
-            </select>
+                <select th:field="*{partner.bundesland}" name="bundeslaender" id="bundesland" required>
+                    <option value="Baden-Württemberg">Baden-Württemberg</option>
+                    <option value="Bayern">Bayern</option>
+                    <option value="Berlin">Berlin</option>
+                    <option value="Brandenburg">Brandenburg</option>
+                    <option value="Bremen">Bremen</option>
+                    <option value="Hamburg">Hamburg</option>
+                    <option value="Hessen">Hessen</option>
+                    <option value="Mecklenburg-Vorpommern">Mecklenburg-Vorpommern</option>
+                    <option value="Niedersachsen">Niedersachsen</option>
+                    <option value="Nordrhein-Westfalen">Nordrhein-Westfalen</option>
+                    <option value="Rheinland-Pfalz">Rheinland-Pfalz</option>
+                    <option value="Saarland">Saarland</option>
+                    <option value="Sachsen">Sachsen</option>
+                    <option value="Sachsen-Anhalt">Sachsen-Anhalt</option>
+                    <option value="Schleswig-Holstein">Schleswig-Holstein</option>
+                    <option value="Thüringen">Thüringen</option>
+                </select>
             </div>
             <div><span>Land:</span><span th:text="${land}"></span>
                 <input th:field="*{partner.land}" type="text" id="land" value="Deutschland" readonly>

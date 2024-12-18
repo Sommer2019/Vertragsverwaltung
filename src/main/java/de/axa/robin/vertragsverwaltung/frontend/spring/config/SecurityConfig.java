@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -22,26 +23,31 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/static/**", "/index.html", "/", "/login", "/error").permitAll()
-                        .requestMatchers("/home").hasRole("ADMIN")
+                        .requestMatchers("/static/**", "/", "/login", "/error").permitAll()
+                        .requestMatchers("/home", "/printVertrage", "/editPreis", "/createVertrag", "/home", "/showEdit", "/showDelete", "/precalcPreis", "/editPreis", "/createPreis", "/logout").hasRole("ADMIN")
                 )
                 .formLogin(form -> form
-                        .loginPage("/index.html")
+                        .loginPage("/")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/home", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/index.html?logout")
+                        .logoutSuccessHandler(customLogoutSuccessHandler())
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/index.html"))
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))
                 )
                 .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
+    }
+
+    @Bean
+    public LogoutSuccessHandler customLogoutSuccessHandler() {
+        return (request, response, authentication) -> response.sendRedirect("/?logout");
     }
 
     @Bean
