@@ -14,7 +14,6 @@ import java.util.Locale;
 
 @Controller
 public class PrintVertrage {
-
     private final Vertragsverwaltung vertragsverwaltung;
 
     public PrintVertrage(Vertragsverwaltung vertragsverwaltung) {

@@ -30,7 +30,7 @@ public class HandleVertrag {
     private int handledVertrag = 0;
 
     @PostMapping("/home")
-    public String processPrintVertrag(@RequestParam(required = false) String vsnr, Model model) {
+    public String processPrintVertrag(@RequestParam String vsnr, Model model) {
         if (vsnr == null || vsnr.isEmpty()) {
             return "home";
         }
@@ -101,10 +101,6 @@ public class HandleVertrag {
         }
     }
 
-    @GetMapping("/showVertrag")
-    public String showVertrag() {
-        return "handleVertrag";
-    }
 
     @GetMapping("/showDelete")
     public String showDelete(Model model) {
