@@ -35,7 +35,6 @@ public class VertragRestController {
 
     @PostMapping
     public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) {
-        vertragsverwaltung.vertragLoeschen(vertrag.getVsnr());
         vertragsverwaltung.vertragAnlegen(vertrag);
         return ResponseEntity.ok(vertrag);
     }
