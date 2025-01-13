@@ -42,7 +42,7 @@ updatePreis.addEventListener('click', updatePrice);
 
 function checkKennzeichen(input, regex) {
     if (regex.test(input.value)) {
-        fetch('vertrage.json')
+        fetch('/json/vertrage.json')
             .then(response => response.json())
             .then(data => {
                 const kennzeichenExists = data.some(vertrag => vertrag.fahrzeug.amtlichesKennzeichen === input.value.trim());
@@ -57,11 +57,11 @@ function checkKennzeichen(input, regex) {
 }
 
 function validateInputHersteller(input) {
-    fetch('brands.json')
+    fetch('/json/brands.json')
         .then(response => response.json())
         .then(data => {
             const brands = data.brands;
-            const inputValue = input.value.trim();
+            const inputValue = `'${input.value.trim()}'`;
             input.classList.toggle('invalid', !brands.includes(inputValue));
             input.classList.toggle('valid', brands.includes(inputValue));
         })
