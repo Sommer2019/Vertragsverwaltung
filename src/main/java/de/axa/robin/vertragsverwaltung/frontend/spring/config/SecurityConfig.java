@@ -26,7 +26,7 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/api/**")
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/static/**", "/js/**", "/css/**", "/", "/login", "/error").permitAll()
+                        .requestMatchers("/static/**", "/js/**", "/css/**", "/", "/login", "/error", "/favicon.ico").permitAll()
                         .requestMatchers("/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/home", "/showEdit", "/showDelete", "/precalcPreis", "/editPreis", "/api/**", "/createPreis", "/logout").hasRole("ADMIN")
                 )
                 .formLogin(form -> form
