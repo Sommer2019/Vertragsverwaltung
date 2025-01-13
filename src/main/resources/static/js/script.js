@@ -28,17 +28,49 @@ function validateInput(input, regex) {
     input.classList.toggle('valid', regex.test(input.value));
 }
 
-kennzeichenInput.addEventListener('input', () => checkKennzeichen(kennzeichenInput, regexKennzeichen));
-herstellerInput.addEventListener('input', () => validateInputHersteller(herstellerInput));
-vornameInput.addEventListener('input', () => validateInput(vornameInput, regexName));
-nachnameInput.addEventListener('input', () => validateInput(nachnameInput, regexName));
-typInput.addEventListener('input', () => validateInput(typInput, regexTyp));
-strasseInput.addEventListener('input', () => validateInput(strasseInput, regexName));
-hausnummerInput.addEventListener('input', () => validateInput(hausnummerInput, regexHausnummer));
-plzInput.addEventListener('input', () => validateInput(plzInput, regexPLZ));
-stadtInput.addEventListener('input', () => validateInput(stadtInput, regexName));
-bundeslandInput.addEventListener('input', () => validateInput(bundeslandInput, regexName));
-updatePreis.addEventListener('click', updatePrice);
+if (kennzeichenInput) {
+    kennzeichenInput.addEventListener('input', () => checkKennzeichen(kennzeichenInput, regexKennzeichen));
+}
+
+if (herstellerInput) {
+    herstellerInput.addEventListener('input', () => validateInputHersteller(herstellerInput));
+}
+
+if (vornameInput) {
+    vornameInput.addEventListener('input', () => validateInput(vornameInput, regexName));
+}
+
+if (nachnameInput) {
+    nachnameInput.addEventListener('input', () => validateInput(nachnameInput, regexName));
+}
+
+if (typInput) {
+    typInput.addEventListener('input', () => validateInput(typInput, regexTyp));
+}
+
+if (strasseInput) {
+    strasseInput.addEventListener('input', () => validateInput(strasseInput, regexName));
+}
+
+if (hausnummerInput) {
+    hausnummerInput.addEventListener('input', () => validateInput(hausnummerInput, regexHausnummer));
+}
+
+if (plzInput) {
+    plzInput.addEventListener('input', () => validateInput(plzInput, regexPLZ));
+}
+
+if (stadtInput) {
+    stadtInput.addEventListener('input', () => validateInput(stadtInput, regexName));
+}
+
+if (bundeslandInput) {
+    bundeslandInput.addEventListener('input', () => validateInput(bundeslandInput, regexName));
+}
+
+if (updatePreis) {
+    updatePreis.addEventListener('click', updatePrice);
+}
 
 function checkKennzeichen(input, regex) {
     if (regex.test(input.value)) {
