@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.backend.rest;
+package de.axa.robin.vertragsverwaltung.api.rest;
 
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/vertrage")
+@RequestMapping("/api/rest/vertrage")
 public class VertragRestController {
     private final Vertragsverwaltung vertragsverwaltung;
     private final Create create;
