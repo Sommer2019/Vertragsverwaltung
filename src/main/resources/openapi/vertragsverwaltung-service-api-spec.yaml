@@ -1,0 +1,313 @@
+openapi: 3.0.3
+info:
+  version: 0.3.0
+  title: REST-Endpoint Vertragsverwaltung
+  termsOfService: https://api.axa.de/terms/
+  contact:
+    name: ITMO-DEV
+    url: https://api.axa.de/support
+    email: itdm-k@axa.de
+  x-audience: company-internal
+  x-api-id: de-axa-robin-vertragsverwaltung
+  description: "API for inserting audit events to the Vertragsverwaltung Application"
+servers:
+  - url: /linienkontrolle/api/v1
+    description: Relative base url
+  - url: http://localhost:8080/linienkontrolle/api/v1
+    description: Local Dev
+security:
+  - JwtAuth: [ ]
+  - EipAuth: [ ]
+paths:
+  /audits/{line_of_business}:
+    description: Endpoint for inserting multiple audit events to the KFZ-Linienkontrolle Application
+    parameters:
+      - name: line_of_business
+        schema:
+          type: string
+          maxLength: 16
+        in: path
+        required: true
+        example: "KFZ-PKG"
+        description: line of business to which this audit belongs to
+      - name: traceparent
+        description: |
+          AXA-Trace-ID; should be initiated and logged on client site (request initiator)
+          If set it must follow the standard format; see also:
+          - https://confluence.axa.com/confluence/x/0w59B#APIDesignGuides-Tracing
+          - https://www.w3.org/TR/trace-context/#traceparent-header
+        schema:
+          type: string
+        in: header
+        required: false
+
+    post:
+      description: Post (multiple) audit events to the KFZ-Linienkontrolle Application
+      tags:
+        - data
+      security:
+        - JwtAuth: [ ]
+        - EipAuth: [ ]
+      summary: Insert audit events
+      operationId: insertAuditEvents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              title: audits
+              items:
+                $ref: "#/components/schemas/Audit"
+              uniqueItems: true
+              minItems: 1
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '403':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        default:
+          description: Unexpected Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /mgmtinfo/health:
+    description: Used for health probes
+    get:
+      description: Endpoint for health check, 200 on success which means the api is healthy
+      tags: [ Management Info ]
+      operationId: isAlive
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '404':
+          description: Ressource not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '503':
+          description: Service Unavailable
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+components:
+  securitySchemes:
+    JwtAuth:
+      type: apiKey
+      name: X-Axa-Context
+      in: header
+      description: JWT, identifying the end user.
+    EipAuth:
+      type: http
+      scheme: basic
+  schemas:
+    Audit:
+      type: object
+      description: Single Audit Event
+      required:
+        - category
+        - lineOfBusiness
+        - vsnr
+        - partnerNr
+        - userId
+        - gevoTimestamp
+      properties:
+        category:
+          type: string
+          maxLength: 40
+          description: The category this audit belongs to
+          example: BEITRAG_ERSTATTUNG_500
+        vsnr:
+          type: string
+          description: VSNR to this audit
+          example: "12345678910"
+          pattern: '^\d{11}$'
+          maxLength: 11
+        partnerNr:
+          type: string
+          description: PartnerNr to this audit
+          example: PNR1234
+          maxLength: 6
+        userId:
+          type: string
+          description: User that caused this event
+          pattern: '^[a-zA-Z]\d{5,6}$'
+          example: I012345
+          maxLength: 7
+        gevoTimestamp:
+          type: string
+          format: date-time
+          description: Time of event
+          example: '2024-11-04T08:58:05:246Z'
+        promiseNumber:
+          type: string
+          description: Promise number (Zusagenummer) to this audit
+          example: "123456"
+          maxLength: 10
+        externalReference:
+          type: string
+          description: An external id for references
+          example: 61eb39b5-7a0a-4d6c-8ff6-938e15c9df1e
+          maxLength: 64
+        specialCommitment:
+          type: string
+          description: Reason code for special commitments (Anliegenkennziffer)
+          maxLength: 2
+          example: "14"
+        expense:
+          type: number
+          format: float
+          description: "Positive: money received from customer, negative: send to customer"
+          example: 378.23
+        expenseCurrency:
+          type: string
+          description: Currency of the expense
+          maxLength: 3
+          default: 'EUR'
+          example: 'EUR'
+
+    Problem:
+      type: object
+      description: AXA extension of the problem structure
+      properties:
+        type:
+          type: string
+          format: uri
+          description: |
+            An absolute URI that identifies the problem type. When dereferenced
+            it SHOULD provide human-readable documentation for the problem type
+            (e.g. using HTML).
+          default: 'about:blank'
+          example: 'https://www.axa.com/api/problem/constraint-violation'
+          minLength: 0
+          maxLength: 100
+        title:
+          type: string
+          description: |
+            A short summary of the problem type. Written in english and readable
+            for engineers (usually not suited for non technical stakeholders and
+            not localized); example: Service Unavailable
+          example: Constraint Violation
+          minLength: 0
+          maxLength: 150
+        status:
+          type: integer
+          format: int32
+          description: |
+            The HTTP status code generated by the origin server for this occurrence
+            of the problem.
+          minimum: 100
+          maximum: 600
+          exclusiveMaximum: true
+          example: 500
+        detail:
+          type: string
+          description: |
+            A human readable explanation specific to this occurrence of the
+            problem.
+          example: Connection to backend timed out
+          minLength: 0
+          maxLength: 300
+        instance:
+          type: string
+          format: uri
+          description: |
+            An absolute URI that identifies the specific occurrence of the problem.
+            It may or may not yield further information if dereferenced.
+          example: 'https://www.axa.com/api/customer/4711'
+          minLength: 0
+          maxLength: 300
+        errorcode:
+          type: string
+          description: Optional additional error code to signal a more detailed error.
+          example: '401.001'
+          minLength: 0
+          maxLength: 19
+        timestamp:
+          type: string
+          description: Optional timestamp by when the problem occurred.
+          format: date-time
+          example: '2018-11-04T08:58:05:246Z'
+        violations:
+          type: array
+          description: List of validation errors.
+          example: '[{ field: "name", message: "Invalid name"}]'
+          items:
+            type: object
+            description: The violation item.
+            properties:
+              field:
+                type: string
+                description: Json pointer to the field where the problem occour
+                example: customer.name
+                minLength: 0
+                maxLength: 100
+              message:
+                type: string
+                description: The problem message description
+                example: The name is missing
+                minLength: 0
+                maxLength: 200
+          minItems: 1
+
+    HealthStatus:
+      type: string
+      description: >
+        Status
+         * UP - service is running
+         * DOWN - suffered an unexpected failure
+         * OUT_OF_SERVICE - has been taken out of service and should not be used
+         * UNKNOWN - in an unknown state
+      example: "UP"
+      enum:
+        - UP
+        - DOWN
+        - OUT_OF_SERVICE
+        - UNKNOWN

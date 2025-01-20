@@ -24,9 +24,9 @@ public class Edit {
         repository.speichereFaktoren(factor,factoralter,factorspeed);
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
-            v.setPreis(create.createPreis(v.getMonatlich(), v.getPartner(), v.getFahrzeug()));
+            v.setPreis(create.createPreis(v.isMonatlich(), v.getPartner(), v.getFahrzeug()));
             if (!v.getVersicherungsablauf().isBefore(LocalDate.now())){
-                if (!v.getMonatlich()) {
+                if (!v.isMonatlich()) {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis()));
                 } else {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));

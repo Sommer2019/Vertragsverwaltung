@@ -1,7 +1,11 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Fahrzeug {
     @Pattern(regexp= "^\\p{Lu}{1,3}-\\p{Lu}{1,2}\\d{1,4}[EH]?$")
     private String amtlichesKennzeichen;
@@ -21,47 +25,6 @@ public class Fahrzeug {
     }
     public Fahrzeug() {
         super();
-    }
-
-    // Getter und Setter
-    public String getAmtlichesKennzeichen() {
-        return amtlichesKennzeichen;
-    }
-
-    public void setAmtlichesKennzeichen(String amtlichesKennzeichen) {
-        this.amtlichesKennzeichen = amtlichesKennzeichen;
-    }
-
-    public String getHersteller() {
-        return hersteller;
-    }
-
-    public void setHersteller(String hersteller) {
-        this.hersteller = hersteller;
-    }
-
-    public String getTyp() {
-        return typ;
-    }
-
-    public void setTyp(String typ) {
-        this.typ = typ;
-    }
-
-    public int getHoechstgeschwindigkeit() {
-        return hoechstgeschwindigkeit;
-    }
-
-    public void setHoechstgeschwindigkeit(int hoechstgeschwindigkeit) {
-        this.hoechstgeschwindigkeit = hoechstgeschwindigkeit;
-    }
-
-    public int getWagnisskennziffer() {
-        return wagnisskennziffer;
-    }
-
-    public void setWagnisskennziffer(int wagnisskennziffer) {
-        this.wagnisskennziffer = wagnisskennziffer;
     }
 
     @Override

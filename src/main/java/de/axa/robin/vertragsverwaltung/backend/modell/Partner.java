@@ -1,10 +1,14 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
 public class Partner {
     @Pattern(regexp="^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$")
     private String vorname;
@@ -37,87 +41,6 @@ public class Partner {
 
     public Partner(){
         super();
-    }
-
-    // Getter und Setter
-    public String getVorname() {
-        return vorname;
-    }
-
-    public void setVorname(String vorname) {
-        this.vorname = vorname;
-    }
-
-    public String getNachname() {
-        return nachname;
-    }
-
-    public void setNachname(String nachname) {
-        this.nachname = nachname;
-    }
-
-    public char getGeschlecht() {
-        return geschlecht;
-    }
-
-    public void setGeschlecht(char geschlecht) {
-        this.geschlecht = geschlecht;
-    }
-
-    public LocalDate getGeburtsdatum() {
-        return geburtsdatum;
-    }
-
-    public void setGeburtsdatum(LocalDate geburtsdatum) {
-        this.geburtsdatum = geburtsdatum;
-    }
-
-    public String getLand() {
-        return land;
-    }
-
-    public void setLand(String land) {
-        this.land = land;
-    }
-
-    public String getStrasse() {
-        return strasse;
-    }
-
-    public void setStrasse(String strasse) {
-        this.strasse = strasse;
-    }
-
-    public String getHausnummer() {
-        return hausnummer;
-    }
-
-    public void setHausnummer(String hausnummer) {
-        this.hausnummer = hausnummer;
-    }
-
-    public String getPlz() {
-        return plz;
-    }
-
-    public void setPlz(String plz) {
-        this.plz = plz;
-    }
-
-    public String getStadt() {
-        return stadt;
-    }
-
-    public void setStadt(String stadt) {
-        this.stadt = stadt;
-    }
-
-    public String getBundesland() {
-        return bundesland;
-    }
-
-    public void setBundesland(String bundesland) {
-        this.bundesland = bundesland;
     }
 
     @Override

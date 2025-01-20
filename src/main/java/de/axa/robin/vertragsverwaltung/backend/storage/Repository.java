@@ -30,7 +30,7 @@ public class Repository {
             for (Vertrag v : vertrage) {
                 arrayBuilder.add(Json.createObjectBuilder()
                         .add("vsnr", v.getVsnr())
-                        .add("abrechnungszeitraum monatlich", v.getMonatlich())
+                        .add("abrechnungszeitraum monatlich", v.isMonatlich())
                         .add("preis", v.getPreis())
                         .add("versicherungsbeginn", v.getVersicherungsbeginn().toString())
                         .add("versicherungsablauf", v.getVersicherungsablauf().toString())

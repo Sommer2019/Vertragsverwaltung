@@ -44,13 +44,13 @@ class VertragTest {
 
     @Test
     void testGetMonatlich() {
-        assertTrue(vertrag.getMonatlich());
+        assertTrue(vertrag.isMonatlich());
     }
 
     @Test
     void testSetMonatlich() {
         vertrag.setMonatlich(false);
-        assertFalse(vertrag.getMonatlich());
+        assertFalse(vertrag.isMonatlich());
     }
 
     @Test

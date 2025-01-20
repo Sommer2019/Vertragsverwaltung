@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.frontend.spring.rest;
+package de.axa.robin.vertragsverwaltung.backend.rest;
 
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
@@ -39,7 +39,7 @@ public class VertragRestController {
 
     @PostMapping
     public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) {
-        vertrag.setPreis(create.createPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
+        vertrag.setPreis(create.createPreis(vertrag.isMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
         vertragsverwaltung.vertragAnlegen(vertrag);
         return ResponseEntity.ok(vertrag);
     }
@@ -110,8 +110,8 @@ public class VertragRestController {
         }
 
         // Update other fields as needed
-        vertrag.setMonatlich((Boolean) updates.getOrDefault("monatlich", vertrag.getMonatlich()));
-        vertrag.setPreis(create.createPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
+        vertrag.setMonatlich((Boolean) updates.getOrDefault("monatlich", vertrag.isMonatlich()));
+        vertrag.setPreis(create.createPreis(vertrag.isMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
         vertrag.setVersicherungsbeginn(LocalDate.parse((String) updates.getOrDefault("versicherungsbeginn", vertrag.getVersicherungsbeginn().toString())));
         vertrag.setVersicherungsablauf(LocalDate.parse((String) updates.getOrDefault("versicherungsablauf", vertrag.getVersicherungsablauf().toString())));
         vertrag.setAntragsDatum(LocalDate.parse((String) updates.getOrDefault("antragsDatum", vertrag.getAntragsDatum().toString())));

@@ -1,11 +1,14 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
 import jakarta.validation.Valid;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Objects;
-
+@Getter
+@Setter
 public class Vertrag {
     private int vsnr;
     private double preis;
@@ -41,79 +44,6 @@ public class Vertrag {
 
     public Vertrag() {
         super();
-    }
-
-    // Getter und Setter
-    public int getVsnr() {
-        return vsnr;
-    }
-
-    public void setVsnr(int vsnr) {
-        this.vsnr = vsnr;
-    }
-
-    public double getPreis() {
-        return preis;
-    }
-
-    public void setPreis(double preis) {
-        this.preis = preis;
-    }
-
-    public boolean getMonatlich() {
-        return monatlich;
-    }
-
-    public void setMonatlich(boolean monatlich) {
-        this.monatlich = monatlich;
-    }
-
-    public LocalDate getVersicherungsbeginn() {
-        return versicherungsbeginn;
-    }
-
-    public void setVersicherungsbeginn(LocalDate versicherungsbeginn) {
-        this.versicherungsbeginn = versicherungsbeginn;
-    }
-
-    public LocalDate getVersicherungsablauf() {
-        return versicherungsablauf;
-    }
-
-    public void setVersicherungsablauf(LocalDate versicherungsablauf) {
-        this.versicherungsablauf = versicherungsablauf;
-    }
-
-    public LocalDate getAntragsDatum() {
-        return antragsDatum;
-    }
-
-    public void setAntragsDatum(LocalDate antragsDatum) {
-        this.antragsDatum = antragsDatum;
-    }
-
-    public Fahrzeug getFahrzeug() {
-        return fahrzeug;
-    }
-
-    public void setFahrzeug(Fahrzeug fahrzeug) {
-        this.fahrzeug = fahrzeug;
-    }
-
-    public Partner getPartner() {
-        return partner;
-    }
-
-    public void setPartner(Partner partner) {
-        this.partner = partner;
-    }
-
-    public String getFormattedPreis() {
-        return formattedPreis;
-    }
-
-    public void setFormattedPreis(String formattedPreis) {
-        this.formattedPreis = formattedPreis;
     }
 
     @Override

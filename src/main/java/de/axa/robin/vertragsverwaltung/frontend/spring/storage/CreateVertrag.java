@@ -68,7 +68,7 @@ public class CreateVertrag {
         }
 
         // Proceed with creating the contract if no errors
-        boolean monatlich = Objects.equals(vertrag.getMonatlich(), true);
+        boolean monatlich = Objects.equals(vertrag.isMonatlich(), true);
         int vsnr = create.createvsnr();
         Partner partner = new Partner(vertrag.getPartner().getVorname(), vertrag.getPartner().getNachname(), vertrag.getPartner().getGeschlecht(), vertrag.getPartner().getGeburtsdatum(), vertrag.getPartner().getLand(), vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(), vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(), vertrag.getPartner().getBundesland());
         Fahrzeug fahrzeug = new Fahrzeug(vertrag.getFahrzeug().getAmtlichesKennzeichen(), vertrag.getFahrzeug().getHersteller(), vertrag.getFahrzeug().getTyp(), vertrag.getFahrzeug().getHoechstgeschwindigkeit(), vertrag.getFahrzeug().getWagnisskennziffer());
@@ -83,7 +83,7 @@ public class CreateVertrag {
     @PostMapping("/createPreis")
     @ResponseBody
     public Map<String, Object> createPreis(@ModelAttribute Vertrag vertrag) {
-        boolean monatlich = Objects.equals(vertrag.getMonatlich(), true);
+        boolean monatlich = Objects.equals(vertrag.isMonatlich(), true);
         Map<String, Object> response = new HashMap<>();
         if (!vertrag.getPartner().getPlz().isEmpty()) {
             Partner partner = new Partner(vertrag.getPartner().getVorname(), vertrag.getPartner().getNachname(), vertrag.getPartner().getGeschlecht(), vertrag.getPartner().getGeburtsdatum(), vertrag.getPartner().getLand(), vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(), vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(), vertrag.getPartner().getBundesland());

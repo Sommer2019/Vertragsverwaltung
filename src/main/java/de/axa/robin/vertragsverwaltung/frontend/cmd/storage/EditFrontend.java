@@ -29,7 +29,7 @@ public class EditFrontend {
 
     public void editVertrag(Vertrag vertrag) {
         while (true) {
-            vertrag.setPreis(creator.createPreis(vertrag.getMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
+            vertrag.setPreis(creator.createPreis(vertrag.isMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
             output.druckeVertrag(vertrag);
             output.editMenu();
             int choice = input.getNumber(Integer.class, "", -1, -1, -1, false);
@@ -48,7 +48,7 @@ public class EditFrontend {
                     vertragsverwaltung.vertragLoeschen(vertrag.getVsnr());
                     vertragsverwaltung.vertragAnlegen(vertrag);
                     output.done("erfolgreich aktualisiert.");
-                    output.preis(vertrag.getMonatlich(), vertrag.getPreis());
+                    output.preis(vertrag.isMonatlich(), vertrag.getPreis());
                     return; // Zurück zum Hauptmenü
                 default:
                     output.error("Ungültige Eingabe!");

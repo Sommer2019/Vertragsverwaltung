@@ -175,7 +175,7 @@ public class CreateFrontendTest {
         assertNotNull(vertrag);
         assertEquals("GL-GL123", vertrag.getFahrzeug().getAmtlichesKennzeichen());
         assertEquals("John", vertrag.getPartner().getVorname());
-        assertTrue(vertrag.getMonatlich());
+        assertTrue(vertrag.isMonatlich());
         assertEquals(LocalDate.now(), vertrag.getVersicherungsbeginn());
         assertEquals(LocalDate.now().plusYears(1), vertrag.getVersicherungsablauf());
         assertTrue(vertrag.getPreis() >= 0); // Assuming a valid calculation should return a positive price

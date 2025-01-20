@@ -26,7 +26,7 @@ public class PrintVertrage {
         List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
-            summe = summe.add(BigDecimal.valueOf(v.getPreis() * (v.getMonatlich() ? 12 : 1)));
+            summe = summe.add(BigDecimal.valueOf(v.getPreis() * (v.isMonatlich() ? 12 : 1)));
             v.setFormattedPreis(decimalFormat.format(v.getPreis()));
         }
 

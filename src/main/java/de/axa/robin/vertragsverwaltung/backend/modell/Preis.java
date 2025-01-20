@@ -3,7 +3,11 @@ package de.axa.robin.vertragsverwaltung.backend.modell;
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import jakarta.json.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Preis {
     private double speed;
     private double age;
@@ -16,29 +20,5 @@ public class Preis {
         this.faktor = jsonObject.getJsonNumber("factor").doubleValue();
         this.age = jsonObject.getJsonNumber("factorage").doubleValue();
         this.speed = jsonObject.getJsonNumber("factorspeed").doubleValue();
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
-    public double getAge() {
-        return age;
-    }
-
-    public void setAge(double age) {
-        this.age = age;
-    }
-
-    public double getFaktor() {
-        return faktor;
-    }
-
-    public void setFaktor(double faktor) {
-        this.faktor = faktor;
     }
 }
