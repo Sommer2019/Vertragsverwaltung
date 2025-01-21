@@ -26,8 +26,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/static/**", "/js/**", "/css/**", "/","/api/**", "/login",  "/error", "/favicon.ico").permitAll()
-                        .requestMatchers("/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/home", "/showEdit", "/showDelete", "/precalcPreis", "/editPreis",  "/createPreis", "/logout").hasRole("ADMIN")
+                        .requestMatchers("/static/**", "/js/**", "/css/**", "/", "/api/**", "/login", "/error", "/favicon.ico").permitAll()
+                        .requestMatchers("/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/showEdit", "/showDelete", "/precalcPreis", "/createPreis", "/logout").hasRole("ADMIN")
                 )
                 .formLogin(form -> form
                         .loginPage("/")

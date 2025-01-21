@@ -1,10 +1,15 @@
 package de.axa.robin.vertragsverwaltung.backend.config;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+@Getter
 @Service
 public class Setup {
+    @Setter
     private String repositoryPath;
+    @Setter
     private String preisPath;
     private final String brandsPath;
     private final String testURL;
@@ -22,39 +27,4 @@ public class Setup {
         this.port = 3128;
     }
 
-    public String getRepositoryPath() {
-        return repositoryPath;
-    }
-
-    public String getPreisPath() {
-        return preisPath;
-    }
-
-    public String getBrandsPath() {
-        return brandsPath;
-    }
-
-    public String getTestURL() {
-        return testURL;
-    }
-
-    public String getCheckURL() {
-        return checkURL;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setRepositoryPath(String repositoryPath) {
-        this.repositoryPath=repositoryPath;
-    }
-
-    public void setPreisPath(String preisPath) {
-        this.preisPath = preisPath;
-    }
 }

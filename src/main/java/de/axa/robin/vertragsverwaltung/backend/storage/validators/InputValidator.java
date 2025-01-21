@@ -2,9 +2,11 @@ package de.axa.robin.vertragsverwaltung.backend.storage.validators;
 
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 
 import java.io.FileInputStream;
@@ -12,9 +14,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.time.LocalDate;
 
+@Component
 public class InputValidator {
     private final Setup setup = new Setup();
     private final AdressValidator adressValidator = new AdressValidator();
+    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
 
     public boolean string(String input) {
         for (char c : input.toCharArray()) {
@@ -78,5 +82,11 @@ public class InputValidator {
             return true;
         }
         return false;
+    }
+    public boolean isInvalidVertrag(Vertrag vertrag) {
+        return validateVertrag(vertrag, null) ||
+                vertrag.getVersicherungsbeginn().isBefore(LocalDate.now()) ||
+                vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen()) ||
+                vertragsverwaltung.vertragExistiert(vertrag.getVsnr());
     }
 }

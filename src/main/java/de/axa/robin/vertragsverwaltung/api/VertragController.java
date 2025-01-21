@@ -6,16 +6,17 @@ import de.axa.robin.vertragsverwaltung.backend.storage.validators.InputValidator
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vertragsverwaltung/vertrage")
 public class VertragController {
-    private final InputValidator inputValidator = new InputValidator();
+    private final InputValidator inputValidator;
     private final Vertragsverwaltung Vertragsverwaltung;
 
-    public VertragController(Vertragsverwaltung Vertragsverwaltung) {
+    public VertragController(InputValidator inputValidator, Vertragsverwaltung Vertragsverwaltung) {
+        this.inputValidator = inputValidator;
         this.Vertragsverwaltung = Vertragsverwaltung;
     }
 
@@ -27,64 +28,31 @@ public class VertragController {
 
     @PostMapping
     public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) {
-        Vertrag createdVertrag;
-        boolean invalid = inputValidator.validateVertrag(vertrag, null);
-        if (vertrag.getVersicherungsbeginn().isBefore(LocalDate.now())) {
-            invalid = true;
-        }
-        if (Vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen())) {
-            invalid = true;
-        }
-        if(Vertragsverwaltung.vertragExistiert(vertrag.getVsnr())){
-            invalid=true;
-        }
-        // Check for errors
-        if (!invalid) {
-            createdVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
-            return ResponseEntity.ok(createdVertrag);
-        }
-        else{
+        if (inputValidator.isInvalidVertrag(vertrag)) {
             return ResponseEntity.status(400).build();
         }
+        Vertrag createdVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
+        return ResponseEntity.ok(createdVertrag);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Vertrag> getVertragById(@PathVariable Integer id) {
-        Vertrag vertrag = Vertragsverwaltung.getVertrag(id);
-        if (vertrag != null) {
-            return ResponseEntity.ok(vertrag);
-        } else {
-            return ResponseEntity.status(404).build();
-        }
+        Optional<Vertrag> vertrag = Optional.ofNullable(Vertragsverwaltung.getVertrag(id));
+        return vertrag.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(404).build());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Vertrag> updateVertrag(@PathVariable Integer id, @RequestBody Vertrag vertrag) {
-        Vertrag createdVertrag;
-        boolean invalid = inputValidator.validateVertrag(vertrag, null);
-        boolean deleted;
-        if (vertrag.getVersicherungsbeginn().isBefore(LocalDate.now())) {
-            invalid = true;
-        }
-        if (Vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen())) {
-            invalid = true;
-        }
-        if(Vertragsverwaltung.vertragExistiert(vertrag.getVsnr())){
-            invalid=true;
-        }
-        if(!invalid){
-            deleted = Vertragsverwaltung.vertragLoeschen(id);
-            if (deleted) {
-                ResponseEntity.noContent().build();
-                createdVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
-                return ResponseEntity.ok(createdVertrag);
-            } else {
-                return ResponseEntity.status(404).build();
-            }
-        }
-        else{
+        if (inputValidator.isInvalidVertrag(vertrag)) {
             return ResponseEntity.status(400).build();
         }
+        boolean deleted = Vertragsverwaltung.vertragLoeschen(id);
+        if (!deleted) {
+            return ResponseEntity.status(404).build();
+        }
+        Vertrag updatedVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
+        return ResponseEntity.ok(updatedVertrag);
     }
 
     @DeleteMapping("/{id}")
