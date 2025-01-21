@@ -24,6 +24,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Vertrag'
+        '404':
+          description: Keine Verträge gefunden
     post:
       summary: Neuen Vertrag erstellen
       requestBody:
@@ -39,6 +41,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Vertrag'
+        '400':
+          description: Ungültige Angaben
   /vertrage/{id}:
     get:
       summary: Vertrag nach ID abrufen
@@ -79,6 +83,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Vertrag'
+        '400':
+          description: Ungültige Angaben
         '404':
           description: Vertrag nicht gefunden
     delete:

@@ -21,7 +21,6 @@ public class AdressValidator {
             String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland + ", " + land, StandardCharsets.UTF_8);
             String NOMINATIM_URL = setup.getCheckURL();
             URI uri = new URI(NOMINATIM_URL + query);
-            System.out.println(uri);
             System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
 
             // Check if proxy is reachable

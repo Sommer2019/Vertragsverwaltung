@@ -2,15 +2,17 @@ package de.axa.robin.vertragsverwaltung.api;
 
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.backend.storage.validators.InputValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/vertragsverwaltung/vertrage")
 public class VertragController {
-
+    private final InputValidator inputValidator = new InputValidator();
     private final Vertragsverwaltung Vertragsverwaltung;
 
     public VertragController(Vertragsverwaltung Vertragsverwaltung) {
@@ -25,8 +27,25 @@ public class VertragController {
 
     @PostMapping
     public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) {
-        Vertrag createdVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
-        return ResponseEntity.ok(createdVertrag);
+        Vertrag createdVertrag;
+        boolean invalid = inputValidator.validateVertrag(vertrag, null);
+        if (vertrag.getVersicherungsbeginn().isBefore(LocalDate.now())) {
+            invalid = true;
+        }
+        if (Vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen())) {
+            invalid = true;
+        }
+        if(Vertragsverwaltung.vertragExistiert(vertrag.getVsnr())){
+            invalid=true;
+        }
+        // Check for errors
+        if (!invalid) {
+            createdVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
+            return ResponseEntity.ok(createdVertrag);
+        }
+        else{
+            return ResponseEntity.status(400).build();
+        }
     }
 
     @GetMapping("/{id}")
@@ -41,13 +60,30 @@ public class VertragController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Vertrag> updateVertrag(@PathVariable Integer id, @RequestBody Vertrag vertrag) {
-        boolean deleted = Vertragsverwaltung.vertragLoeschen(id);
-        if (deleted) {
-            ResponseEntity.noContent().build();
-            Vertrag createdVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
-            return ResponseEntity.ok(createdVertrag);
-        } else {
-            return ResponseEntity.status(404).build();
+        Vertrag createdVertrag;
+        boolean invalid = inputValidator.validateVertrag(vertrag, null);
+        boolean deleted;
+        if (vertrag.getVersicherungsbeginn().isBefore(LocalDate.now())) {
+            invalid = true;
+        }
+        if (Vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen())) {
+            invalid = true;
+        }
+        if(Vertragsverwaltung.vertragExistiert(vertrag.getVsnr())){
+            invalid=true;
+        }
+        if(!invalid){
+            deleted = Vertragsverwaltung.vertragLoeschen(id);
+            if (deleted) {
+                ResponseEntity.noContent().build();
+                createdVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
+                return ResponseEntity.ok(createdVertrag);
+            } else {
+                return ResponseEntity.status(404).build();
+            }
+        }
+        else{
+            return ResponseEntity.status(400).build();
         }
     }
 

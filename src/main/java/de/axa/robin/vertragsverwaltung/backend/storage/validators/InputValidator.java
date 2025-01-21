@@ -38,35 +38,45 @@ public class InputValidator {
         }
         return false;
     }
-    public void validateVertrag(Vertrag vertrag, BindingResult result) {
+    public boolean validateVertrag(Vertrag vertrag, BindingResult result) {
         if (vertrag.getVersicherungsbeginn().isBefore(vertrag.getAntragsDatum())) {
             result.rejectValue("versicherungsbeginn", "error.versicherungsbeginn", "Ungültiger Versicherungsbeginn");
+            return true;
         }
         if (vertrag.getVersicherungsablauf().isBefore(vertrag.getVersicherungsbeginn())) {
             result.rejectValue("versicherungsablauf", "error.versicherungsablauf", "Ungültiger Versicherungsablauf");
+            return true;
         }
         if (vertrag.getAntragsDatum().isAfter(vertrag.getVersicherungsbeginn())) {
             result.rejectValue("antragsdatum", "error.antragsdatum", "Ungültiges Antragsdatum");
+            return true;
         }
 
         if (!isStringInJsonFile(vertrag.getFahrzeug().getHersteller())) {
             result.rejectValue("fahrzeug.hersteller", "error.fahrzeug.hersteller", "Ungültiger Hersteller");
+            return true;
         }
         if (vertrag.getFahrzeug().getHoechstgeschwindigkeit() <= 50 || vertrag.getFahrzeug().getHoechstgeschwindigkeit() >= 250) {
             result.rejectValue("fahrzeug.hoechstgeschwindigkeit", "error.fahrzeug.hoechstgeschwindigkeit", "Ungültige Hoechstgeschwindigkeit");
+            return true;
         }
         if (vertrag.getFahrzeug().getWagnisskennziffer() != 112) {
             result.rejectValue("fahrzeug.wagnisskennziffer", "error.fahrzeug.wagnisskennziffer", "Ungültige Wagnisskennziffer");
+            return true;
         }
         if (vertrag.getPartner().getGeschlecht() != 'M' && vertrag.getPartner().getGeschlecht() != 'D' && vertrag.getPartner().getGeschlecht() != 'W') {
             result.rejectValue("partner.geschlecht", "error.partner.geschlecht", "Ungültiges Geschlecht");
+            return true;
         }
         if (vertrag.getPartner().getGeburtsdatum().isBefore(LocalDate.now().minusYears(110)) || vertrag.getPartner().getGeburtsdatum().isAfter(LocalDate.now().minusYears(18))) {
             result.rejectValue("partner.geburtsdatum", "error.partner.geburtsdatum", "Ungültiges Geburtsdatum");
+            return true;
         }
         // Address validation
         if (!adressValidator.validateAddress(vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(), vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(), vertrag.getPartner().getBundesland(), vertrag.getPartner().getLand())) {
             result.rejectValue("partner.land", "error.partner.land", "Ungültige Adresse");
+            return true;
         }
+        return false;
     }
 }
