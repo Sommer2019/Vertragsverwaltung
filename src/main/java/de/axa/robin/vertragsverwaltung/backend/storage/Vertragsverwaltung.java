@@ -23,16 +23,18 @@ public class Vertragsverwaltung {
         return vertrage.stream().filter(v -> v.getVsnr() == vsnr).findFirst().orElse(null);
     }
 
-    public void vertragAnlegen(Vertrag vertrag) {
+    public Vertrag vertragAnlegen(Vertrag vertrag) {
         List<Vertrag> vertrage = repository.ladeVertrage();
         vertrage.add(vertrag);
         repository.speichereVertrage(vertrage);
+        return vertrag;
     }
 
-    public void vertragLoeschen(int vsnr) {
+    public boolean vertragLoeschen(int vsnr) {
         List<Vertrag> vertrage = repository.ladeVertrage();
         vertrage.removeIf(v -> v.getVsnr() == vsnr);
         repository.speichereVertrage(vertrage);
+        return true;
     }
 
     public boolean vertragExistiert(int vsnr) {

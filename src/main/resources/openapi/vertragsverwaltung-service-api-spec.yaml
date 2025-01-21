@@ -3,8 +3,16 @@ info:
   title: Vertragsverwaltung API
   description: API zur Verwaltung von Verträgen.
   version: 1.0.0
+servers:
+  - url: /api/vertragsverwaltung
+    description: Relative base url
+  - url: http://localhost:8080/api/vertragsverwaltung
+    description: Local Dev
+security:
+  - BasicAuth: []
+  - CsrfTokenAuth: []
 paths:
-  /api/vertrage:
+  /vertrage:
     get:
       summary: Alle Verträge abrufen
       responses:
@@ -31,7 +39,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Vertrag'
-  /api/vertrage/{id}:
+  /vertrage/{id}:
     get:
       summary: Vertrag nach ID abrufen
       parameters:
@@ -87,6 +95,14 @@ paths:
         '404':
           description: Vertrag nicht gefunden
 components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    CsrfTokenAuth:
+      type: apiKey
+      in: header
+      name: X-Csrf-Token
   schemas:
     Vertrag:
       type: object

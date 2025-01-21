@@ -14,6 +14,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -22,12 +24,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/**")
-                )
+                .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/static/**", "/js/**", "/css/**", "/", "/login", "/error", "/favicon.ico").permitAll()
-                        .requestMatchers("/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/home", "/showEdit", "/showDelete", "/precalcPreis", "/editPreis", "/api/**", "/createPreis", "/logout").hasRole("ADMIN")
+                        .requestMatchers("/static/**", "/js/**", "/css/**", "/","/api/**", "/login",  "/error", "/favicon.ico").permitAll()
+                        .requestMatchers("/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/home", "/showEdit", "/showDelete", "/precalcPreis", "/editPreis",  "/createPreis", "/logout").hasRole("ADMIN")
                 )
                 .formLogin(form -> form
                         .loginPage("/")
@@ -67,5 +67,12 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName("X-Csrf-Token");
+        return repository;
     }
 }
