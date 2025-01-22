@@ -24,9 +24,39 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Vertrag'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '403':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
         '404':
           description: Keine Verträge gefunden
-    post:
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        default:
+          description: Unexpected Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+    put:
       summary: Neuen Vertrag erstellen
       requestBody:
         required: true
@@ -36,13 +66,37 @@ paths:
               $ref: '#/components/schemas/Vertrag'
       responses:
         '200':
-          description: Vertrag erfolgreich erstellt
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Vertrag'
+          description: Created
         '400':
-          description: Ungültige Angaben
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '403':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        default:
+          description: Unexpected Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
   /vertrage/{id}:
     get:
       summary: Vertrag nach ID abrufen
@@ -59,9 +113,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Vertrag'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '403':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
         '404':
           description: Vertrag nicht gefunden
-    put:
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        default:
+          description: Unexpected Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+    post:
       summary: Vertrag aktualisieren
       parameters:
         - name: id
@@ -84,9 +168,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/Vertrag'
         '400':
-          description: Ungültige Angaben
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '403':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
         '404':
           description: Vertrag nicht gefunden
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        default:
+          description: Unexpected Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
     delete:
       summary: Vertrag löschen
       parameters:
@@ -96,10 +208,50 @@ paths:
           schema:
             type: integer
       responses:
+        '200':
+          description: Vertrag erfolgreich gelöscht
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
         '204':
           description: Vertrag erfolgreich gelöscht
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        '403':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
         '404':
           description: Vertrag nicht gefunden
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
+        default:
+          description: Unexpected Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Vertrag"
 components:
   securitySchemes:
     BasicAuth:
