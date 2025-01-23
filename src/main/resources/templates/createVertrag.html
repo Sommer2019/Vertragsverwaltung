@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vertrag erstellen</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+<h1><strong>Vertrag </strong> <span th:if="${vsnr}" th:text="${vsnr}"></span></h1>
+<p></p>
+<form id="myForm" th:action="@{/createVertrag}" th:object="${vertrag}" th:method="post">
+    <button type="submit" id="calculateButton">Erstellen</button>
+    <p></p>
+    <div th:if="${invalidString}" th:text="${invalidString}"></div>
+    <h2>Vertragsdaten</h2>
+    <div class="form-group"><label>Preisvorberechnung: </label>
+        <button type="button" id="calculatePrice"><span id="preis"> --,-- € </span></button>
+    </div>
+    <div class="form-group">
+        <label>Abrechnungszeitraum:</label>
+        <div>
+            <input th:field="*{monatlich}" type="radio" name="abrechnung" value=true id="check1">
+            <label for="check1">monatlich</label>
+            <input th:field="*{monatlich}" type="radio" name="abrechnung" value=false id="check2">
+            <label for="check2">jährlich</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="start">Versicherungsbeginn:</label>
+        <input th:field="*{versicherungsbeginn}" type="date" id="start" name="start" max="9998-12-31" required>
+    </div>
+    <b th:if="${#fields.hasErrors('versicherungsbeginn')}"
+       th:class="${#fields.hasErrors('versicherungsbeginn')}? error">
+        Ungültiger Versicherungsbeginn</b>
+    <div class="form-group">
+        <label for="end">Versicherungsablauf:</label>
+        <input th:field="*{versicherungsablauf}" type="date" id="end" max="9999-12-31" required>
+    </div>
+    <b th:if="${#fields.hasErrors('versicherungsablauf')}"
+       th:class="${#fields.hasErrors('versicherungsablauf')}? error">
+        Ungültiger Versicherungsablauf</b>
+    <div class="form-group">
+        <label for="create">Antragsdatum:</label>
+        <input th:field="*{antragsDatum}" type="date" id="create" max="9998-12-31" required>
+    </div>
+    <b th:if="${#fields.hasErrors('antragsDatum')}" th:class="${#fields.hasErrors('antragsDatum')}? error">
+        Ungültiges Antragsdatum</b>
+    <p></p>
+    <h2>Fahrzeugdaten:</h2>
+    <div class="form-group">
+        <label for="kennzeichen">Amtliches Kennzeichen:</label>
+        <input th:field="*{fahrzeug.amtlichesKennzeichen}" type="text" id="kennzeichen" required>
+    </div>
+    <b th:if="${#fields.hasErrors('fahrzeug.amtlichesKennzeichen')}"
+       th:class="${#fields.hasErrors('fahrzeug.amtlichesKennzeichen')}? error">
+        Ungültiges Amtliches Kennzeichen</b>
+    <div class="form-group">
+        <label for="hersteller">Hersteller:</label>
+        <input th:field="*{fahrzeug.hersteller}" type="text" id="hersteller" required>
+    </div>
+    <b th:if="${#fields.hasErrors('fahrzeug.hersteller')}"
+       th:class="${#fields.hasErrors('fahrzeug.hersteller')}? error">
+        Ungültiger Hersteller</b>
+    <div class="form-group">
+        <label for="typ">Typ:</label>
+        <input th:field="*{fahrzeug.typ}" type="text" id="typ" required>
+    </div>
+    <b th:if="${#fields.hasErrors('fahrzeug.typ')}" th:class="${#fields.hasErrors('fahrzeug.typ')}? error">
+        Ungültiger Typ</b>
+    <div class="form-group">
+        <label for="speed">Höchstgeschwindigkeit:</label>
+        <div class="speed-group">
+            <input th:field="*{fahrzeug.hoechstgeschwindigkeit}" type="number" id="speed" min="45" max="250" required>
+            <span>km/h</span>
+        </div>
+    </div>
+    <b th:if="${#fields.hasErrors('fahrzeug.hoechstgeschwindigkeit')}"
+       th:class="${#fields.hasErrors('fahrzeug.hoechstgeschwindigkeit')}? error">
+        Ungültige Höchstgeschwindigkeit</b>
+    <div class="form-group">
+        <label for="wkz">Wagnisskennziffer:</label>
+        <input th:field="*{fahrzeug.wagnisskennziffer}" type="number" id="wkz" min="112" max="112" required>
+    </div>
+    <b th:if="${#fields.hasErrors('fahrzeug.wagnisskennziffer')}"
+       th:class="${#fields.hasErrors('fahrzeug.wagnisskennziffer')}? error">
+        Ungültige Wagnisskennziffer</b>
+    <p></p>
+    <h2>Partnerdaten:</h2>
+    <div class="form-group">
+        <label for="vorname">Vorname:</label>
+        <input th:field="*{partner.vorname}" name="vorname" type="text" id="vorname" required>
+    </div>
+    <b th:if="${#fields.hasErrors('partner.vorname')}" th:class="${#fields.hasErrors('partner.vorname')}? error">
+        Ungültiger Vorname</b>
+    <div class="form-group">
+        <label for="nachname">Nachname:</label>
+        <input th:field="*{partner.nachname}" type="text" id="nachname" required>
+    </div>
+    <b th:if="${#fields.hasErrors('partner.nachname')}" th:class="${#fields.hasErrors('partner.nachname')}? error">
+        Ungültiger Nachname</b>
+    <div class="form-group">
+        <label>Geschlecht:</label>
+        <div>
+            <input th:field="*{partner.geschlecht}" type="radio" name="gender" value="M" id="check3">
+            <label for="check3">M</label>
+            <input th:field="*{partner.geschlecht}" type="radio" name="gender" value="W" id="check4">
+            <label for="check4">W</label>
+            <input th:field="*{partner.geschlecht}" type="radio" name="gender" value="D" id="check5">
+            <label for="check5">D</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="birth">Geburtsdatum:</label>
+        <input th:field="*{partner.geburtsdatum}" value="2006-01-01" type="date" id="birth" required>
+        <b th:if="${#fields.hasErrors('partner.geburtsdatum')}"
+           th:class="${#fields.hasErrors('partner.geburtsdatum')}? error">
+            Ungültiges Geburtsdatum</b>
+    </div>
+    <div class="form-group">
+        <label for="strasse">Straße:</label>
+        <input th:field="*{partner.strasse}" type="text" id="strasse" required>
+    </div>
+    <div class="form-group">
+        <label for="hausnummer">Hausnummer:</label>
+        <input th:field="*{partner.hausnummer}" type="text" id="hausnummer" required>
+    </div>
+    <div class="form-group">
+        <label for="plz">PLZ:</label>
+        <input th:field="*{partner.plz}" value="" type="text" id="plz" required>
+    </div>
+    <div class="form-group">
+        <label for="stadt">Stadt:</label>
+        <input th:field="*{partner.stadt}" type="text" id="stadt" required>
+    </div>
+    <div class="form-group">
+        <label for="bundesland">Bundesland:</label>
+        <select th:field="*{partner.bundesland}" name="bundeslaender" id="bundesland" required>
+            <option hidden selected value="---"></option>
+            <option value="Baden-Württemberg">Baden-Württemberg</option>
+            <option value="Bayern">Bayern</option>
+            <option value="Berlin">Berlin</option>
+            <option value="Brandenburg">Brandenburg</option>
+            <option value="Bremen">Bremen</option>
+            <option value="Hamburg">Hamburg</option>
+            <option value="Hessen">Hessen</option>
+            <option value="Mecklenburg-Vorpommern">Mecklenburg-Vorpommern</option>
+            <option value="Niedersachsen">Niedersachsen</option>
+            <option value="Nordrhein-Westfalen">Nordrhein-Westfalen</option>
+            <option value="Rheinland-Pfalz">Rheinland-Pfalz</option>
+            <option value="Saarland">Saarland</option>
+            <option value="Sachsen">Sachsen</option>
+            <option value="Sachsen-Anhalt">Sachsen-Anhalt</option>
+            <option value="Schleswig-Holstein">Schleswig-Holstein</option>
+            <option value="Thüringen">Thüringen</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="land">Land:</label>
+        <input th:field="*{partner.land}" type="text" id="land" readonly>
+    </div>
+    <b th:if="${#fields.hasErrors('partner.land')}" th:class="${#fields.hasErrors('partner.land')}? error">
+        Ungültige Adresse</b>
+
+
+</form>
+<p></p>
+<form action="/home" method="get">
+    <button>Zurück</button>
+</form>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+<script type="text/javascript" th:src="@{/js/createVertrag.js}">
+</script>
+</body>
+</html>

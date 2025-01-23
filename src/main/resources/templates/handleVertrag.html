@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vertrag</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/handleVertrag.css">
+    <style>
+        #bundesland {
+            display: none;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            if ([[${editVisible}]]) {
+                toggleEdit();
+            }
+        };
+    </script>
+</head>
+<body>
+<h1><strong>Vertrag </strong><span th:text="${vsnr}"></span></h1>
+<div id="menuContainer">
+    <p>Menu:</p>
+    <div style="display: flex; gap: 10px;">
+        <button type="button" onclick="toggleEdit()" id="edit">Bearbeiten</button>
+        <button onclick="toggleDelete()" id="delete">Löschen</button>
+    </div>
+</div>
+<div id="deleteContainer">
+    <p>Möchten Sie diesen Vertrag wirklich löschen?</p>
+    <div style="display: flex; gap: 10px;">
+        <form action="/showDelete" method="post">
+            <button type="submit">Bestätigen</button>
+        </form>
+        <button onclick="hideDelete()">Abbrechen</button>
+    </div>
+</div>
+<form id="myForm" th:action="@{/showEdit}" th:object="${vertrag}" th:method="post">
+    <div id="editContainer">
+        <p>Möchten Sie die Änderungen speichern?</p>
+        <div style="display: flex; gap: 10px;">
+            <button type="submit">Speichern</button>
+            <button type="button" onclick="hideEdit()">Abbrechen</button>
+            <input type="hidden" id="editVisible" name="editVisible" value="false">
+        </div>
+    </div>
+    <div id="handledVertrag" class="vertrag-details">
+        <details open>
+            <summary><b>Vertragsdaten</b></summary>
+            <div><span>Preis:</span><span th:text="${preis} + ' €'"></span>
+                <div id="preiscalc">
+                    <button type="button" id="calculatePrice">
+                        <span id="preis" th:text="${preis} + ' €'"></span>
+                    </button>
+                </div>
+            </div>
+            <div><span>Abrechnungszeitraum:</span><span
+                    th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span>
+                <div class="flex-container">
+                    <input th:field="*{monatlich}" type="radio" name="abrechnung" value=true id="check1">
+                    <label for="check1">monatlich</label>
+                    <input th:field="*{monatlich}" type="radio" name="abrechnung" value=false id="check2">
+                    <label for="check2">jährlich</label>
+                </div>
+            </div>
+            <div><span>Versicherungsbeginn:</span><span id="startSpan" th:text="${start}"></span>
+                <input th:field="*{versicherungsbeginn}" type="date" id="start" name="start" max="9998-12-31" required>
+            </div>
+            <b th:if="${#fields.hasErrors('versicherungsbeginn')}"
+               th:class="${#fields.hasErrors('versicherungsbeginn')}? error">
+                Ungültiger Versicherungsbeginn</b>
+            <div><span>Versicherungsablauf:</span><span id="endSpan" th:text="${end}"></span>
+                <input th:field="*{versicherungsablauf}" type="date" id="end" max="9999-12-31" required>
+            </div>
+            <b th:if="${#fields.hasErrors('versicherungsablauf')}"
+               th:class="${#fields.hasErrors('versicherungsablauf')}? error">
+                Ungültiger Versicherungsablauf</b>
+            <div><span>Antragsdatum:</span><span id="createSpan" th:text="${create}"></span>
+                <input th:field="*{antragsDatum}" type="date" id="create" max="9998-12-31" required>
+            </div>
+            <b th:if="${#fields.hasErrors('antragsDatum')}" th:class="${#fields.hasErrors('antragsDatum')}? error">
+                Ungültiges Antragsdatum</b>
+        </details>
+        <details open>
+            <summary><b>Fahrzeugdaten:</b></summary>
+            <div><span>Amtliches Kennzeichen:</span><span th:text="${kennzeichen}"></span>
+                <input th:field="*{fahrzeug.amtlichesKennzeichen}" type="text" id="kennzeichen" required>
+            </div>
+            <b th:if="${#fields.hasErrors('fahrzeug.amtlichesKennzeichen')}"
+               th:class="${#fields.hasErrors('fahrzeug.amtlichesKennzeichen')}? error">
+                Ungültiges Amtliches Kennzeichen</b>
+            <div><span>Hersteller:</span><span th:text="${hersteller}"></span>
+                <input th:field="*{fahrzeug.hersteller}" type="text" id="hersteller" required>
+            </div>
+            <b th:if="${#fields.hasErrors('fahrzeug.hersteller')}"
+               th:class="${#fields.hasErrors('fahrzeug.hersteller')}? error">
+                Ungültiger Hersteller</b>
+            <div><span>Typ:</span><span th:text="${typ}"></span>
+                <input th:field="*{fahrzeug.typ}" type="text" id="typ" required>
+            </div>
+            <b th:if="${#fields.hasErrors('fahrzeug.typ')}" th:class="${#fields.hasErrors('fahrzeug.typ')}? error">
+                Ungültiger Typ</b>
+            <div class="flex-container"><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span>
+                <input th:field="*{fahrzeug.hoechstgeschwindigkeit}" type="number" id="speed" min="45" max="250"
+                       required>
+                <label for="speed" id="kmh">km/h</label>
+            </div>
+            <b th:if="${#fields.hasErrors('fahrzeug.hoechstgeschwindigkeit')}"
+               th:class="${#fields.hasErrors('fahrzeug.hoechstgeschwindigkeit')}? error">
+                Ungültige Höchstgeschwindigkeit</b>
+            <div><span>Wagnisskennziffer:</span><span th:text="${wkz}"></span>
+                <input th:field="*{fahrzeug.wagnisskennziffer}" type="number" id="wkz" min="112" max="112" required>
+            </div>
+            <b th:if="${#fields.hasErrors('fahrzeug.wagnisskennziffer')}"
+               th:class="${#fields.hasErrors('fahrzeug.wagnisskennziffer')}? error">
+                Ungültige Wagnisskennziffer</b>
+        </details>
+        <details open>
+            <summary><b>Partnerdaten:</b></summary>
+            <div><span>Vorname:</span><span th:text="${vorname}"></span>
+                <input th:field="*{partner.vorname}" name="vorname" type="text" id="vorname" required>
+            </div>
+            <b th:if="${#fields.hasErrors('partner.vorname')}"
+               th:class="${#fields.hasErrors('partner.vorname')}? error">
+                Ungültiger Vorname</b>
+            <div><span>Nachname:</span><span th:text="${nachname}"></span>
+                <input th:field="*{partner.nachname}" type="text" id="nachname" required>
+            </div>
+            <b th:if="${#fields.hasErrors('partner.nachname')}"
+               th:class="${#fields.hasErrors('partner.nachname')}? error">
+                Ungültiger Nachname</b>
+            <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span>
+                <div class="flex-container">
+                    <input th:field="*{partner.geschlecht}" type="radio" name="gender" value='M' id="check3">
+                    <label for="check3">M</label>
+                    <input th:field="*{partner.geschlecht}" type="radio" name="gender" value='W' id="check4">
+                    <label for="check4">W</label>
+                    <input th:field="*{partner.geschlecht}" type="radio" name="gender" value='D' id="check5">
+                    <label for="check5">D</label>
+                </div>
+            </div>
+            <div><span>Geburtsdatum:</span><span id="birthSpan" th:text="${birth}"></span>
+                <input th:field="*{partner.geburtsdatum}" type="date" id="birth" required>
+            </div>
+            <b th:if="${#fields.hasErrors('partner.geburtsdatum')}"
+               th:class="${#fields.hasErrors('partner.geburtsdatum')}? error">
+                Ungültiges Geburtsdatum</b>
+            <div><span>Straße:</span><span th:text="${strasse}"></span>
+                <input th:field="*{partner.strasse}" type="text" id="strasse" required>
+            </div>
+            <div><span>Hausnummer:</span><span th:text="${hausnummer}"></span>
+                <input th:field="*{partner.hausnummer}" type="text" id="hausnummer" required>
+            </div>
+            <div><span>PLZ:</span><span th:text="${plz}"></span>
+                <input th:field="*{partner.plz}" type="text" id="plz" required>
+            </div>
+            <div><span>Stadt:</span><span th:text="${stadt}"></span>
+                <input th:field="*{partner.stadt}" type="text" id="stadt" required>
+            </div>
+            <div><span>Bundesland:</span><span th:text="${bundesland}"></span>
+                <select th:field="*{partner.bundesland}" name="bundeslaender" id="bundesland" required>
+                    <option value="Baden-Württemberg">Baden-Württemberg</option>
+                    <option value="Bayern">Bayern</option>
+                    <option value="Berlin">Berlin</option>
+                    <option value="Brandenburg">Brandenburg</option>
+                    <option value="Bremen">Bremen</option>
+                    <option value="Hamburg">Hamburg</option>
+                    <option value="Hessen">Hessen</option>
+                    <option value="Mecklenburg-Vorpommern">Mecklenburg-Vorpommern</option>
+                    <option value="Niedersachsen">Niedersachsen</option>
+                    <option value="Nordrhein-Westfalen">Nordrhein-Westfalen</option>
+                    <option value="Rheinland-Pfalz">Rheinland-Pfalz</option>
+                    <option value="Saarland">Saarland</option>
+                    <option value="Sachsen">Sachsen</option>
+                    <option value="Sachsen-Anhalt">Sachsen-Anhalt</option>
+                    <option value="Schleswig-Holstein">Schleswig-Holstein</option>
+                    <option value="Thüringen">Thüringen</option>
+                </select>
+            </div>
+            <div><span>Land:</span><span th:text="${land}"></span>
+                <input th:field="*{partner.land}" type="text" id="land" value="Deutschland" readonly>
+            </div>
+            <b th:if="${#fields.hasErrors('partner.land')}" th:class="${#fields.hasErrors('partner.land')}? error">
+                Ungültige Adresse</b>
+        </details>
+    </div>
+</form>
+<p></p>
+<p><b style="color: red;"><span th:text="${gueltig}"></span></b></p>
+<form action="/home" method="get">
+    <button>Zurück</button>
+</form>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+<script type="text/javascript" th:src="@{/js/handleVertrag.js}"></script>
+</body>
+</html>

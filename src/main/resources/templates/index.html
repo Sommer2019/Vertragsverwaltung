@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Vertragsverwaltung</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<h1>Vertragsverwaltung</h1>
+<h2>Login</h2>
+<div>
+    <form method="post" action="/login">
+        <div><label for="username">Benutzername:</label>
+        </div><div><input style="width: 200px; height: 25px" type="text" id="username" name="username" required></div>
+        <p></p>
+        <div><label for="password">Passwort:</label>
+        </div><div><input style="width: 200px; height: 25px" type="password" id="password" name="password" required></div>
+        <p></p>
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <button style="width: 200px; height: 25px" type="submit">Login</button>
+    </form>
+</div>
+<div th:if="${result}">
+    <p th:text="${result}"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Vertragsverwaltung</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<h1>Vertragsverwaltung</h1>
+<div th:if="${confirm}" th:text="${confirm}"></div>
+<h2>Wähle eine Aktion aus:</h2>
+<h3>Alle Verträge:</h3>
+<div style="display: flex; gap: 10px;">
+    <a href="/printVertrage">
+        <button>Alle Verträge anzeigen</button>
+    </a>
+    <a href="/editPreis">
+        <button>Preise neu berechnen</button>
+    </a>
+</div>
+<h3>Neuer Vertrag</h3>
+<a href="/createVertrag">
+    <button>Vertrag erstellen</button>
+</a>
+<form action="/home" method="post">
+    <h3>Bestimmter Vertrag</h3>
+    <label for="vsnr">Vertrag:</label>
+    <input type="number" id="vsnr" name="vsnr" min="10000000" max="99999999" required><br><br>
+    <div th:if="${result}" th:text="${result}"></div>
+    <button type="submit">Vertrag abrufen</button>
+</form>
+<p></p>
+<form action="/logout" method="post">
+    <button type="submit">Logout</button>
+</form>
+</body>
+</html>
