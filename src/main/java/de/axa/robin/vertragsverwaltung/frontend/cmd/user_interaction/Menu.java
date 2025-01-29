@@ -6,15 +6,19 @@ import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.frontend.cmd.storage.CreateFrontend;
 import de.axa.robin.vertragsverwaltung.frontend.cmd.storage.DeleteFrontend;
 import de.axa.robin.vertragsverwaltung.frontend.cmd.storage.EditFrontend;
+import lombok.Setter;
 
 import java.util.List;
 
 public class Menu {
     ////Klassen einlesen////
+    @Setter
     private Output output = new Output();
     private final Setup setup = new Setup();
+    @Setter
     private Input input;
     private DeleteFrontend deleteFrontend;
+    @Setter
     private Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
     private CreateFrontend createFrontend = new CreateFrontend(input, vertragsverwaltung, output);
     private EditFrontend editFrontend = new EditFrontend(input, vertragsverwaltung, output);
@@ -22,14 +26,6 @@ public class Menu {
     public Menu(Input input) {
         this.input = input;
         deleteFrontend = new DeleteFrontend(input);
-    }
-
-    public void setOutput(Output output) {
-        this.output = output;
-    }
-
-    public void setInput(Input input) {
-        this.input = input;
     }
 
     public void setDelete(DeleteFrontend deleteFrontend) {
@@ -42,10 +38,6 @@ public class Menu {
 
     public void setEdit(EditFrontend editFrontend) {
         this.editFrontend = editFrontend;
-    }
-
-    public void setVertragsverwaltung(Vertragsverwaltung vertragsverwaltung) {
-        this.vertragsverwaltung = vertragsverwaltung;
     }
 
     public void menu() {

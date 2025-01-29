@@ -15,55 +15,55 @@ import java.util.Optional;
 @RequestMapping("/api/vertragsverwaltung/vertrage")
 public class VertragController {
     private final InputValidator inputValidator;
-    private final Vertragsverwaltung Vertragsverwaltung;
+    private final Vertragsverwaltung vertragsverwaltung;
     private final Edit edit;
     private final Create create;
 
     public VertragController(InputValidator inputValidator, Vertragsverwaltung Vertragsverwaltung) {
         this.inputValidator = inputValidator;
-        this.Vertragsverwaltung = Vertragsverwaltung;
+        this.vertragsverwaltung = Vertragsverwaltung;
         this.edit = new Edit(Vertragsverwaltung);
         this.create = new Create(Vertragsverwaltung);
     }
 
     @GetMapping
     public ResponseEntity<List<Vertrag>> getAllVertrage() {
-        List<Vertrag> vertrage = Vertragsverwaltung.getVertrage();
+        List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
         return ResponseEntity.ok(vertrage);
-    }
-
-    @PutMapping
-    public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) {
-        vertrag.setPreis(create.createPreis(vertrag.isMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
-        if (inputValidator.isInvalidVertrag(vertrag)) {
-            return ResponseEntity.status(400).build();
-        }
-        Vertrag createdVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
-        return ResponseEntity.ok(createdVertrag);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Vertrag> getVertragById(@PathVariable Integer id) {
-        Optional<Vertrag> vertrag = Optional.ofNullable(Vertragsverwaltung.getVertrag(id));
+        Optional<Vertrag> vertrag = Optional.ofNullable(vertragsverwaltung.getVertrag(id));
         return vertrag.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(404).build());
     }
 
+    @PutMapping
+    public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) {
+        vertrag.setPreis(create.createPreis(vertrag.getMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit()));
+        if (inputValidator.isInvalidVertrag(vertrag)) {
+            return ResponseEntity.status(400).build();
+        }
+        Vertrag createdVertrag = vertragsverwaltung.vertragAnlegen(vertrag);
+        return ResponseEntity.ok(createdVertrag);
+    }
+
     @PostMapping("/{id}")
     public ResponseEntity<Vertrag> updateVertrag(@PathVariable Integer id, @RequestBody Vertrag vertrag) {
-        vertrag = edit.updateVertragFields(vertrag, Vertragsverwaltung.getVertrag(id));
-        vertrag.setPreis(create.createPreis(vertrag.isMonatlich(), vertrag.getPartner(), vertrag.getFahrzeug()));
-        boolean deleted = Vertragsverwaltung.vertragLoeschen(id);
+        vertrag = edit.updateVertragFields(vertrag, vertragsverwaltung.getVertrag(id));
+        vertrag.setPreis(create.createPreis(vertrag.getMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit()));
+        boolean deleted = vertragsverwaltung.vertragLoeschen(id);
         if (!deleted) {
             return ResponseEntity.status(404).build();
         }
-        Vertrag updatedVertrag = Vertragsverwaltung.vertragAnlegen(vertrag);
+        Vertrag updatedVertrag = vertragsverwaltung.vertragAnlegen(vertrag);
         return ResponseEntity.ok(updatedVertrag);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVertrag(@PathVariable Integer id) {
-        boolean deleted = Vertragsverwaltung.vertragLoeschen(id);
+        boolean deleted = vertragsverwaltung.vertragLoeschen(id);
         if (deleted) {
             return ResponseEntity.noContent().build();
         } else {

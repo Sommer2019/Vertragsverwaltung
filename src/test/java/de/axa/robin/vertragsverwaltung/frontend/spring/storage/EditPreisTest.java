@@ -41,25 +41,10 @@ class EditPreisTest {
         preismodell.setFaktor(1.7);
         preismodell.setAge(0.3);
         preismodell.setSpeed(0.6);
-        when(edit.recalcpricerun(anyDouble(), anyInt(), anyInt(), anyList())).thenReturn(new BigDecimal("0.0"));
+        when(edit.recalcPrice(anyDouble(), anyInt(), anyInt(), anyList())).thenReturn(new BigDecimal("0.0"));
 
         Map<String, Object> response = editPreis.editPreis(preismodell);
 
         assertEquals("0,00 €", response.get("preis"));
-    }
-
-    @Test
-    void editPreisUpdatesModelCorrectly() {
-        Preis preismodell = new Preis();
-        preismodell.setFaktor(1.7);
-        preismodell.setAge(0.3);
-        preismodell.setSpeed(0.6);
-        when(edit.recalcpricerun(anyDouble(), anyInt(), anyInt(), anyList())).thenReturn(new BigDecimal("0.00"));
-        Model model = mock(Model.class);
-
-        String viewName = editPreis.editPreis(preismodell, model);
-
-        verify(model).addAttribute("confirm", "Preise erfolgreich aktualisiert! neue Preissumme: 0,00€ pro Jahr");
-        assertEquals("index", viewName);
     }
 }

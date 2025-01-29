@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -75,9 +76,9 @@ public class EditTest {
 
         BigDecimal expectedSum = expectedPrice1.add(expectedPrice2.multiply(BigDecimal.valueOf(12)));
 
-        BigDecimal result = edit.recalcpricerun(factor, factoralter, factorspeed, vertrage);
+        BigDecimal result = edit.recalcPrice(factor, factoralter, factorspeed, vertrage);
 
-        assertEquals(expectedSum.setScale(2, BigDecimal.ROUND_HALF_DOWN), result.setScale(2, BigDecimal.ROUND_HALF_DOWN));
+        assertEquals(expectedSum.setScale(2, RoundingMode.HALF_DOWN), result.setScale(2, RoundingMode.HALF_DOWN));
 
         InOrder inOrder = inOrder(vertragsverwaltung);
         inOrder.verify(vertragsverwaltung).vertragLoeschen(1);

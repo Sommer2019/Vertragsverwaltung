@@ -8,9 +8,6 @@ servers:
     description: Relative base url
   - url: http://localhost:8080/api/vertragsverwaltung
     description: Local Dev
-security:
-  - BasicAuth: []
-  - CsrfTokenAuth: []
 paths:
   /vertrage:
     get:
@@ -257,76 +254,194 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 components:
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
-    CsrfTokenAuth:
-      type: apiKey
-      in: header
-      name: X-Csrf-Token
   schemas:
+    Preis:
+      type: object
+      required:
+        - factor
+        - factorage
+        - factorspeed
+      properties:
+        speed:
+          type: number
+          format: double
+          minimum: 0.0000001
+          maximum: 9.9999999
+          example: 0.7
+          description: "Geschwindigkeitsfaktor, muss größer als 0 und kleiner als 10 sein."
+
+        age:
+          type: number
+          format: double
+          minimum: 0.0000001
+          maximum: 9.9999999
+          example: 0.3
+          description: "Alter (in Jahren), muss größer als 0 und kleiner als 10 sein."
+
+        faktor:
+          type: number
+          format: double
+          minimum: 0.0000001
+          maximum: 9.9999999
+          example: 1.7
+          description: "Multiplikationsfaktor, muss größer als 0 und kleiner als 10 sein."
     Vertrag:
       type: object
+      required:
+        - vsnr
+        - monatlich
+        - versicherungsbeginn
+        - antragsDatum
+        - partner
+        - fahrzeug
       properties:
         vsnr:
           type: integer
+          format: int32
+          minimum: 10000000
+          maximum: 99999999
+          example: 12345678
+          description: "Versicherungsnummer (VSNR), eine 8-stellige Zahl zwischen 10.000.000 und 99.999.999."
+
         monatlich:
           type: boolean
-        preis:
-          type: number
-          format: float
+          example: true
+          description: "Gibt an, ob die Zahlung monatlich erfolgt (true) oder jährlich (false)."
+
         versicherungsbeginn:
           type: string
           format: date
+          example: "2025-01-01"
+          description: "Startdatum der Versicherung im Format 'yyyy-MM-dd'."
+
         versicherungsablauf:
           type: string
           format: date
+          example: "2026-01-01"
+          description: "Ablaufdatum der Versicherung im Format 'yyyy-MM-dd'."
+
         antragsDatum:
           type: string
           format: date
-        partner:
-          $ref: '#/components/schemas/Partner'
+          example: "2024-12-15"
+          description: "Datum des Versicherungsantrags im Format 'yyyy-MM-dd'."
+
         fahrzeug:
-          $ref: '#/components/schemas/Fahrzeug'
+          $ref: "#/components/schemas/Fahrzeug"
+
+        partner:
+          $ref: "#/components/schemas/Partner"
     Partner:
       type: object
+      required:
+        - vorname
+        - nachname
+        - geschlecht
+        - geburtsdatum
+        - land
+        - strasse
+        - hausnummer
+        - plz
+        - stadt
+        - bundesland
       properties:
         vorname:
           type: string
+          pattern: "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$"
+          example: "Max"
+          description: "Vorname der Person, erlaubt Buchstaben, Zahlen, Leerzeichen, Bindestriche und Apostrophe."
+
         nachname:
           type: string
+          pattern: "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$"
+          example: "Müller"
+          description: "Nachname der Person mit denselben Zeichenbeschränkungen wie der Vorname."
+
         geschlecht:
           type: string
+          pattern: "^[MmWwDd]$"
+          minLength: 1
           maxLength: 1
+          example: "M"
+          description: "Geschlecht als einzelnes Zeichen ('M', 'W', 'D'), groß oder klein."
+
         geburtsdatum:
           type: string
           format: date
+          example: "1990-05-15"
+          description: "Geburtsdatum im Format 'yyyy-MM-dd'."
+
         land:
           type: string
+          pattern: "^Deutschland$"
+          example: "Deutschland"
+          description: "Nur 'Deutschland' ist als Wohnsitzland erlaubt."
+
         strasse:
           type: string
+          example: "Hauptstraße"
+          description: "Straßenname der Wohnadresse."
+
         hausnummer:
           type: string
+          pattern: "^\\d+[a-zA-Z]?(-[a-zA-Z])?$"
+          example: "1"
+          description: "Hausnummer im Format: Zahl gefolgt von optionalem Buchstaben oder Bindestrich + Buchstabe (z. B. '12', '12A', '12-B')."
+
         plz:
           type: string
+          pattern: "^\\d{5}$"
+          example: "10317"
+          description: "Postleitzahl mit 5 Ziffern."
+
         stadt:
           type: string
+          example: "Berlin"
+          description: "Stadt der Wohnadresse."
+
         bundesland:
           type: string
+          example: "Berlin"
+          description: "Bundesland der Wohnadresse."
     Fahrzeug:
       type: object
+      required:
+        - amtlichesKennzeichen
+        - hersteller
+        - typ
+        - hoechstgeschwindigkeit
+        - wagnisskennziffer
       properties:
         amtlichesKennzeichen:
           type: string
+          example: "M-AB1234E"
+          description: "Amtliches Kfz-Kennzeichen im deutschen Format (z. B. M-AB1234 oder B-CD12E)."
+
         hersteller:
           type: string
+          example: "Volkswagen"
+          description: "Hersteller des Fahrzeugs (z. B. BMW, Audi, Volkswagen)."
+
         typ:
           type: string
+          pattern: "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$"
+          example: "Golf GTI"
+          description: "Fahrzeugtyp oder Modellbezeichnung."
+
         hoechstgeschwindigkeit:
           type: integer
+          format: int32
+          minimum: 61
+          maximum: 250
+          example: 220
+          description: "Maximale Geschwindigkeit des Fahrzeugs in km/h (muss zwischen 61 und 250 liegen)."
+
         wagnisskennziffer:
           type: integer
+          minimum: 112
+          maximum: 112
+          example: 112
+          description: "Wagniskennziffer für die Versicherungseinstufung."
     Problem:
       type: object
       description: AXA extension of the problem structure

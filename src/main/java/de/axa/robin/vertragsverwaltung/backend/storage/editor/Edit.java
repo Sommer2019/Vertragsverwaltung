@@ -1,8 +1,8 @@
 package de.axa.robin.vertragsverwaltung.backend.storage.editor;
 
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
-import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
+import de.axa.robin.vertragsverwaltung.model.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.model.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Edit {
     /// /Klassen einlesen////
@@ -22,13 +23,13 @@ public class Edit {
         this.vertragsverwaltung = vertragsverwaltung;
         this.create = new Create(vertragsverwaltung);
     }
-    public BigDecimal recalcpricerun(double factor, double factoralter, double factorspeed, List<Vertrag> vertrage) {
+    public BigDecimal recalcPrice(double factor, double factoralter, double factorspeed, List<Vertrag> vertrage) {
         repository.speichereFaktoren(factor,factoralter,factorspeed);
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
-            v.setPreis(create.createPreis(v.isMonatlich(), v.getPartner(), v.getFahrzeug()));
+            v.setPreis(create.createPreis(v.getMonatlich(), v.getPartner().getGeburtsdatum(), v.getFahrzeug().getHoechstgeschwindigkeit()));
             if (!v.getVersicherungsablauf().isBefore(LocalDate.now())){
-                if (!v.isMonatlich()) {
+                if (!v.getMonatlich()) {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis()));
                 } else {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
@@ -40,72 +41,63 @@ public class Edit {
         System.out.println("Neue Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
         return summe;
     }
+
     public Vertrag updateVertragFields(Vertrag source, Vertrag target) {
         if (source.getVsnr() != 0) {
             target.setVsnr(source.getVsnr());
         }
-        if (source.getVersicherungsbeginn() != null && !source.getVersicherungsbeginn().toString().equals("nullnull")) {
-            target.setVersicherungsbeginn(source.getVersicherungsbeginn());
+        updateField(source.getVersicherungsbeginn(), target::setVersicherungsbeginn);
+        updateField(source.getVersicherungsablauf(), target::setVersicherungsablauf);
+        updateField(source.getAntragsDatum(), target::setAntragsDatum);
+        if (source.getGender() != ' ') {
+            target.setGender(source.getGender());
         }
-        if (source.getVersicherungsablauf() != null && !source.getVersicherungsablauf().toString().equals("nullnull")) {
-            target.setVersicherungsablauf(source.getVersicherungsablauf());
-        }
-        if (source.getAntragsDatum() != null && !source.getAntragsDatum().toString().equals("nullnull")) {
-            target.setAntragsDatum(source.getAntragsDatum());
-        }
-        if (source.getPartner() != null) {
-            Partner sourcePartner = source.getPartner();
-            Partner targetPartner = target.getPartner();
-            if (sourcePartner.getVorname() != null && !sourcePartner.getVorname().isEmpty()) {
-                targetPartner.setVorname(sourcePartner.getVorname());
-            }
-            if (sourcePartner.getNachname() != null && !sourcePartner.getNachname().isEmpty()) {
-                targetPartner.setNachname(sourcePartner.getNachname());
-            }
-            if (sourcePartner.getGeschlecht()!=' ') {
-                targetPartner.setGeschlecht(sourcePartner.getGeschlecht());
-            }
-            if (sourcePartner.getGeburtsdatum() != null && !sourcePartner.getGeburtsdatum().toString().equals("nullnull")) {
-                targetPartner.setGeburtsdatum(sourcePartner.getGeburtsdatum());
-            }
-            if (sourcePartner.getLand() != null && !sourcePartner.getLand().isEmpty()) {
-                targetPartner.setLand(sourcePartner.getLand());
-            }
-            if (sourcePartner.getStrasse() != null && !sourcePartner.getStrasse().isEmpty()) {
-                targetPartner.setStrasse(sourcePartner.getStrasse());
-            }
-            if (sourcePartner.getHausnummer() != null && !sourcePartner.getHausnummer().isEmpty()) {
-                targetPartner.setHausnummer(sourcePartner.getHausnummer());
-            }
-            if (sourcePartner.getPlz() != null && !sourcePartner.getPlz().isEmpty()) {
-                targetPartner.setPlz(sourcePartner.getPlz());
-            }
-            if (sourcePartner.getStadt() != null && !sourcePartner.getStadt().isEmpty()) {
-                targetPartner.setStadt(sourcePartner.getStadt());
-            }
-            if (sourcePartner.getBundesland() != null && !sourcePartner.getBundesland().isEmpty()) {
-                targetPartner.setBundesland(sourcePartner.getBundesland());
-            }
-        }
-        if (source.getFahrzeug() != null) {
-            Fahrzeug sourceFahrzeug = source.getFahrzeug();
-            Fahrzeug targetFahrzeug = target.getFahrzeug();
-            if (sourceFahrzeug.getAmtlichesKennzeichen() != null && !sourceFahrzeug.getAmtlichesKennzeichen().isEmpty()) {
-                targetFahrzeug.setAmtlichesKennzeichen(sourceFahrzeug.getAmtlichesKennzeichen());
-            }
-            if (sourceFahrzeug.getHersteller() != null && !sourceFahrzeug.getHersteller().isEmpty()) {
-                targetFahrzeug.setHersteller(sourceFahrzeug.getHersteller());
-            }
-            if (sourceFahrzeug.getTyp() != null && !sourceFahrzeug.getTyp().isEmpty()) {
-                targetFahrzeug.setTyp(sourceFahrzeug.getTyp());
-            }
-            if (sourceFahrzeug.getHoechstgeschwindigkeit() != 0) {
-                targetFahrzeug.setHoechstgeschwindigkeit(sourceFahrzeug.getHoechstgeschwindigkeit());
-            }
-            if (sourceFahrzeug.getWagnisskennziffer() != 0) {
-                targetFahrzeug.setWagnisskennziffer(sourceFahrzeug.getWagnisskennziffer());
-            }
-        }
+
+        Partner targetPartner = ensurePartnerExists(target);
+        updatePartnerFields(source.getPartner(), targetPartner);
+
+        Fahrzeug targetFahrzeug = ensureFahrzeugExists(target);
+        updateFahrzeugFields(source.getFahrzeug(), targetFahrzeug);
+
         return target;
     }
+
+    private <T> void updateField(T newValue, Consumer<T> setter) {
+        if (newValue != null) {
+            setter.accept(newValue);
+        }
+    }
+
+    private Partner ensurePartnerExists(Vertrag target) {
+        return target.getPartner();
+    }
+
+    private void updatePartnerFields(Partner sourcePartner, Partner targetPartner) {
+        updateField(sourcePartner.getVorname(), targetPartner::setVorname);
+        updateField(sourcePartner.getNachname(), targetPartner::setNachname);
+        updateField(sourcePartner.getGeburtsdatum(), targetPartner::setGeburtsdatum);
+        updateField(sourcePartner.getLand(), targetPartner::setLand);
+        updateField(sourcePartner.getStrasse(), targetPartner::setStrasse);
+        updateField(sourcePartner.getHausnummer(), targetPartner::setHausnummer);
+        updateField(sourcePartner.getPlz(), targetPartner::setPlz);
+        updateField(sourcePartner.getStadt(), targetPartner::setStadt);
+        updateField(sourcePartner.getBundesland(), targetPartner::setBundesland);
+    }
+
+    private Fahrzeug ensureFahrzeugExists(Vertrag target) {
+        return target.getFahrzeug();
+    }
+
+    private void updateFahrzeugFields(Fahrzeug sourceFahrzeug, Fahrzeug targetFahrzeug) {
+        updateField(sourceFahrzeug.getAmtlichesKennzeichen(), targetFahrzeug::setAmtlichesKennzeichen);
+        updateField(sourceFahrzeug.getHersteller(), targetFahrzeug::setHersteller);
+        updateField(sourceFahrzeug.getTyp(), targetFahrzeug::setTyp);
+        if (sourceFahrzeug.getHoechstgeschwindigkeit() != 0) {
+            targetFahrzeug.setHoechstgeschwindigkeit(sourceFahrzeug.getHoechstgeschwindigkeit());
+        }
+        if (sourceFahrzeug.getWagnisskennziffer() != 0) {
+            targetFahrzeug.setWagnisskennziffer(sourceFahrzeug.getWagnisskennziffer());
+        }
+    }
+
 }

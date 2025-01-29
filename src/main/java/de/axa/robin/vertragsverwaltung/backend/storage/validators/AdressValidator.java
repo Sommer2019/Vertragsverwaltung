@@ -6,105 +6,120 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+
 public class AdressValidator {
-    // Klassen einlesen
     private final Setup setup = new Setup();
+    private static final String USER_AGENT = "Mozilla/5.0";
+    private static final int TIMEOUT = 5000;
 
     public boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
         try {
-            String query = URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland + ", " + land, StandardCharsets.UTF_8);
-            String NOMINATIM_URL = setup.getCheckURL();
-            URI uri = new URI(NOMINATIM_URL + query);
-            System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
+            String query = buildQuery(street, houseNumber, plz, place, bundesland, land);
+            URI uri = new URI(setup.getCheckURL() + query);
 
-            // Check if proxy is reachable
-            if (isProxyReachable(setup.getHost(), setup.getPort())) {
-                System.setProperty("http.proxyHost", setup.getHost());
-                System.setProperty("http.proxyPort", String.valueOf(setup.getPort()));
-                System.setProperty("https.proxyHost", setup.getHost());
-                System.setProperty("https.proxyPort", String.valueOf(setup.getPort()));
-            }
+            configureProxy();
 
-            // Check internet connection
-            if (!isInternetAvailable(setup.getPort())) {
-                if (isProxyReachable(setup.getHost(), setup.getPort())) {
-                    System.err.println("Proxy ist erreichbar, aber keine Internetverbindung.");
-                } else {
-                    System.err.println("Keine Internetverbindung und Proxy ist nicht erreichbar.");
-                }
+            if (!isInternetAvailable()) {
                 return false;
             }
 
-            HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
-            conn.setRequestMethod("GET");
-            conn.setInstanceFollowRedirects(true);
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-
-            int status = conn.getResponseCode();
-            if (status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_MOVED_TEMP) {
-                String newUrl = conn.getHeaderField("Location");
-                conn = (HttpURLConnection) new URI(newUrl).toURL().openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                status = conn.getResponseCode();
-            }
+            HttpURLConnection conn = createConnection(uri);
+            int status = handleRedirects(conn);
 
             if (status != HttpURLConnection.HTTP_OK) {
                 System.err.println("HTTP-Status Code " + status + " empfangen.");
-                System.err.println("Eventuell ungültige Eingabe!");
                 return false;
             }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder content = new StringBuilder();
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            in.close();
+            return processResponse(conn, street, houseNumber, plz, place, bundesland, land);
+        } catch (Exception e) {
+            System.err.println("Fehler aufgetreten: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-            JsonReader jsonReader = Json.createReader(new StringReader(content.toString()));
+    private String buildQuery(String street, String houseNumber, String plz, String place, String bundesland, String land) throws UnsupportedEncodingException {
+        return URLEncoder.encode(street + " " + houseNumber + ", " + plz + " " + place + ", " + bundesland + ", " + land, StandardCharsets.UTF_8);
+    }
+
+    private void configureProxy() {
+        if (isProxyReachable(setup.getHost(), setup.getPort())) {
+            System.setProperty("http.proxyHost", setup.getHost());
+            System.setProperty("http.proxyPort", String.valueOf(setup.getPort()));
+            System.setProperty("https.proxyHost", setup.getHost());
+            System.setProperty("https.proxyPort", String.valueOf(setup.getPort()));
+        }
+    }
+
+    public boolean isInternetAvailable() {
+        try {
+            URI uri = new URI(setup.getTestURL());
+            HttpURLConnection urlConn = (HttpURLConnection) uri.toURL().openConnection();
+            urlConn.setRequestMethod("GET");
+            urlConn.setConnectTimeout(TIMEOUT);
+            urlConn.connect();
+            return urlConn.getResponseCode() == 200;
+        } catch (IOException | URISyntaxException e) {
+            return false;
+        }
+    }
+
+    private HttpURLConnection createConnection(URI uri) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
+        conn.setRequestMethod("GET");
+        conn.setInstanceFollowRedirects(true);
+        conn.setRequestProperty("User-Agent", USER_AGENT);
+        conn.setConnectTimeout(TIMEOUT);
+        conn.setReadTimeout(TIMEOUT);
+        return conn;
+    }
+
+    private int handleRedirects(HttpURLConnection conn) throws IOException, URISyntaxException {
+        int status = conn.getResponseCode();
+        if (status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_MOVED_TEMP) {
+            String newUrl = conn.getHeaderField("Location");
+            conn = (HttpURLConnection) new URI(newUrl).toURL().openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("User-Agent", USER_AGENT);
+            conn.setConnectTimeout(TIMEOUT);
+            conn.setReadTimeout(TIMEOUT);
+            status = conn.getResponseCode();
+        }
+        return status;
+    }
+
+    private boolean processResponse(HttpURLConnection conn, String street, String houseNumber, String plz, String place, String bundesland, String land) throws IOException {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+            String content = in.lines().reduce("", String::concat);
+            JsonReader jsonReader = Json.createReader(new StringReader(content));
             JsonArray jsonArray = jsonReader.readArray();
-            jsonReader.close();
 
             if (!jsonArray.isEmpty()) {
-                JsonObject address = jsonArray.getJsonObject(0);
-                String displayName = address.getString("display_name").toLowerCase();
-                if (displayName.contains(street.toLowerCase() + ",") &&
-                        displayName.contains(houseNumber.toLowerCase() + ",") &&
-                        displayName.contains(plz.toLowerCase() + ",") &&
-                        displayName.contains(place.toLowerCase() + ",") &&
-                        displayName.contains(bundesland.toLowerCase() + ",") &&
-                        displayName.contains(land.toLowerCase())) {
-                    return true;
-                } else {
-                    System.err.println("Eventuell Fehler in Adresse!");
-                    return false;
-                }
+                return validateAddressComponents(jsonArray.getJsonObject(0), street, houseNumber, plz, place, bundesland, land);
             } else {
                 System.err.println("Adresse existiert eventuell nicht!");
                 return false;
             }
-
-        } catch (ConnectException | SocketTimeoutException e) {
-            System.err.println("Connection timed out: " + e.getMessage());
-            e.printStackTrace();
-            System.err.println("Eventuell ungültige Eingabe!");
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return false;
+    }
+
+    private boolean validateAddressComponents(JsonObject address, String street, String houseNumber, String plz, String place, String bundesland, String land) {
+        String displayName = address.getString("display_name").toLowerCase();
+        if (displayName.contains(street.toLowerCase() + ",") &&
+                displayName.contains(houseNumber.toLowerCase() + ",") &&
+                displayName.contains(plz.toLowerCase() + ",") &&
+                displayName.contains(place.toLowerCase() + ",") &&
+                displayName.contains(bundesland.toLowerCase() + ",") &&
+                displayName.contains(land.toLowerCase())) {
+            return true;
+        } else {
+            System.err.println("Eventuell Fehler in Adresse!");
+            return false;
+        }
     }
 
     public boolean isProxyReachable(String host, int port) {
@@ -115,24 +130,4 @@ public class AdressValidator {
             return false;
         }
     }
-
-    public boolean isInternetAvailable(int portfix) {
-        if (isProxyReachable(setup.getHost(), portfix)) {
-            System.setProperty("http.proxyHost", setup.getHost());
-            System.setProperty("http.proxyPort", String.valueOf(portfix));
-            System.setProperty("https.proxyHost", setup.getHost());
-            System.setProperty("https.proxyPort", String.valueOf(portfix));
-        }
-        try {
-            URI uri = new URI(setup.getTestURL());
-            HttpURLConnection urlConn = (HttpURLConnection) uri.toURL().openConnection();
-            urlConn.setRequestMethod("GET");
-            urlConn.setConnectTimeout(5000); // 5 seconds
-            urlConn.connect();
-            return urlConn.getResponseCode() == 200;
-        } catch (IOException | URISyntaxException e) {
-            return false;
-        }
-    }
-
 }

@@ -20,46 +20,68 @@ public class Repository {
     private final Logger logger = Logger.getLogger(Repository.class.getName());
     private final Setup setup;
 
+    private static final String ERROR_LOADING = "Fehler beim Laden";
+    private static final String ERROR_SAVING = "Fehler beim Speichern";
+    private static final String FILE_NOT_FOUND = "Datei 'vertrage.json' nicht gefunden";
+
     public Repository(Setup setup) {
         this.setup = setup;
     }
 
     public void speichereVertrage(List<Vertrag> vertrage) {
         try (FileWriter file = new FileWriter(setup.getRepositoryPath(), false)) {
-            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-            for (Vertrag v : vertrage) {
-                arrayBuilder.add(Json.createObjectBuilder()
-                        .add("vsnr", v.getVsnr())
-                        .add("abrechnungszeitraum monatlich", v.isMonatlich())
-                        .add("preis", v.getPreis())
-                        .add("versicherungsbeginn", v.getVersicherungsbeginn().toString())
-                        .add("versicherungsablauf", v.getVersicherungsablauf().toString())
-                        .add("antragsDatum", v.getAntragsDatum().toString())
-                        .add("fahrzeug", Json.createObjectBuilder()
-                                .add("amtlichesKennzeichen", v.getFahrzeug().getAmtlichesKennzeichen())
-                                .add("hersteller", v.getFahrzeug().getHersteller())
-                                .add("typ", v.getFahrzeug().getTyp())
-                                .add("hoechstgeschwindigkeit", v.getFahrzeug().getHoechstgeschwindigkeit())
-                                .add("wagnisskennziffer", v.getFahrzeug().getWagnisskennziffer()))
-                        .add("partner", Json.createObjectBuilder()
-                                .add("vorname", v.getPartner().getVorname())
-                                .add("nachname", v.getPartner().getNachname())
-                                .add("geschlecht", Character.toString(v.getPartner().getGeschlecht()))
-                                .add("geburtsdatum", v.getPartner().getGeburtsdatum().toString())
-                                .add("land", v.getPartner().getLand())
-                                .add("strasse", v.getPartner().getStrasse())
-                                .add("hausnummer", v.getPartner().getHausnummer())
-                                .add("plz", v.getPartner().getPlz())
-                                .add("stadt", v.getPartner().getStadt())
-                                .add("bundesland", v.getPartner().getBundesland())
-                        ));
-            }
-            JsonArray jsonArray = arrayBuilder.build();
+            JsonArray jsonArray = createVertraegeJsonArray(vertrage);
             JsonWriter writer = Json.createWriter(file);
             writer.writeArray(jsonArray);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Fehler beim speichern", e);
+            logger.log(Level.SEVERE, ERROR_SAVING, e);
         }
+    }
+
+    private JsonArray createVertraegeJsonArray(List<Vertrag> vertrage) {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (Vertrag v : vertrage) {
+            arrayBuilder.add(createVertragJsonObject(v));
+        }
+        return arrayBuilder.build();
+    }
+
+    private JsonObject createVertragJsonObject(Vertrag v) {
+        return Json.createObjectBuilder()
+                .add("vsnr", v.getVsnr())
+                .add("abrechnungszeitraum monatlich", v.getMonatlich())
+                .add("preis", v.getPreis())
+                .add("versicherungsbeginn", v.getVersicherungsbeginn().toString())
+                .add("versicherungsablauf", v.getVersicherungsablauf().toString())
+                .add("antragsDatum", v.getAntragsDatum().toString())
+                .add("fahrzeug", createFahrzeugJsonObject(convertToBackendFahrzeug(v.getFahrzeug())))
+                .add("partner", createPartnerJsonObject(convertToBackendPartner(v.getPartner(), v), v))
+                .build();
+    }
+
+    private JsonObject createFahrzeugJsonObject(Fahrzeug fahrzeug) {
+        return Json.createObjectBuilder()
+                .add("amtlichesKennzeichen", fahrzeug.getAmtlichesKennzeichen())
+                .add("hersteller", fahrzeug.getHersteller())
+                .add("typ", fahrzeug.getTyp())
+                .add("hoechstgeschwindigkeit", fahrzeug.getHoechstgeschwindigkeit())
+                .add("wagnisskennziffer", fahrzeug.getWagnisskennziffer())
+                .build();
+    }
+
+    private JsonObject createPartnerJsonObject(Partner partner, Vertrag v) {
+        return Json.createObjectBuilder()
+                .add("vorname", partner.getVorname())
+                .add("nachname", partner.getNachname())
+                .add("geschlecht", Character.toString(v.getGender()))
+                .add("geburtsdatum", partner.getGeburtsdatum().toString())
+                .add("land", partner.getLand())
+                .add("strasse", partner.getStrasse())
+                .add("hausnummer", partner.getHausnummer())
+                .add("plz", partner.getPlz())
+                .add("stadt", partner.getStadt())
+                .add("bundesland", partner.getBundesland())
+                .build();
     }
 
     public List<Vertrag> ladeVertrage() {
@@ -68,52 +90,61 @@ public class Repository {
             JsonReader reader = Json.createReader(file);
             JsonArray jsonArray = reader.readArray();
             for (JsonValue jsonValue : jsonArray) {
-                JsonObject jsonObject = jsonValue.asJsonObject();
-                Vertrag vertrag = new Vertrag(
-                        jsonObject.getInt("vsnr"),
-                        jsonObject.getBoolean("abrechnungszeitraum monatlich"),
-                        jsonObject.getJsonNumber("preis").doubleValue(),
-                        LocalDate.parse(jsonObject.getString("versicherungsbeginn")),
-                        LocalDate.parse(jsonObject.getString("versicherungsablauf")),
-                        LocalDate.parse(jsonObject.getString("antragsDatum")),
-                        new Fahrzeug(
-                                jsonObject.getJsonObject("fahrzeug").getString("amtlichesKennzeichen"),
-                                jsonObject.getJsonObject("fahrzeug").getString("hersteller"),
-                                jsonObject.getJsonObject("fahrzeug").getString("typ"),
-                                jsonObject.getJsonObject("fahrzeug").getInt("hoechstgeschwindigkeit"),
-                                jsonObject.getJsonObject("fahrzeug").getInt("wagnisskennziffer")
-                        ),
-                        new Partner(
-                                jsonObject.getJsonObject("partner").getString("vorname"),
-                                jsonObject.getJsonObject("partner").getString("nachname"),
-                                jsonObject.getJsonObject("partner").getString("geschlecht").charAt(0),
-                                LocalDate.parse(jsonObject.getJsonObject("partner").getString("geburtsdatum")),
-                                jsonObject.getJsonObject("partner").getString("land"),
-                                jsonObject.getJsonObject("partner").getString("strasse"),
-                                jsonObject.getJsonObject("partner").getString("hausnummer"),
-                                jsonObject.getJsonObject("partner").getString("plz"),
-                                jsonObject.getJsonObject("partner").getString("stadt"),
-                                jsonObject.getJsonObject("partner").getString("bundesland")
-                        )
-                );
-                vertrage.add(vertrag);
+                vertrage.add(createVertragFromJson(jsonValue.asJsonObject()));
             }
         } catch (FileNotFoundException e) {
-            logger.log(Level.WARNING, "Datei 'vertrage.json' nicht gefunden", e);
+            logger.log(Level.WARNING, FILE_NOT_FOUND, e);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Fehler beim laden", e);
+            logger.log(Level.SEVERE, ERROR_LOADING, e);
         }
         return vertrage;
     }
 
+    private Vertrag createVertragFromJson(JsonObject jsonObject) {
+        return new Vertrag(
+                jsonObject.getInt("vsnr"),
+                jsonObject.getBoolean("abrechnungszeitraum monatlich"),
+                jsonObject.getJsonNumber("preis").doubleValue(),
+                LocalDate.parse(jsonObject.getString("versicherungsbeginn")),
+                LocalDate.parse(jsonObject.getString("versicherungsablauf")),
+                LocalDate.parse(jsonObject.getString("antragsDatum")),
+                createFahrzeugFromJson(jsonObject.getJsonObject("fahrzeug")),
+                createPartnerFromJson(jsonObject.getJsonObject("partner"))
+        );
+    }
+
+    private Fahrzeug createFahrzeugFromJson(JsonObject jsonObject) {
+        return new Fahrzeug(
+                jsonObject.getString("amtlichesKennzeichen"),
+                jsonObject.getString("hersteller"),
+                jsonObject.getString("typ"),
+                jsonObject.getInt("hoechstgeschwindigkeit"),
+                jsonObject.getInt("wagnisskennziffer")
+        );
+    }
+
+    private Partner createPartnerFromJson(JsonObject jsonObject) {
+        return new Partner(
+                jsonObject.getString("vorname"),
+                jsonObject.getString("nachname"),
+                jsonObject.getString("geschlecht").charAt(0),
+                LocalDate.parse(jsonObject.getString("geburtsdatum")),
+                jsonObject.getString("land"),
+                jsonObject.getString("strasse"),
+                jsonObject.getString("hausnummer"),
+                jsonObject.getString("plz"),
+                jsonObject.getString("stadt"),
+                jsonObject.getString("bundesland")
+        );
+    }
+
     public JsonObject ladeFaktoren() {
-        JsonObject jsonObject = null;
         try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
-            jsonObject = reader.readObject();
+            return reader.readObject();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Fehler beim Laden der Faktoren", e);
         }
-        return jsonObject;
+        return null;
     }
 
     public void speichereFaktoren(double factor, double factorage, double factorspeed) {
@@ -126,7 +157,32 @@ public class Repository {
             JsonWriter writer = Json.createWriter(file);
             writer.writeObject(jsonObject);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Fehler beim Speichern der Faktoren", e);
         }
+    }
+
+    private Fahrzeug convertToBackendFahrzeug(de.axa.robin.vertragsverwaltung.model.Fahrzeug fahrzeug) {
+        return new Fahrzeug(
+                fahrzeug.getAmtlichesKennzeichen(),
+                fahrzeug.getHersteller(),
+                fahrzeug.getTyp(),
+                fahrzeug.getHoechstgeschwindigkeit(),
+                fahrzeug.getWagnisskennziffer()
+        );
+    }
+
+    private Partner convertToBackendPartner(de.axa.robin.vertragsverwaltung.model.Partner partner, Vertrag v) {
+        return new Partner(
+                partner.getVorname(),
+                partner.getNachname(),
+                v.getGender(),
+                partner.getGeburtsdatum(),
+                partner.getLand(),
+                partner.getStrasse(),
+                partner.getHausnummer(),
+                partner.getPlz(),
+                partner.getStadt(),
+                partner.getBundesland()
+        );
     }
 }

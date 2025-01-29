@@ -1,27 +1,14 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
-import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class Fahrzeug {
-    @Pattern(regexp= "^\\p{Lu}{1,3}-\\p{Lu}{1,2}\\d{1,4}[EH]?$")
-    private String amtlichesKennzeichen;
-    private String hersteller;
-    @Pattern(regexp = "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ]+$")
-    private String typ;
-    private int hoechstgeschwindigkeit;
-    private int wagnisskennziffer;
+public class Fahrzeug extends de.axa.robin.vertragsverwaltung.model.Fahrzeug {
 
     // Konstruktor
     public Fahrzeug(String amtlichesKennzeichen, String hersteller, String typ, int hoechstgeschwindigkeit, int wagnisskennziffer) {
-        this.amtlichesKennzeichen = amtlichesKennzeichen;
-        this.hersteller = hersteller;
-        this.typ = typ;
-        this.hoechstgeschwindigkeit = hoechstgeschwindigkeit;
-        this.wagnisskennziffer = wagnisskennziffer;
+        super.setAmtlichesKennzeichen(amtlichesKennzeichen);
+        super.setHersteller(hersteller);
+        super.setTyp(typ);
+        super.setHoechstgeschwindigkeit(hoechstgeschwindigkeit);
+        super.setWagnisskennziffer(wagnisskennziffer);
     }
     public Fahrzeug() {
         super();
@@ -30,11 +17,11 @@ public class Fahrzeug {
     @Override
     public String toString() {
         return "\nFahrzeug: " +
-                "\n\tAmtliches Kennzeichen: " + amtlichesKennzeichen +
-                "\n\tHersteller: " + hersteller +
-                "\n\tTyp: " + typ +
-                "\n\tHöchstgeschwindigkeit: " + hoechstgeschwindigkeit +
-                "\n\tWagnisskennziffer: " + wagnisskennziffer;
+                "\n\tAmtliches Kennzeichen: " + super.getAmtlichesKennzeichen() +
+                "\n\tHersteller: " + super.getHersteller() +
+                "\n\tTyp: " + super.getTyp() +
+                "\n\tHöchstgeschwindigkeit: " + super.getHoechstgeschwindigkeit() +
+                "\n\tWagnisskennziffer: " + super.getWagnisskennziffer();
     }
 }
 

@@ -63,7 +63,7 @@ public class CreateTest {
         }
 
         // Act
-        double preis = create.createPreis(monatlich, partner, fahrzeug);
+        double preis = create.createPreis(monatlich, partner.getGeburtsdatum(), fahrzeug.getHoechstgeschwindigkeit());
 
         // Assert
         assertTrue(preis >= 0);

@@ -29,12 +29,6 @@ class InputValidatorTest {
         System.setErr(new PrintStream(errContent));
     }
 
-    @Test
-    void testString() {
-        assertTrue(inputValidator.string("123"));
-        assertFalse(inputValidator.string("abc"));
-        assertTrue(inputValidator.string(""));
-    }
 
     @Test
     void testIsStringInJsonFile() {

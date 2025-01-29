@@ -111,7 +111,7 @@ class AdressValidatorTest {
             when(mockConn.getResponseCode()).thenReturn(200); // Simulate a successful response
 
             // Test for internet availability
-            boolean result = adressValidator.isInternetAvailable(setup.getPort());
+            boolean result = adressValidator.isInternetAvailable();
             assertTrue(result);
         }
     }

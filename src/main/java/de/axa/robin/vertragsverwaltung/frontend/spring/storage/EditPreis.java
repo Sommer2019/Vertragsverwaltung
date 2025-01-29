@@ -42,16 +42,16 @@ public class EditPreis {
         factor = jsonObject.getJsonNumber("factor").doubleValue();
         factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
         factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
-        BigDecimal preis = edit.recalcpricerun(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertrage);
+        BigDecimal preis = edit.recalcPrice(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertrage);
         Map<String, Object> response = new HashMap<>();
         response.put("preis", preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + " €");
-        edit.recalcpricerun(factor, factoralter, factorspeed, vertrage);
+        edit.recalcPrice(factor, factoralter, factorspeed, vertrage);
         return response;
     }
 
     @PostMapping("/editPreis")
     public String editPreis(@ModelAttribute Preis preismodell, Model model) {
-        BigDecimal preis = edit.recalcpricerun(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertrage);
+        BigDecimal preis = edit.recalcPrice(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertrage);
         model.addAttribute("confirm", "Preise erfolgreich aktualisiert! neue Preissumme: " + preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + "€ pro Jahr");
         return "home";
     }

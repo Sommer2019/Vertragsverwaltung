@@ -84,7 +84,6 @@ public class CreateFrontendTest {
         assertNotNull(partner);
         assertEquals("John", partner.getVorname());
         assertEquals("Doe", partner.getNachname());
-        assertEquals('M', partner.getGeschlecht());
         assertEquals(LocalDate.of(1980, 1, 1), partner.getGeburtsdatum());
         assertEquals("Deutschland", partner.getLand());
         assertEquals("Hauptstraße", partner.getStrasse());
@@ -175,7 +174,7 @@ public class CreateFrontendTest {
         assertNotNull(vertrag);
         assertEquals("GL-GL123", vertrag.getFahrzeug().getAmtlichesKennzeichen());
         assertEquals("John", vertrag.getPartner().getVorname());
-        assertTrue(vertrag.isMonatlich());
+        assertTrue(vertrag.getMonatlich());
         assertEquals(LocalDate.now(), vertrag.getVersicherungsbeginn());
         assertEquals(LocalDate.now().plusYears(1), vertrag.getVersicherungsablauf());
         assertTrue(vertrag.getPreis() >= 0); // Assuming a valid calculation should return a positive price

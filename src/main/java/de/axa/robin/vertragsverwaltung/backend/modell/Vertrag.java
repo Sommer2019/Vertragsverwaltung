@@ -1,62 +1,61 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
-import jakarta.validation.Valid;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
+import de.axa.robin.vertragsverwaltung.model.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.model.Partner;
 
 import java.time.LocalDate;
 import java.util.Objects;
+
 @Getter
 @Setter
-public class Vertrag {
-    private int vsnr;
+public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag {
     private double preis;
+    @JsonIgnore
     private String formattedPreis;
-    boolean monatlich;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate versicherungsbeginn;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate versicherungsablauf;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate antragsDatum;
-    @Valid
-    private Fahrzeug fahrzeug;
-    @Valid
-    private Partner partner;
 
     // Konstruktor
     public Vertrag(int vsnr, boolean monatlich, double preis, LocalDate versicherungsbeginn, LocalDate versicherungsablauf, LocalDate antragsDatum, Fahrzeug fahrzeug, Partner partner) {
-        this.vsnr = vsnr;
+        super.setVsnr(vsnr);
         this.preis = preis;
-        this.monatlich = monatlich;
-        this.versicherungsbeginn = versicherungsbeginn;
-        this.versicherungsablauf = versicherungsablauf;
-        this.antragsDatum = antragsDatum;
-        this.fahrzeug = fahrzeug;
-        this.partner = partner;
+        super.setMonatlich(monatlich);
+        super.setVersicherungsbeginn(versicherungsbeginn);
+        super.setVersicherungsablauf(versicherungsablauf);
+        super.setAntragsDatum(antragsDatum);
+        super.setFahrzeug(fahrzeug);
+        super.setPartner(partner);
     }
 
     public Vertrag(Fahrzeug fahrzeug, Partner partner) {
-        this.fahrzeug = fahrzeug;
-        this.partner = partner;
+        super.setFahrzeug(fahrzeug);
+        super.setPartner(partner);
     }
 
     public Vertrag() {
         super();
     }
+    @JsonIgnore
+    public char getGender() {
+        return super.getPartner().getGeschlecht().charAt(0);
+    }
+    @JsonIgnore
+    public void setGender (char gender) {
+        super.getPartner().setGeschlecht(String.valueOf(gender));
+    }
 
     @Override
     public String toString() {
         return "Vertragsdaten: " +
-                "\n\tVertragsnummer: " + vsnr +
+                "\n\tVertragsnummer: " + super.getVsnr() +
                 "\n\tPreis: " + preis + "€" +
-                "\n\tAbrechnungszeitraum monatlich: " + monatlich +
-                "\n\tVersicherungsbeginn: " + versicherungsbeginn +
-                "\n\tVersicherungsablauf: " + versicherungsablauf +
-                "\n\tAntragsdatum: " + antragsDatum +
-                fahrzeug +
-                partner +
+                "\n\tAbrechnungszeitraum monatlich: " + super.getMonatlich() +
+                "\n\tVersicherungsbeginn: " + super.getVersicherungsbeginn() +
+                "\n\tVersicherungsablauf: " + super.getVersicherungsablauf() +
+                "\n\tAntragsdatum: " + super.getAntragsDatum() +
+                super.getFahrzeug() +
+                super.getPartner() +
                 "\n\t-------------------------------";
     }
 
@@ -65,12 +64,12 @@ public class Vertrag {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vertrag vertrag = (Vertrag) o;
-        return vsnr == vertrag.vsnr;
+        return super.getVsnr().equals(vertrag.getVsnr());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(vsnr);
+        return Objects.hashCode(super.getVsnr());
     }
 }
 

@@ -26,35 +26,33 @@ public class Create {
             vsnr++;
         }
         if (vsnr > 99999999) {
-            System.err.println("Keine freien Versicherungsnummern mehr!");
             throw new IllegalStateException("Keine freien Versicherungsnummern mehr!");
         }
         return vsnr;
     }
 
-    public double createPreis(boolean monatlich, Partner partner, Fahrzeug fahrzeug) {
-        double preis = 0;
-        double factor, factoralter, factorspeed;
-        int alter = LocalDate.now().getYear() - partner.getGeburtsdatum().getYear();
+    public double createPreis(boolean monatlich, LocalDate geburtsDatum, int hoechstGeschwindigkeit) {
+        double preis, factor, factoralter, factorspeed;
+        int alter = LocalDate.now().getYear() - geburtsDatum.getYear();
         JsonObject jsonObject = repository.ladeFaktoren();
         factor = jsonObject.getJsonNumber("factor").doubleValue();
         factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
         factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
         try {
-            preis = (alter * factoralter + fahrzeug.getHoechstgeschwindigkeit() * factorspeed) * factor;
+            preis = (alter * factoralter + hoechstGeschwindigkeit * factorspeed) * factor;
             if (!monatlich) {
                 preis = preis * 11;
             }
         } catch (Exception e) {
-            System.err.println("Ungültige Eingabe!");
+            throw new IllegalStateException(e);
         }
         return Math.round(preis * 100.0) / 100.0;
     }
 
-    public double createVertragtoSave(Vertrag vertrag, boolean monatlich, int vsnr) {
-        Partner partner = new Partner(vertrag.getPartner().getVorname(), vertrag.getPartner().getNachname(), vertrag.getPartner().getGeschlecht(), vertrag.getPartner().getGeburtsdatum(), vertrag.getPartner().getLand(), vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(), vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(), vertrag.getPartner().getBundesland());
+    public double createVertragAndSave(Vertrag vertrag, boolean monatlich, int vsnr) {
+        Partner partner = new Partner(vertrag.getPartner().getVorname(), vertrag.getPartner().getNachname(), vertrag.getGender(), vertrag.getPartner().getGeburtsdatum(), vertrag.getPartner().getLand(), vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(), vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(), vertrag.getPartner().getBundesland());
         Fahrzeug fahrzeug = new Fahrzeug(vertrag.getFahrzeug().getAmtlichesKennzeichen(), vertrag.getFahrzeug().getHersteller(), vertrag.getFahrzeug().getTyp(), vertrag.getFahrzeug().getHoechstgeschwindigkeit(), vertrag.getFahrzeug().getWagnisskennziffer());
-        double preis = createPreis(monatlich, partner, fahrzeug);
+        double preis = createPreis(monatlich, partner.getGeburtsdatum(), fahrzeug.getHoechstgeschwindigkeit());
         Vertrag vertragsave = new Vertrag(vsnr, monatlich, preis, vertrag.getVersicherungsbeginn(), vertrag.getVersicherungsablauf(), vertrag.getAntragsDatum(), fahrzeug, partner);
         vertragsverwaltung.vertragAnlegen(vertragsave);
         return preis;

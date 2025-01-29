@@ -21,13 +21,17 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // Constants for URL patterns
+    private static final String[] PERMITTED_PATHS = {"/static/**", "/js/**", "/css/**", "/", "/api/**", "/login", "/error", "/favicon.ico"};
+    private static final String[] ADMIN_PATHS = {"/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/showEdit", "/showDelete", "/precalcPreis", "/createPreis", "/logout"};
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/static/**", "/js/**", "/css/**", "/", "/api/**", "/login", "/error", "/favicon.ico").permitAll()
-                        .requestMatchers("/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/showEdit", "/showDelete", "/precalcPreis", "/createPreis", "/logout").hasRole("ADMIN")
+                        .requestMatchers(PERMITTED_PATHS).permitAll()
+                        .requestMatchers(ADMIN_PATHS).hasRole("ADMIN")
                 )
                 .formLogin(form -> form
                         .loginPage("/")
@@ -48,11 +52,13 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Custom logout success handler that redirects to the home page with a logout message
     @Bean
     public LogoutSuccessHandler customLogoutSuccessHandler() {
         return (request, response, authentication) -> response.sendRedirect("/?logout");
     }
 
+    // In-memory user details service with a default admin user
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user = User.builder()
@@ -64,11 +70,13 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(user);
     }
 
+    // Password encoder bean using BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // CSRF token repository configuration
     @Bean
     public CsrfTokenRepository csrfTokenRepository() {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();

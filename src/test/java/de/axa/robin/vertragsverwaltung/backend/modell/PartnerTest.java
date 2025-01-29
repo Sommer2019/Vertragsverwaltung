@@ -39,17 +39,6 @@ class PartnerTest {
     }
 
     @Test
-    void testGetGeschlecht() {
-        assertEquals('m', partner.getGeschlecht());
-    }
-
-    @Test
-    void testSetGeschlecht() {
-        partner.setGeschlecht('f');
-        assertEquals('f', partner.getGeschlecht());
-    }
-
-    @Test
     void testGetGeburtsdatum() {
         assertEquals(LocalDate.of(1980, 1, 1), partner.getGeburtsdatum());
     }

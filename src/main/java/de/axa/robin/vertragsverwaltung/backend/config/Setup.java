@@ -16,6 +16,9 @@ public class Setup {
     private final String checkURL;
     private final String host;
     private final int port;
+    private final String db_url;
+    private final String db_user;
+    private final String db_pass;
 
     public Setup() {
         this.repositoryPath = "src/main/resources/static/json/vertrage.json";
@@ -25,6 +28,9 @@ public class Setup {
         this.checkURL = "https://nominatim.openstreetmap.org/search?format=json&q=";
         this.host = "localhost";
         this.port = 3128;
+        this.db_url = "jdbc:mysql://localhost:3306/falconbyte";
+        this.db_user = "root";
+        this.db_pass = "";
     }
 
 }

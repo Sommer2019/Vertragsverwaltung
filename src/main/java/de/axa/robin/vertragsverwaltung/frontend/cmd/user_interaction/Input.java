@@ -39,7 +39,7 @@ public class Input {
             } else if (checkExistence && vertragsverwaltung.kennzeichenExistiert(input)) {
                 output.error("Das Kennzeichen existiert bereits.");
                 rerun = true;
-            } else if (isStringCheck && inputValidator.string(input)) {
+            } else if (isStringCheck) {
                 output.error("Ungültige Eingabe!");
                 rerun = true;
             } else if (isCountryCheck && !input.equals("Deutschland")) {

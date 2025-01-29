@@ -58,7 +58,7 @@ public class Output {
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
             druckeVertrag(v);
-            if (!v.isMonatlich()) {
+            if (!v.getMonatlich()) {
                 summe = summe.add(BigDecimal.valueOf(v.getPreis()));
             } else {
                 summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
