@@ -97,7 +97,7 @@ public class InputValidator {
         if (result==null){
             return false;
         }
-        if (vertrag.getGender() != 'M' && vertrag.getGender() != 'D' && vertrag.getGender() != 'W') {
+        if (vertrag.getPartner().getGeschlecht().charAt(0) != 'M' && vertrag.getPartner().getGeschlecht().charAt(0) != 'D' && vertrag.getPartner().getGeschlecht().charAt(0) != 'W') {
             result.rejectValue("partner.geschlecht", "error.partner.geschlecht", ERROR_INVALID_GENDER);
             return true;
         }

@@ -49,9 +49,6 @@ public class Edit {
         updateField(source.getVersicherungsbeginn(), target::setVersicherungsbeginn);
         updateField(source.getVersicherungsablauf(), target::setVersicherungsablauf);
         updateField(source.getAntragsDatum(), target::setAntragsDatum);
-        if (source.getGender() != ' ') {
-            target.setGender(source.getGender());
-        }
 
         Partner targetPartner = ensurePartnerExists(target);
         updatePartnerFields(source.getPartner(), targetPartner);
@@ -75,6 +72,9 @@ public class Edit {
     private void updatePartnerFields(Partner sourcePartner, Partner targetPartner) {
         updateField(sourcePartner.getVorname(), targetPartner::setVorname);
         updateField(sourcePartner.getNachname(), targetPartner::setNachname);
+        if (sourcePartner.getGeschlecht().charAt(0) != ' ') {
+            sourcePartner.setGeschlecht(sourcePartner.getGeschlecht());
+        }
         updateField(sourcePartner.getGeburtsdatum(), targetPartner::setGeburtsdatum);
         updateField(sourcePartner.getLand(), targetPartner::setLand);
         updateField(sourcePartner.getStrasse(), targetPartner::setStrasse);

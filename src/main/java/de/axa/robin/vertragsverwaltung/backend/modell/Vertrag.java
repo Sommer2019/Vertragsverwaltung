@@ -36,14 +36,6 @@ public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag {
     public Vertrag() {
         super();
     }
-    @JsonIgnore
-    public char getGender() {
-        return super.getPartner().getGeschlecht().charAt(0);
-    }
-    @JsonIgnore
-    public void setGender (char gender) {
-        super.getPartner().setGeschlecht(String.valueOf(gender));
-    }
 
     @Override
     public String toString() {

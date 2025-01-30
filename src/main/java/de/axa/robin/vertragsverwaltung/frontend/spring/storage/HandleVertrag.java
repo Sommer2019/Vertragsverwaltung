@@ -100,7 +100,7 @@ public class HandleVertrag {
         model.addAttribute("wkz", v.getFahrzeug().getWagnisskennziffer());
         model.addAttribute("vorname", v.getPartner().getVorname());
         model.addAttribute("nachname", v.getPartner().getNachname());
-        model.addAttribute("geschlecht", v.getGender());
+        model.addAttribute("geschlecht", v.getPartner().getGeschlecht().charAt(0));
         model.addAttribute("birth", v.getPartner().getGeburtsdatum());
         model.addAttribute("strasse", v.getPartner().getStrasse());
         model.addAttribute("hausnummer", v.getPartner().getHausnummer());
@@ -126,7 +126,7 @@ public class HandleVertrag {
         vertrag.getFahrzeug().setWagnisskennziffer(v.getFahrzeug().getWagnisskennziffer());
         vertrag.getPartner().setVorname(v.getPartner().getVorname());
         vertrag.getPartner().setNachname(v.getPartner().getNachname());
-        vertrag.setGender(v.getGender());
+        vertrag.getPartner().setGeschlecht(v.getPartner().getGeschlecht());
         vertrag.getPartner().setGeburtsdatum(v.getPartner().getGeburtsdatum());
         vertrag.getPartner().setStrasse(v.getPartner().getStrasse());
         vertrag.getPartner().setHausnummer(v.getPartner().getHausnummer());

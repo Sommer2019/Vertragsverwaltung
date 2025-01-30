@@ -55,7 +55,7 @@ public class Repository {
                 .add("versicherungsablauf", v.getVersicherungsablauf().toString())
                 .add("antragsDatum", v.getAntragsDatum().toString())
                 .add("fahrzeug", createFahrzeugJsonObject(convertToBackendFahrzeug(v.getFahrzeug())))
-                .add("partner", createPartnerJsonObject(convertToBackendPartner(v.getPartner(), v), v))
+                .add("partner", createPartnerJsonObject(convertToBackendPartner(v.getPartner())))
                 .build();
     }
 
@@ -69,11 +69,11 @@ public class Repository {
                 .build();
     }
 
-    private JsonObject createPartnerJsonObject(Partner partner, Vertrag v) {
+    private JsonObject createPartnerJsonObject(Partner partner) {
         return Json.createObjectBuilder()
                 .add("vorname", partner.getVorname())
                 .add("nachname", partner.getNachname())
-                .add("geschlecht", Character.toString(v.getGender()))
+                .add("geschlecht", Character.toString(partner.getGeschlecht().charAt(0)))
                 .add("geburtsdatum", partner.getGeburtsdatum().toString())
                 .add("land", partner.getLand())
                 .add("strasse", partner.getStrasse())
@@ -171,11 +171,11 @@ public class Repository {
         );
     }
 
-    private Partner convertToBackendPartner(de.axa.robin.vertragsverwaltung.model.Partner partner, Vertrag v) {
+    private Partner convertToBackendPartner(de.axa.robin.vertragsverwaltung.model.Partner partner) {
         return new Partner(
                 partner.getVorname(),
                 partner.getNachname(),
-                v.getGender(),
+                partner.getGeschlecht().charAt(0),
                 partner.getGeburtsdatum(),
                 partner.getLand(),
                 partner.getStrasse(),

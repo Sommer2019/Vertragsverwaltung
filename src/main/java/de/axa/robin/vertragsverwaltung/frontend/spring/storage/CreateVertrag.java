@@ -84,7 +84,7 @@ public class CreateVertrag {
         vertrag.setVersicherungsablauf(LocalDate.now());
         vertrag.setAntragsDatum(LocalDate.now());
         vertrag.getPartner().setGeburtsdatum(LocalDate.now().minusYears(18));
-        vertrag.setGender('M');
+        vertrag.getPartner().setGeschlecht(String.valueOf('M'));
         vertrag.getFahrzeug().setHoechstgeschwindigkeit(200);
         vertrag.getFahrzeug().setWagnisskennziffer(112);
         vertrag.getPartner().setLand("Deutschland");

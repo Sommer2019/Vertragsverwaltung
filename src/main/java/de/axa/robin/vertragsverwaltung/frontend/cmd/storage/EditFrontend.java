@@ -105,7 +105,7 @@ public class EditFrontend {
                     vertrag.getPartner().setNachname(input.getString("den Nachnamen des Partners", "^[a-zA-Z0-9\\s-äöüÄÖÜçéèêáàâíìîóòôúùûñÑ'-]+$", false, false, false, false));
                     break;
                 case 3:
-                    vertrag.setGender(input.getChar(null, "das Geschlecht des Partners"));
+                    vertrag.getPartner().setGeschlecht(String.valueOf(input.getChar(null, "das Geschlecht des Partners")));
                     break;
                 case 4:
                     vertrag.getPartner().setGeburtsdatum(input.getDate("das Geburtsdatum",  LocalDate.now().minusYears(110), LocalDate.now().minusYears(18)));

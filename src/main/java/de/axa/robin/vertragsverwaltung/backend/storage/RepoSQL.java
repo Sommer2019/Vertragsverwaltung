@@ -64,7 +64,7 @@ public class RepoSQL {
         stmt.setInt(11, v.getFahrzeug().getWagnisskennziffer());
         stmt.setString(12, v.getPartner().getVorname());
         stmt.setString(13, v.getPartner().getNachname());
-        stmt.setString(14, String.valueOf(v.getGender()));
+        stmt.setString(14, String.valueOf(v.getPartner().getGeschlecht().charAt(0)));
         stmt.setDate(15, Date.valueOf(v.getPartner().getGeburtsdatum()));
         stmt.setString(16, v.getPartner().getLand());
         stmt.setString(17, v.getPartner().getStrasse());
