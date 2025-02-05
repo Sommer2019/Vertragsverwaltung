@@ -16,9 +16,9 @@ import java.time.LocalDate;
 
 @Component
 public class InputValidator {
-    private final Setup setup = new Setup();
-    private final AdressValidator adressValidator = new AdressValidator();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
+    private final Setup setup;
+    private final AdressValidator adressValidator;
+    private final Vertragsverwaltung vertragsverwaltung;
 
     private static final String ERROR_INVALID_DATE = "Ungültiger Versicherungsbeginn";
     private static final String ERROR_INVALID_EXPIRY = "Ungültiger Versicherungsablauf";
@@ -30,12 +30,18 @@ public class InputValidator {
     private static final String ERROR_INVALID_BIRTH_DATE = "Ungültiges Geburtsdatum";
     private static final String ERROR_INVALID_ADDRESS = "Ungültige Adresse";
 
+    public InputValidator(Setup setup) {
+        this.setup = setup;
+        adressValidator = new AdressValidator(setup);
+        vertragsverwaltung = new Vertragsverwaltung(setup);
+    }
+
     public boolean stringContainsDigit(String input) {
         return input.isEmpty() || input.chars().anyMatch(Character::isDigit);
     }
 
     public boolean isStringInJsonFile(String searchString) {
-        String filePath = setup.getBrandsPath();
+        String filePath = setup.getJson_brandsPath();
         try (InputStream fis = new FileInputStream(filePath);
              JsonReader jsonReader = Json.createReader(fis)) {
             JsonObject jsonObject = jsonReader.readObject();

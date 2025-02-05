@@ -12,12 +12,14 @@ import java.time.LocalDate;
 
 public class Create {
     /// /Klassen einlesen////
-    private final Setup setup = new Setup();
+    private final Setup setup;
     private final Vertragsverwaltung vertragsverwaltung;
-    private final Repository repository = new Repository(setup);
+    private final Repository repository;
 
-    public Create(Vertragsverwaltung vertragsverwaltung) {
+    public Create(Vertragsverwaltung vertragsverwaltung, Setup setup) {
+        this.setup = setup;
         this.vertragsverwaltung = vertragsverwaltung;
+        this.repository = new Repository(setup);
     }
 
     public int createvsnr() {

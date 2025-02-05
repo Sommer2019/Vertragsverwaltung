@@ -1,36 +1,31 @@
 package de.axa.robin.vertragsverwaltung.backend.config;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
+@Configuration
 @Getter
+@Setter
 @Service
+@ConfigurationProperties(prefix = "input.setup")
 public class Setup {
-    @Setter
-    private String repositoryPath;
-    @Setter
-    private String preisPath;
-    private final String brandsPath;
-    private final String testURL;
-    private final String checkURL;
-    private final String host;
-    private final int port;
-    private final String db_url;
-    private final String db_user;
-    private final String db_pass;
-
-    public Setup() {
-        this.repositoryPath = "src/main/resources/static/json/vertrage.json";
-        this.preisPath = "src/main/resources/static/json/preiscalc.json";
-        this.brandsPath = "src/main/resources/static/json/brands.json";
-        this.testURL = "https://www.google.com";
-        this.checkURL = "https://nominatim.openstreetmap.org/search?format=json&q=";
-        this.host = "localhost";
-        this.port = 3128;
-        this.db_url = "jdbc:mysql://localhost:3306/falconbyte";
-        this.db_user = "root";
-        this.db_pass = "";
-    }
-
+    @NotNull
+    private String json_repositoryPath;
+    @NotNull
+    private String json_preisPath;
+    @NotNull
+    private String json_brandsPath;
+    @NotNull
+    private String testURL;
+    @NotNull
+    private String checkURL;
+    private String proxy_host;
+    private int proxy_port;
+    private String db_url;
+    private String db_user;
+    private String db_pass;
 }

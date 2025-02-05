@@ -32,7 +32,7 @@ public class EditTest {
         setup = new Setup();
         vertragsverwaltung = mock(Vertragsverwaltung.class);
         repository = mock(Repository.class);
-        edit = new Edit(vertragsverwaltung);
+        edit = new Edit(vertragsverwaltung, setup);
     }
 
     @Test

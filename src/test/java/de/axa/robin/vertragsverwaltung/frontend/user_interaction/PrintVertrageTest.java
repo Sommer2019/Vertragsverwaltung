@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.frontend.spring.user_interaction;
+package de.axa.robin.vertragsverwaltung.frontend.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;

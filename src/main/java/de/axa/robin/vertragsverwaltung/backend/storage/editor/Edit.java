@@ -15,13 +15,15 @@ import java.util.function.Consumer;
 
 public class Edit {
     /// /Klassen einlesen////
-    private final Setup setup = new Setup();
+    private final Setup setup;
     private final Vertragsverwaltung vertragsverwaltung;
-    private final Repository repository = new Repository(setup);
+    private final Repository repository;
     private final Create create;
-    public Edit(Vertragsverwaltung vertragsverwaltung) {
+    public Edit(Vertragsverwaltung vertragsverwaltung, Setup setup) {
+        this.setup = setup;
         this.vertragsverwaltung = vertragsverwaltung;
-        this.create = new Create(vertragsverwaltung);
+        repository = new Repository(setup);
+        this.create = new Create(vertragsverwaltung, setup);
     }
     public BigDecimal recalcPrice(double factor, double factoralter, double factorspeed, List<Vertrag> vertrage) {
         repository.speichereFaktoren(factor,factoralter,factorspeed);

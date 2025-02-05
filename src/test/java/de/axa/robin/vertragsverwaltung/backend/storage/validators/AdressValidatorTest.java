@@ -27,7 +27,7 @@ class AdressValidatorTest {
 
     @BeforeEach
     public void setUp() {
-        adressValidator = new AdressValidator();
+        adressValidator = new AdressValidator(setup);
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
     }
@@ -83,7 +83,7 @@ class AdressValidatorTest {
 
         // Using try-with-resources to mock the behavior
         try (Socket socket = mockSocket) {
-            boolean result = adressValidator.isProxyReachable(setup.getHost(), setup.getPort());
+            boolean result = adressValidator.isProxyReachable(setup.getProxy_host(), setup.getProxy_port());
             assertTrue(result);
         }
     }
@@ -96,7 +96,7 @@ class AdressValidatorTest {
 
         // Using try-with-resources to mock the behavior
         try (Socket socket = mockSocket) {
-            boolean result = adressValidator.isProxyReachable(setup.getHost(), setup.getPort()+1);
+            boolean result = adressValidator.isProxyReachable(setup.getProxy_host(), setup.getProxy_port()+1);
             assertFalse(result);
         }
     }

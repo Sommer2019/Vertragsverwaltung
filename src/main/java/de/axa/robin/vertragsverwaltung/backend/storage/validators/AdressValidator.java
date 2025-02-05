@@ -11,9 +11,13 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 public class AdressValidator {
-    private final Setup setup = new Setup();
+    private final Setup setup;
     private static final String USER_AGENT = "Mozilla/5.0";
     private static final int TIMEOUT = 5000;
+
+    public AdressValidator(Setup setup) {
+        this.setup = setup;
+    }
 
     public boolean validateAddress(String street, String houseNumber, String plz, String place, String bundesland, String land) {
         try {
@@ -47,11 +51,11 @@ public class AdressValidator {
     }
 
     private void configureProxy() {
-        if (isProxyReachable(setup.getHost(), setup.getPort())) {
-            System.setProperty("http.proxyHost", setup.getHost());
-            System.setProperty("http.proxyPort", String.valueOf(setup.getPort()));
-            System.setProperty("https.proxyHost", setup.getHost());
-            System.setProperty("https.proxyPort", String.valueOf(setup.getPort()));
+        if (isProxyReachable(setup.getProxy_host(), setup.getProxy_port())) {
+            System.setProperty("http.proxyHost", setup.getProxy_host());
+            System.setProperty("http.proxyPort", String.valueOf(setup.getProxy_port()));
+            System.setProperty("https.proxyHost", setup.getProxy_host());
+            System.setProperty("https.proxyPort", String.valueOf(setup.getProxy_port()));
         }
     }
 

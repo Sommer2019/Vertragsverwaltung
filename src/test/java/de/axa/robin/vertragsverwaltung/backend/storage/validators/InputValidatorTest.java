@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.backend.storage.validators;
 
+import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -24,7 +25,7 @@ class InputValidatorTest {
 
     @BeforeEach
     void setUp() {
-        inputValidator = new InputValidator();
+        inputValidator = new InputValidator(new Setup());
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
     }

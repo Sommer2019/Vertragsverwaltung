@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.frontend.spring.storage;
+package de.axa.robin.vertragsverwaltung.frontend.storage;
 
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Preis;
@@ -22,15 +22,23 @@ import java.util.Map;
 
 @Controller
 public class EditPreis {
-    private final Setup setup = new Setup();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
-    private final Repository repository = new Repository(setup);
-    private final Edit edit = new Edit(vertragsverwaltung);
-    private final List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
+    private final Setup setup;
+    private final Vertragsverwaltung vertragsverwaltung;
+    private final Repository repository;
+    private final Edit edit;
+    private final List<Vertrag> vertrage;
+
+    public EditPreis(Setup setup) {
+        this.setup = setup;
+        vertragsverwaltung = new Vertragsverwaltung(setup);
+        repository = new Repository(setup);
+        edit = new Edit(vertragsverwaltung, setup);
+        vertrage = vertragsverwaltung.getVertrage();
+    }
 
     @GetMapping("/editPreis")
     public String editPreis(Model model) {
-        model.addAttribute("preismodell", new Preis());
+        model.addAttribute("preismodell", new Preis(setup));
         return "editPreis";
     }
 

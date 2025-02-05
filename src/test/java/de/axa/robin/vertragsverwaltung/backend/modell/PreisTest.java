@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
+import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -24,7 +25,7 @@ public class PreisTest {
                 .build();
         when(repository.ladeFaktoren()).thenReturn(jsonObject);
 
-        preis = new Preis();
+        preis = new Preis(new Setup());
     }
 
     @Test

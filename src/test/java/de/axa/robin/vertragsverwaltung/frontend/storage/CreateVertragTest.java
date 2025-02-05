@@ -1,6 +1,7 @@
-package de.axa.robin.vertragsverwaltung.frontend.spring.storage;
+package de.axa.robin.vertragsverwaltung.frontend.storage;
 
-import de.axa.robin.vertragsverwaltung.frontend.spring.user_interaction.MenuSpring;
+import de.axa.robin.vertragsverwaltung.frontend.storage.CreateVertrag;
+import de.axa.robin.vertragsverwaltung.frontend.user_interaction.MenuSpring;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

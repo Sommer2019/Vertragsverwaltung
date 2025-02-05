@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.frontend.spring.storage;
+package de.axa.robin.vertragsverwaltung.frontend.storage;
 
 import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.model.Fahrzeug;
@@ -7,7 +7,7 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.backend.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.backend.storage.validators.InputValidator;
-import de.axa.robin.vertragsverwaltung.frontend.spring.user_interaction.MenuSpring;
+import de.axa.robin.vertragsverwaltung.frontend.user_interaction.MenuSpring;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,11 +24,18 @@ import java.util.Map;
 
 @Controller
 public class CreateVertrag {
-    private final Setup setup = new Setup();
-    private final Vertragsverwaltung vertragsverwaltung = new Vertragsverwaltung(setup);
-    private final Create create = new Create(vertragsverwaltung);
+    private final Setup setup;
+    private final Vertragsverwaltung vertragsverwaltung;
+    private final Create create;
     private final MenuSpring menuSpring = new MenuSpring();
-    private final InputValidator inputValidator = new InputValidator();
+    private final InputValidator inputValidator;
+
+    public CreateVertrag(Setup setup) {
+        this.setup = setup;
+        vertragsverwaltung = new Vertragsverwaltung(setup);
+        create = new Create(vertragsverwaltung, setup);
+        inputValidator = new InputValidator(setup);
+    }
 
     @GetMapping("/createVertrag")
     public String createVertrag(Model model) {

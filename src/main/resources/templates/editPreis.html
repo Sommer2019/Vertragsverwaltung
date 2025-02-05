@@ -15,6 +15,7 @@
         <label>Einnahmenvorberechnung: </label>
         <button type="button" id="calculateallPrice"><span id="preis"> --,-- € </span></button>
     </div>
+    <p>Formel: preis = (alter * factoralter + hoechstGeschwindigkeit * factorspeed) * factor</p>
     <div class="form-group">
         <label for="faktor">allgemeiner Faktor:</label>
         <input th:field="*{faktor}" step="0.01" type="number" id="faktor" min="0" max="10" required>

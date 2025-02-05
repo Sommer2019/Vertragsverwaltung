@@ -1,7 +1,9 @@
-package de.axa.robin.vertragsverwaltung.frontend.spring.storage;
+package de.axa.robin.vertragsverwaltung.frontend.storage;
 
+import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Preis;
 import de.axa.robin.vertragsverwaltung.backend.storage.editor.Edit;
+import de.axa.robin.vertragsverwaltung.frontend.storage.EditPreis;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,7 +39,7 @@ class EditPreisTest {
 
     @Test
     void editPreisCalculatesCorrectly() {
-        Preis preismodell = new Preis();
+        Preis preismodell = new Preis(new Setup());
         preismodell.setFaktor(1.7);
         preismodell.setAge(0.3);
         preismodell.setSpeed(0.6);

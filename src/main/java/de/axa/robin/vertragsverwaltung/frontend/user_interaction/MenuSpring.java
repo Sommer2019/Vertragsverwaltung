@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.frontend.spring.user_interaction;
+package de.axa.robin.vertragsverwaltung.frontend.user_interaction;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

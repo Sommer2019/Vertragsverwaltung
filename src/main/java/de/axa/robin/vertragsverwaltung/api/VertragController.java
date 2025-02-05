@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.api;
 
+import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.backend.storage.editor.Create;
@@ -28,11 +29,11 @@ public class VertragController {
      * @param inputValidator the input validator
      * @param vertragsverwaltung the contract management service
      */
-    public VertragController(InputValidator inputValidator, Vertragsverwaltung vertragsverwaltung) {
+    public VertragController(InputValidator inputValidator, Vertragsverwaltung vertragsverwaltung, Setup setup) {
         this.inputValidator = inputValidator;
         this.vertragsverwaltung = vertragsverwaltung;
-        this.edit = new Edit(vertragsverwaltung);
-        this.create = new Create(vertragsverwaltung);
+        this.edit = new Edit(vertragsverwaltung, setup);
+        this.create = new Create(vertragsverwaltung, setup);
     }
 
     /**

@@ -29,7 +29,7 @@ public class CreateTest {
     public void setUp() {
         setup = new Setup();
         mockVertragsverwaltung = mock(Vertragsverwaltung.class);
-        create = new Create(mockVertragsverwaltung);
+        create = new Create(mockVertragsverwaltung, setup);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class CreateTest {
         // Arrange
         Partner partner = new Partner("John", "Doe", 'M', LocalDate.parse(geburtsdatum), land, strasse, hausnummer, String.valueOf(plz), stadt, bundesland);
         Fahrzeug fahrzeug = new Fahrzeug("ABC-1234", "Toyota", "Corolla", hoechstgeschwindigkeit, wagnisskennziffer);
-        try (JsonReader reader = mock(Json.createReader(new FileReader(setup.getPreisPath())))) {
+        try (JsonReader reader = mock(Json.createReader(new FileReader(setup.getJson_preisPath())))) {
             JsonObject jsonObject = reader.readObject();
             given(jsonObject.getJsonNumber("factor").doubleValue()).willReturn(1.7);
             given(jsonObject.getJsonNumber("factorage").doubleValue()).willReturn(0.6);

@@ -29,7 +29,7 @@ public class Repository {
     }
 
     public void speichereVertrage(List<Vertrag> vertrage) {
-        try (FileWriter file = new FileWriter(setup.getRepositoryPath(), false)) {
+        try (FileWriter file = new FileWriter(setup.getJson_repositoryPath(), false)) {
             JsonArray jsonArray = createVertraegeJsonArray(vertrage);
             JsonWriter writer = Json.createWriter(file);
             writer.writeArray(jsonArray);
@@ -86,7 +86,7 @@ public class Repository {
 
     public List<Vertrag> ladeVertrage() {
         List<Vertrag> vertrage = new ArrayList<>();
-        try (FileReader file = new FileReader(setup.getRepositoryPath())) {
+        try (FileReader file = new FileReader(setup.getJson_repositoryPath())) {
             JsonReader reader = Json.createReader(file);
             JsonArray jsonArray = reader.readArray();
             for (JsonValue jsonValue : jsonArray) {
@@ -139,7 +139,7 @@ public class Repository {
     }
 
     public JsonObject ladeFaktoren() {
-        try (JsonReader reader = Json.createReader(new FileReader(setup.getPreisPath()))) {
+        try (JsonReader reader = Json.createReader(new FileReader(setup.getJson_preisPath()))) {
             return reader.readObject();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Fehler beim Laden der Faktoren", e);
@@ -148,7 +148,7 @@ public class Repository {
     }
 
     public void speichereFaktoren(double factor, double factorage, double factorspeed) {
-        try (FileWriter file = new FileWriter(setup.getPreisPath(), false)) {
+        try (FileWriter file = new FileWriter(setup.getJson_preisPath(), false)) {
             JsonObject jsonObject = Json.createObjectBuilder()
                     .add("factor", factor)
                     .add("factorage", factorage)
