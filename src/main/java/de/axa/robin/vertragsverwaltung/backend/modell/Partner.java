@@ -2,7 +2,7 @@ package de.axa.robin.vertragsverwaltung.backend.modell;
 
 import java.time.LocalDate;
 
-public class Partner extends de.axa.robin.vertragsverwaltung.model.Partner {
+public class Partner extends de.axa.robin.vertragsverwaltung.model.Partner { //ToDo: Mapping von Generierten
 
     // Konstruktor
     public Partner(String vorname, String nachname, char geschlecht, LocalDate geburtsdatum,

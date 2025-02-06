@@ -58,7 +58,7 @@ public class VertragController {
      * @return a {@link ResponseEntity} containing the created contract
      */
     @PutMapping
-    public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) {
+    public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) { //Todo Bugfix: erstellung nicht möglich
         vertrag.setPreis(create.createPreis(vertrag.getMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit()));
         if (inputValidator.isInvalidVertrag(vertrag)) {
             return ResponseEntity.status(400).build();
@@ -75,7 +75,7 @@ public class VertragController {
      * @return a {@link ResponseEntity} containing the updated contract
      */
     @PostMapping("/{id}")
-    public ResponseEntity<Vertrag> updateVertrag(@PathVariable Integer id, @RequestBody Vertrag vertrag) {
+    public ResponseEntity<Vertrag> updateVertrag(@PathVariable Integer id, @RequestBody Vertrag vertrag) { //Todo Bugfix: update nicht möglich
         vertrag = edit.updateVertragFields(vertrag, vertragsverwaltung.getVertrag(id));
         vertrag.setPreis(create.createPreis(vertrag.getMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit()));
         boolean deleted = vertragsverwaltung.vertragLoeschen(id);

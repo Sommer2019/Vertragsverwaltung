@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
-public class Fahrzeug extends de.axa.robin.vertragsverwaltung.model.Fahrzeug {
+public class Fahrzeug extends de.axa.robin.vertragsverwaltung.model.Fahrzeug { //ToDo: Mapping von Generierten
 
     // Konstruktor
     public Fahrzeug(String amtlichesKennzeichen, String hersteller, String typ, int hoechstgeschwindigkeit, int wagnisskennziffer) {

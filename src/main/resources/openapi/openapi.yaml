@@ -288,20 +288,12 @@ components:
     Vertrag:
       type: object
       required:
-        - vsnr
         - monatlich
         - versicherungsbeginn
         - antragsDatum
         - partner
         - fahrzeug
       properties:
-        vsnr:
-          type: integer
-          format: int32
-          minimum: 10000000
-          maximum: 99999999
-          example: 12345678
-          description: "Versicherungsnummer (VSNR), eine 8-stellige Zahl zwischen 10.000.000 und 99.999.999."
 
         monatlich:
           type: boolean

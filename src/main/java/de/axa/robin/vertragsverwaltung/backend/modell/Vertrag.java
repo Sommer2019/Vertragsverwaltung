@@ -11,14 +11,15 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag {
+public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag { //ToDo: Mapping von Generierten
+    private int vsnr;
     private double preis;
     @JsonIgnore
     private String formattedPreis;
 
     // Konstruktor
     public Vertrag(int vsnr, boolean monatlich, double preis, LocalDate versicherungsbeginn, LocalDate versicherungsablauf, LocalDate antragsDatum, Fahrzeug fahrzeug, Partner partner) {
-        super.setVsnr(vsnr);
+        this.vsnr = vsnr;
         this.preis = preis;
         super.setMonatlich(monatlich);
         super.setVersicherungsbeginn(versicherungsbeginn);
@@ -40,7 +41,7 @@ public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag {
     @Override
     public String toString() {
         return "Vertragsdaten: " +
-                "\n\tVertragsnummer: " + super.getVsnr() +
+                "\n\tVertragsnummer: " + vsnr +
                 "\n\tPreis: " + preis + "€" +
                 "\n\tAbrechnungszeitraum monatlich: " + super.getMonatlich() +
                 "\n\tVersicherungsbeginn: " + super.getVersicherungsbeginn() +
@@ -56,12 +57,12 @@ public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vertrag vertrag = (Vertrag) o;
-        return super.getVsnr().equals(vertrag.getVsnr());
+        return vsnr == vertrag.getVsnr();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.getVsnr());
+        return Objects.hashCode(vsnr);
     }
 }
 
