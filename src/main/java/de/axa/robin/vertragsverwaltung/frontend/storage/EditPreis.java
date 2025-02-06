@@ -38,7 +38,12 @@ public class EditPreis {
 
     @GetMapping("/editPreis")
     public String editPreis(Model model) {
-        model.addAttribute("preismodell", new Preis(setup));
+        Preis preismodell = new Preis();
+        JsonObject jsonObject = repository.ladeFaktoren();
+        preismodell.setFaktor(jsonObject.getJsonNumber("factor").doubleValue());
+        preismodell.setAge(jsonObject.getJsonNumber("factorage").doubleValue());
+        preismodell.setSpeed(jsonObject.getJsonNumber("factorspeed").doubleValue());
+        model.addAttribute("preismodell", preismodell);
         return "editPreis";
     }
 

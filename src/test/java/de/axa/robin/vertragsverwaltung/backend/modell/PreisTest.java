@@ -25,7 +25,7 @@ public class PreisTest {
                 .build();
         when(repository.ladeFaktoren()).thenReturn(jsonObject);
 
-        preis = new Preis(new Setup());
+        preis = new Preis();
     }
 
     @Test

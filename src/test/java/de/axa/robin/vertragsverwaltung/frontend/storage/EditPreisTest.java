@@ -39,7 +39,7 @@ class EditPreisTest {
 
     @Test
     void editPreisCalculatesCorrectly() {
-        Preis preismodell = new Preis(new Setup());
+        Preis preismodell = new Preis();
         preismodell.setFaktor(1.7);
         preismodell.setAge(0.3);
         preismodell.setSpeed(0.6);
