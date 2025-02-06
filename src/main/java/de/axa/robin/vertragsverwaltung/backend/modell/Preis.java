@@ -5,12 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Preis extends de.axa.robin.vertragsverwaltung.model.Preis {
-    private double betrag;
-    private String waehrung;
+public class Preis{
+    private double speed;
+    private double age;
+    private double faktor;
 
     public Preis() {
-        this.betrag = betrag;
-        this.waehrung = waehrung;
     }
 }
