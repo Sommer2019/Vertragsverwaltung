@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Component //ToDO: umbau auf echte DB, JBA
+@Component
 public class Repository {
     private final Logger logger = Logger.getLogger(Repository.class.getName());
     @Autowired

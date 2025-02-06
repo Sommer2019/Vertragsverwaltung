@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-public class RepoSQL {
+public class RepoSQL  { //ToDO: umbau auf echte DB, JBA
     private final Logger logger = Logger.getLogger(RepoSQL.class.getName());
     @Autowired
     private Setup setup;
