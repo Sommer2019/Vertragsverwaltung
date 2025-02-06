@@ -6,6 +6,7 @@ import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 
@@ -16,9 +17,12 @@ import java.time.LocalDate;
 
 @Component
 public class InputValidator {
-    private final Setup setup;
-    private final AdressValidator adressValidator;
-    private final Vertragsverwaltung vertragsverwaltung;
+    @Autowired
+    private Setup setup;
+    @Autowired
+    private AdressValidator adressValidator;
+    @Autowired
+    private Vertragsverwaltung vertragsverwaltung;
 
     private static final String ERROR_INVALID_DATE = "Ungültiger Versicherungsbeginn";
     private static final String ERROR_INVALID_EXPIRY = "Ungültiger Versicherungsablauf";
@@ -30,11 +34,6 @@ public class InputValidator {
     private static final String ERROR_INVALID_BIRTH_DATE = "Ungültiges Geburtsdatum";
     private static final String ERROR_INVALID_ADDRESS = "Ungültige Adresse";
 
-    public InputValidator(Setup setup) {
-        this.setup = setup;
-        adressValidator = new AdressValidator(setup);
-        vertragsverwaltung = new Vertragsverwaltung(setup);
-    }
 
     public boolean stringContainsDigit(String input) {
         return input.isEmpty() || input.chars().anyMatch(Character::isDigit);

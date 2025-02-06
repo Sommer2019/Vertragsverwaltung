@@ -27,7 +27,7 @@ class AdressValidatorTest {
 
     @BeforeEach
     public void setUp() {
-        adressValidator = new AdressValidator(setup);
+        adressValidator = new AdressValidator();
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
     }

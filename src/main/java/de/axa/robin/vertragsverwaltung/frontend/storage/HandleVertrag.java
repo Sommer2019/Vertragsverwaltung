@@ -1,6 +1,5 @@
 package de.axa.robin.vertragsverwaltung.frontend.storage;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
@@ -9,6 +8,7 @@ import de.axa.robin.vertragsverwaltung.backend.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.backend.storage.validators.InputValidator;
 import de.axa.robin.vertragsverwaltung.frontend.user_interaction.MenuSpring;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,19 +21,16 @@ import java.time.LocalDate;
 
 @Controller
 public class HandleVertrag {
-    private final Setup setup;
-    private final Vertragsverwaltung vertragsverwaltung;
-    private final MenuSpring menuSpring = new MenuSpring();
-    private final Create create;
-    private final InputValidator inputValidator;
+    @Autowired
+    private Vertragsverwaltung vertragsverwaltung;
+    @Autowired
+    private MenuSpring menuSpring;
+    @Autowired
+    private Create create;
+    @Autowired
+    private InputValidator inputValidator;
     private int handledVertrag = 0;
 
-    public HandleVertrag(Setup setup) {
-        this.setup = setup;
-        vertragsverwaltung = new Vertragsverwaltung(setup);
-        create = new Create(vertragsverwaltung, setup);
-        inputValidator = new InputValidator(setup);
-    }
 
     @PostMapping("/home")
     public String processPrintVertrag(@RequestParam String vsnr, Model model) {

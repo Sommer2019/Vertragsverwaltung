@@ -1,6 +1,5 @@
 package de.axa.robin.vertragsverwaltung.frontend.storage;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.model.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.model.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
@@ -9,6 +8,7 @@ import de.axa.robin.vertragsverwaltung.backend.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.backend.storage.validators.InputValidator;
 import de.axa.robin.vertragsverwaltung.frontend.user_interaction.MenuSpring;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,18 +24,14 @@ import java.util.Map;
 
 @Controller
 public class CreateVertrag {
-    private final Setup setup;
-    private final Vertragsverwaltung vertragsverwaltung;
-    private final Create create;
-    private final MenuSpring menuSpring = new MenuSpring();
-    private final InputValidator inputValidator;
-
-    public CreateVertrag(Setup setup) {
-        this.setup = setup;
-        vertragsverwaltung = new Vertragsverwaltung(setup);
-        create = new Create(vertragsverwaltung, setup);
-        inputValidator = new InputValidator(setup);
-    }
+    @Autowired
+    private Vertragsverwaltung vertragsverwaltung;
+    @Autowired
+    private Create create;
+    @Autowired
+    private MenuSpring menuSpring;
+    @Autowired
+    private InputValidator inputValidator;
 
     @GetMapping("/createVertrag")
     public String createVertrag(Model model) {

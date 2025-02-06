@@ -5,6 +5,8 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import jakarta.json.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,18 +14,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Component
 public class RepoSQL {
     private final Logger logger = Logger.getLogger(RepoSQL.class.getName());
-    private final Setup setup;
+    @Autowired
+    private Setup setup;
 
     private static final String INSERT_VERTRAG_SQL = "INSERT INTO vertrage (vsnr, abrechnungszeitraum_monatlich, preis, versicherungsbeginn, versicherungsablauf, antragsDatum, fahrzeug_kennzeichen, fahrzeug_hersteller, fahrzeug_typ, fahrzeug_hoechstgeschwindigkeit, fahrzeug_wagnisskennziffer, partner_vorname, partner_nachname, partner_geschlecht, partner_geburtsdatum, partner_land, partner_strasse, partner_hausnummer, partner_plz, partner_stadt, partner_bundesland) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_VERTRAG_SQL = "SELECT * FROM vertrage JOIN fahrzeug ON vertrage.fahrzeug_kennzeichen = fahrzeug.amtlichesKennzeichen JOIN partner ON vertrage.partner_vorname = partner.vorname";
     private static final String SELECT_FAKTOREN_SQL = "SELECT * FROM faktoren LIMIT 1"; // Assumes a single row of factors
     private static final String UPDATE_FAKTOREN_SQL = "UPDATE faktoren SET factor = ?, factorage = ?, factorspeed = ? WHERE id = 1"; // Assuming a single row for factors
 
-    public RepoSQL(Setup setup) {
-        this.setup = setup;
-    }
 
     // Get a database connection
     private Connection getConnection() throws SQLException {

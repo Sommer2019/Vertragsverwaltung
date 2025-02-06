@@ -8,8 +8,11 @@
 </head>
 <body>
 <h1>Etwas ist schiefgelaufen!</h1>
-<form action="/logout" method="post">
-    <button type="submit">Logout</button>
-</form>
+    <div style="display: flex; gap: 10px;">
+        <form action="/logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
+        <a href="/home"><button>Zurück zur Startseite</button></a>
+    </div>
 </body>
 </html>

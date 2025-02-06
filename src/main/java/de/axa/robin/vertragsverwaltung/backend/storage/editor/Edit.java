@@ -1,11 +1,12 @@
 package de.axa.robin.vertragsverwaltung.backend.storage.editor;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.model.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.model.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,18 +14,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Component
 public class Edit {
-    /// /Klassen einlesen////
-    private final Setup setup;
-    private final Vertragsverwaltung vertragsverwaltung;
-    private final Repository repository;
-    private final Create create;
-    public Edit(Vertragsverwaltung vertragsverwaltung, Setup setup) {
-        this.setup = setup;
-        this.vertragsverwaltung = vertragsverwaltung;
-        repository = new Repository(setup);
-        this.create = new Create(vertragsverwaltung, setup);
-    }
+    @Autowired
+    private Vertragsverwaltung vertragsverwaltung;
+    @Autowired
+    private Repository repository;
+    @Autowired
+    private Create create;
+
     public BigDecimal recalcPrice(double factor, double factoralter, double factorspeed, List<Vertrag> vertrage) {
         repository.speichereFaktoren(factor,factoralter,factorspeed);
         BigDecimal summe = BigDecimal.ZERO;

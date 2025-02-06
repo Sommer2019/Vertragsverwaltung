@@ -2,6 +2,7 @@ package de.axa.robin.vertragsverwaltung.frontend.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +16,10 @@ import java.util.logging.Logger;
 
 @Controller
 public class PrintVertrage {
-    private final Vertragsverwaltung vertragsverwaltung;
+    @Autowired
+    private Vertragsverwaltung vertragsverwaltung;
     private static final Logger logger = Logger.getLogger(PrintVertrage.class.getName());
     private static final String PRICE_FORMAT_PATTERN = "#,##0.00";
-
-    public PrintVertrage(Vertragsverwaltung vertragsverwaltung) {
-        this.vertragsverwaltung = vertragsverwaltung;
-    }
 
     @GetMapping("/printVertrage")
     public String showAll(Model model) {

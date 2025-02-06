@@ -5,6 +5,8 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import jakarta.json.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -16,17 +18,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Component
 public class Repository {
     private final Logger logger = Logger.getLogger(Repository.class.getName());
-    private final Setup setup;
-
+    @Autowired
+    private Setup setup;
     private static final String ERROR_LOADING = "Fehler beim Laden";
     private static final String ERROR_SAVING = "Fehler beim Speichern";
     private static final String FILE_NOT_FOUND = "Datei 'vertrage.json' nicht gefunden";
 
-    public Repository(Setup setup) {
-        this.setup = setup;
-    }
 
     public void speichereVertrage(List<Vertrag> vertrage) {
         try (FileWriter file = new FileWriter(setup.getJson_repositoryPath(), false)) {

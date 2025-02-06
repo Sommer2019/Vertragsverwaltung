@@ -1,6 +1,5 @@
 package de.axa.robin.vertragsverwaltung.backend.storage.validators;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -17,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InputValidatorTest {
 
-    private InputValidator inputValidator;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -25,7 +23,6 @@ class InputValidatorTest {
 
     @BeforeEach
     void setUp() {
-        inputValidator = new InputValidator(new Setup());
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
     }

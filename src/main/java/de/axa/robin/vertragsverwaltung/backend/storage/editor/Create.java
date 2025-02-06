@@ -1,26 +1,22 @@
 package de.axa.robin.vertragsverwaltung.backend.storage.editor;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import jakarta.json.JsonObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+@Component
 public class Create {
-    /// /Klassen einlesen////
-    private final Setup setup;
-    private final Vertragsverwaltung vertragsverwaltung;
-    private final Repository repository;
-
-    public Create(Vertragsverwaltung vertragsverwaltung, Setup setup) {
-        this.setup = setup;
-        this.vertragsverwaltung = vertragsverwaltung;
-        this.repository = new Repository(setup);
-    }
+    @Autowired
+    private Vertragsverwaltung vertragsverwaltung;
+    @Autowired
+    private Repository repository;
 
     public int createvsnr() {
         int vsnr = 10000000;

@@ -1,11 +1,11 @@
 package de.axa.robin.vertragsverwaltung.api;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.backend.storage.editor.Create;
 import de.axa.robin.vertragsverwaltung.backend.storage.editor.Edit;
 import de.axa.robin.vertragsverwaltung.backend.storage.validators.InputValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,23 +18,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/vertragsverwaltung/vertrage")
 public class VertragController {
-    private final InputValidator inputValidator;
-    private final Vertragsverwaltung vertragsverwaltung;
-    private final Edit edit;
-    private final Create create;
-
-    /**
-     * Constructs a new {@code VertragController}.
-     *
-     * @param inputValidator the input validator
-     * @param vertragsverwaltung the contract management service
-     */
-    public VertragController(InputValidator inputValidator, Vertragsverwaltung vertragsverwaltung, Setup setup) {
-        this.inputValidator = inputValidator;
-        this.vertragsverwaltung = vertragsverwaltung;
-        this.edit = new Edit(vertragsverwaltung, setup);
-        this.create = new Create(vertragsverwaltung, setup);
-    }
+    @Autowired
+    private InputValidator inputValidator;
+    @Autowired
+    private Vertragsverwaltung vertragsverwaltung;
+    @Autowired
+    private Edit edit;
+    @Autowired
+    private Create create;
 
     /**
      * Retrieves all contracts.

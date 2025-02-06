@@ -29,7 +29,7 @@ public class CreateTest {
     public void setUp() {
         setup = new Setup();
         mockVertragsverwaltung = mock(Vertragsverwaltung.class);
-        create = new Create(mockVertragsverwaltung, setup);
+        create = new Create();
     }
 
     @Test

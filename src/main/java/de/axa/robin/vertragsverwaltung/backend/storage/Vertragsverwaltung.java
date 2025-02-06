@@ -1,18 +1,17 @@
 package de.axa.robin.vertragsverwaltung.backend.storage;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Component
 public class Vertragsverwaltung {
-    private final Repository repository;
-
-    public Vertragsverwaltung(Setup setup) {
-        repository = new Repository(setup);
-    }
+    @Autowired
+    private Repository repository;
 
     public List<Vertrag> getVertrage() {
         return repository.ladeVertrage();

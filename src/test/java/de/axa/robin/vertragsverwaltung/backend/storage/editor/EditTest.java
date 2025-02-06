@@ -1,10 +1,8 @@
 package de.axa.robin.vertragsverwaltung.backend.storage.editor;
 
-import de.axa.robin.vertragsverwaltung.backend.config.Setup;
 import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,15 +22,11 @@ public class EditTest {
 
     private Edit edit;
     private Vertragsverwaltung vertragsverwaltung;
-    private Repository repository;
-    private Setup setup;
 
     @BeforeEach
     public void setUp() {
-        setup = new Setup();
         vertragsverwaltung = mock(Vertragsverwaltung.class);
-        repository = mock(Repository.class);
-        edit = new Edit(vertragsverwaltung, setup);
+        edit = new Edit();
     }
 
     @Test

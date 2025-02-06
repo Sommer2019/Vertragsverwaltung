@@ -19,7 +19,7 @@
     </div>
     <div class="form-group">
         <label>Abrechnungszeitraum:</label>
-        <div>
+        <div class="valid">
             <input th:field="*{monatlich}" type="radio" name="abrechnung" value=true id="check1">
             <label for="check1">monatlich</label>
             <input th:field="*{monatlich}" type="radio" name="abrechnung" value=false id="check2">
@@ -71,7 +71,7 @@
     <div class="form-group">
         <label for="speed">Höchstgeschwindigkeit:</label>
         <div class="speed-group">
-            <input th:field="*{fahrzeug.hoechstgeschwindigkeit}" type="number" id="speed" min="45" max="250" required>
+            <input th:field="*{fahrzeug.hoechstgeschwindigkeit}" type="number" id="speed" min="45" max="250" style="width: 167px;" required>
             <span>km/h</span>
         </div>
     </div>
@@ -80,7 +80,7 @@
         Ungültige Höchstgeschwindigkeit</b>
     <div class="form-group">
         <label for="wkz">Wagnisskennziffer:</label>
-        <input th:field="*{fahrzeug.wagnisskennziffer}" type="number" id="wkz" min="112" max="112" required>
+        <input th:field="*{fahrzeug.wagnisskennziffer}" type="number" id="wkz" min="112" max="112" class="valid" readonly>
     </div>
     <b th:if="${#fields.hasErrors('fahrzeug.wagnisskennziffer')}"
        th:class="${#fields.hasErrors('fahrzeug.wagnisskennziffer')}? error">
@@ -101,7 +101,7 @@
         Ungültiger Nachname</b>
     <div class="form-group">
         <label>Geschlecht:</label>
-        <div>
+        <div class="valid">
             <input th:field="*{partner.geschlecht}" type="radio" name="gender" value="M" id="check3">
             <label for="check3">M</label>
             <input th:field="*{partner.geschlecht}" type="radio" name="gender" value="W" id="check4">
@@ -157,7 +157,7 @@
     </div>
     <div class="form-group">
         <label for="land">Land:</label>
-        <input th:field="*{partner.land}" type="text" id="land" readonly>
+        <input class="valid" th:field="*{partner.land}" type="text" id="land" readonly>
     </div>
     <b th:if="${#fields.hasErrors('partner.land')}" th:class="${#fields.hasErrors('partner.land')}? error">
         Ungültige Adresse</b>
