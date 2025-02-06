@@ -31,7 +31,7 @@ public class PrintVertrage {
         return "printVertrage";
     }
 
-    private BigDecimal calculateTotalPrice(List<Vertrag> vertrage) {
+    public BigDecimal calculateTotalPrice(List<Vertrag> vertrage) {
         BigDecimal summe = BigDecimal.ZERO;
         DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT_PATTERN, new DecimalFormatSymbols(Locale.GERMANY));
 

@@ -5,6 +5,7 @@ import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import jakarta.json.*;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +16,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-public class RepoSQL  { //ToDO: umbau auf echte DB, JBA
+public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
     private final Logger logger = Logger.getLogger(RepoSQL.class.getName());
+    @Setter
     @Autowired
     private Setup setup;
 

@@ -35,10 +35,6 @@ public class InputValidator {
     private static final String ERROR_INVALID_ADDRESS = "Ungültige Adresse";
 
 
-    public boolean stringContainsDigit(String input) {
-        return input.isEmpty() || input.chars().anyMatch(Character::isDigit);
-    }
-
     public boolean isStringInJsonFile(String searchString) {
         String filePath = setup.getJson_brandsPath();
         try (InputStream fis = new FileInputStream(filePath);
