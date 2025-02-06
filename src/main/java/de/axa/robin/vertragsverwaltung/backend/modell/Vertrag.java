@@ -3,16 +3,21 @@ package de.axa.robin.vertragsverwaltung.backend.modell;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import de.axa.robin.vertragsverwaltung.model.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.model.Partner;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter
 @Setter
-public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag { //ToDo: Mapping von Generierten
+public class Vertrag {
+    @JsonIgnore
     private int vsnr;
+    private boolean monatlich;
+    private LocalDate versicherungsbeginn;
+    private LocalDate versicherungsablauf;
+    private LocalDate antragsDatum;
+    private Fahrzeug fahrzeug;
+    private Partner partner;
     private double preis;
     @JsonIgnore
     private String formattedPreis;
@@ -20,19 +25,19 @@ public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag { //T
     // Konstruktor
     public Vertrag(int vsnr, boolean monatlich, double preis, LocalDate versicherungsbeginn, LocalDate versicherungsablauf, LocalDate antragsDatum, Fahrzeug fahrzeug, Partner partner) {
         this.vsnr = vsnr;
+        this.monatlich = monatlich;
+        this.versicherungsbeginn = versicherungsbeginn;
+        this.versicherungsablauf = versicherungsablauf;
+        this.antragsDatum = antragsDatum;
+        this.fahrzeug = fahrzeug;
+        this.partner = partner;
         this.preis = preis;
-        super.setMonatlich(monatlich);
-        super.setVersicherungsbeginn(versicherungsbeginn);
-        super.setVersicherungsablauf(versicherungsablauf);
-        super.setAntragsDatum(antragsDatum);
-        super.setFahrzeug(fahrzeug);
-        super.setPartner(partner);
+    }
+    public Vertrag(Fahrzeug fahrzeug, Partner partner) {
+        this.fahrzeug = fahrzeug;
+        this.partner = partner;
     }
 
-    public Vertrag(Fahrzeug fahrzeug, Partner partner) {
-        super.setFahrzeug(fahrzeug);
-        super.setPartner(partner);
-    }
 
     public Vertrag() {
         super();
@@ -43,12 +48,12 @@ public class Vertrag extends de.axa.robin.vertragsverwaltung.model.Vertrag { //T
         return "Vertragsdaten: " +
                 "\n\tVertragsnummer: " + vsnr +
                 "\n\tPreis: " + preis + "€" +
-                "\n\tAbrechnungszeitraum monatlich: " + super.getMonatlich() +
-                "\n\tVersicherungsbeginn: " + super.getVersicherungsbeginn() +
-                "\n\tVersicherungsablauf: " + super.getVersicherungsablauf() +
-                "\n\tAntragsdatum: " + super.getAntragsDatum() +
-                super.getFahrzeug() +
-                super.getPartner() +
+                "\n\tAbrechnungszeitraum monatlich: " + monatlich +
+                "\n\tVersicherungsbeginn: " + versicherungsbeginn +
+                "\n\tVersicherungsablauf: " + versicherungsablauf +
+                "\n\tAntragsdatum: " + antragsDatum +
+                fahrzeug +
+                partner +
                 "\n\t-------------------------------";
     }
 

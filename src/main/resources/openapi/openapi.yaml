@@ -20,7 +20,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Vertrag'
+                  $ref: '#/components/schemas/VertragDTO'
         '400':
           description: Bad Request
           content:
@@ -60,7 +60,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vertrag'
+              $ref: '#/components/schemas/VertragDTO'
       responses:
         '200':
           description: Created
@@ -109,7 +109,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vertrag'
+                $ref: '#/components/schemas/VertragDTO'
         '400':
           description: Bad Request
           content:
@@ -167,7 +167,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vertrag'
+                $ref: '#/components/schemas/VertragDTO'
         '400':
           description: Bad Request
           content:
@@ -214,13 +214,13 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/Vertrag"
+                $ref: "#/components/schemas/VertragDTO"
         '204':
           description: Vertrag erfolgreich gelöscht
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/Vertrag"
+                $ref: "#/components/schemas/VertragDTO"
         '400':
           description: Bad Request
           content:
@@ -285,7 +285,7 @@ components:
           maximum: 9.9999999
           example: 1.7
           description: "Multiplikationsfaktor, muss größer als 0 und kleiner als 10 sein."
-    Vertrag:
+    VertragDTO:
       type: object
       required:
         - monatlich
@@ -319,11 +319,11 @@ components:
           description: "Datum des Versicherungsantrags im Format 'yyyy-MM-dd'."
 
         fahrzeug:
-          $ref: "#/components/schemas/Fahrzeug"
+          $ref: "#/components/schemas/FahrzeugDTO"
 
         partner:
-          $ref: "#/components/schemas/Partner"
-    Partner:
+          $ref: "#/components/schemas/PartnerDTO"
+    PartnerDTO:
       type: object
       required:
         - vorname
@@ -395,7 +395,7 @@ components:
           type: string
           example: "Berlin"
           description: "Bundesland der Wohnadresse."
-    Fahrzeug:
+    FahrzeugDTO:
       type: object
       required:
         - amtlichesKennzeichen

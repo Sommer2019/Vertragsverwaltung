@@ -1,8 +1,16 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
+import lombok.Getter;
+import lombok.Setter;
 
-public class Preis extends de.axa.robin.vertragsverwaltung.model.Preis { //ToDo: Mapping von Generierten
+@Getter
+@Setter
+public class Preis extends de.axa.robin.vertragsverwaltung.model.Preis {
+    private double betrag;
+    private String waehrung;
+
     public Preis() {
-        super();
+        this.betrag = betrag;
+        this.waehrung = waehrung;
     }
 }

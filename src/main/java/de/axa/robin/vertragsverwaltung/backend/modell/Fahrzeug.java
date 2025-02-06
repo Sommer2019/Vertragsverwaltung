@@ -1,14 +1,25 @@
 package de.axa.robin.vertragsverwaltung.backend.modell;
 
-public class Fahrzeug extends de.axa.robin.vertragsverwaltung.model.Fahrzeug { //ToDo: Mapping von Generierten
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Fahrzeug {
+    private String amtlichesKennzeichen;
+    private String hersteller;
+    private String typ;
+    private int hoechstgeschwindigkeit;
+    private int wagnisskennziffer;
 
     // Konstruktor
     public Fahrzeug(String amtlichesKennzeichen, String hersteller, String typ, int hoechstgeschwindigkeit, int wagnisskennziffer) {
-        super.setAmtlichesKennzeichen(amtlichesKennzeichen);
-        super.setHersteller(hersteller);
-        super.setTyp(typ);
-        super.setHoechstgeschwindigkeit(hoechstgeschwindigkeit);
-        super.setWagnisskennziffer(wagnisskennziffer);
+        this.amtlichesKennzeichen = amtlichesKennzeichen;
+        this.hersteller = hersteller;
+        this.typ = typ;
+        this.hoechstgeschwindigkeit = hoechstgeschwindigkeit;
+        this.wagnisskennziffer = wagnisskennziffer;
     }
     public Fahrzeug() {
         super();
@@ -17,11 +28,11 @@ public class Fahrzeug extends de.axa.robin.vertragsverwaltung.model.Fahrzeug { /
     @Override
     public String toString() {
         return "\nFahrzeug: " +
-                "\n\tAmtliches Kennzeichen: " + super.getAmtlichesKennzeichen() +
-                "\n\tHersteller: " + super.getHersteller() +
-                "\n\tTyp: " + super.getTyp() +
-                "\n\tHöchstgeschwindigkeit: " + super.getHoechstgeschwindigkeit() +
-                "\n\tWagnisskennziffer: " + super.getWagnisskennziffer();
+                "\n\tAmtliches Kennzeichen: " + this.amtlichesKennzeichen +
+                "\n\tHersteller: " + this.hersteller +
+                "\n\tTyp: " + this.typ +
+                "\n\tHöchstgeschwindigkeit: " + this.hoechstgeschwindigkeit +
+                "\n\tWagnisskennziffer: " + this.wagnisskennziffer;
     }
 }
 

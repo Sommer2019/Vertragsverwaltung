@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.frontend.storage;
 
-import de.axa.robin.vertragsverwaltung.model.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.model.Partner;
+import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.backend.storage.editor.Create;
@@ -107,14 +107,14 @@ public class CreateVertrag {
 
     private Vertrag createVertragEntity(Vertrag vertrag) {
         int vsnr = create.createvsnr();
-        double preis = create.createPreis(vertrag.getMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit());
+        double preis = create.createPreis(vertrag.isMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit());
 
-        return new Vertrag(vsnr, vertrag.getMonatlich(), preis, vertrag.getVersicherungsbeginn(), vertrag.getVersicherungsablauf(), vertrag.getAntragsDatum(), vertrag.getFahrzeug(), vertrag.getPartner());
+        return new Vertrag(vsnr, vertrag.isMonatlich(), preis, vertrag.getVersicherungsbeginn(), vertrag.getVersicherungsablauf(), vertrag.getAntragsDatum(), vertrag.getFahrzeug(), vertrag.getPartner());
     }
 
     private double calculatePreis(Vertrag vertrag) {
         Partner partner = vertrag.getPartner();
         Fahrzeug fahrzeug = vertrag.getFahrzeug();
-        return create.createPreis(vertrag.getMonatlich(), partner.getGeburtsdatum(), fahrzeug.getHoechstgeschwindigkeit());
+        return create.createPreis(vertrag.isMonatlich(), partner.getGeburtsdatum(), fahrzeug.getHoechstgeschwindigkeit());
     }
 }

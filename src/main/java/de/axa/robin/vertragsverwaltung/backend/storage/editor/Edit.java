@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.backend.storage.editor;
 
-import de.axa.robin.vertragsverwaltung.model.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.model.Partner;
+import de.axa.robin.vertragsverwaltung.backend.modell.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.backend.modell.Partner;
 import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.backend.storage.Repository;
 import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
@@ -27,9 +27,9 @@ public class Edit {
         repository.speichereFaktoren(factor,factoralter,factorspeed);
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
-            v.setPreis(create.createPreis(v.getMonatlich(), v.getPartner().getGeburtsdatum(), v.getFahrzeug().getHoechstgeschwindigkeit()));
+            v.setPreis(create.createPreis(v.isMonatlich(), v.getPartner().getGeburtsdatum(), v.getFahrzeug().getHoechstgeschwindigkeit()));
             if (!v.getVersicherungsablauf().isBefore(LocalDate.now())){
-                if (!v.getMonatlich()) {
+                if (!v.isMonatlich()) {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis()));
                 } else {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));

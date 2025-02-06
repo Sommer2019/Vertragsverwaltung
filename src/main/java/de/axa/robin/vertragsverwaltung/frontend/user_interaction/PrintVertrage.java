@@ -36,7 +36,7 @@ public class PrintVertrage {
         DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT_PATTERN, new DecimalFormatSymbols(Locale.GERMANY));
 
         for (Vertrag v : vertrage) {
-            BigDecimal preis = BigDecimal.valueOf(v.getPreis() * (v.getMonatlich() ? 12 : 1));
+            BigDecimal preis = BigDecimal.valueOf(v.getPreis() * (v.isMonatlich() ? 12 : 1));
             summe = summe.add(preis);
             v.setFormattedPreis(decimalFormat.format(v.getPreis()));
         }

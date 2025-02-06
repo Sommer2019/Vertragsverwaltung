@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Component
+@Component //ToDO: umbau auf echte DB, JBA
 public class Repository {
     private final Logger logger = Logger.getLogger(Repository.class.getName());
     @Autowired
@@ -49,13 +49,13 @@ public class Repository {
     private JsonObject createVertragJsonObject(Vertrag v) {
         return Json.createObjectBuilder()
                 .add("vsnr", v.getVsnr())
-                .add("abrechnungszeitraum monatlich", v.getMonatlich())
+                .add("abrechnungszeitraum monatlich", v.isMonatlich())
                 .add("preis", v.getPreis())
                 .add("versicherungsbeginn", v.getVersicherungsbeginn().toString())
                 .add("versicherungsablauf", v.getVersicherungsablauf().toString())
                 .add("antragsDatum", v.getAntragsDatum().toString())
-                .add("fahrzeug", createFahrzeugJsonObject(convertToBackendFahrzeug(v.getFahrzeug())))
-                .add("partner", createPartnerJsonObject(convertToBackendPartner(v.getPartner())))
+                .add("fahrzeug", createFahrzeugJsonObject(v.getFahrzeug()))
+                .add("partner", createPartnerJsonObject(v.getPartner()))
                 .build();
     }
 
@@ -159,30 +159,5 @@ public class Repository {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Fehler beim Speichern der Faktoren", e);
         }
-    }
-
-    private Fahrzeug convertToBackendFahrzeug(de.axa.robin.vertragsverwaltung.model.Fahrzeug fahrzeug) {
-        return new Fahrzeug(
-                fahrzeug.getAmtlichesKennzeichen(),
-                fahrzeug.getHersteller(),
-                fahrzeug.getTyp(),
-                fahrzeug.getHoechstgeschwindigkeit(),
-                fahrzeug.getWagnisskennziffer()
-        );
-    }
-
-    private Partner convertToBackendPartner(de.axa.robin.vertragsverwaltung.model.Partner partner) {
-        return new Partner(
-                partner.getVorname(),
-                partner.getNachname(),
-                partner.getGeschlecht().charAt(0),
-                partner.getGeburtsdatum(),
-                partner.getLand(),
-                partner.getStrasse(),
-                partner.getHausnummer(),
-                partner.getPlz(),
-                partner.getStadt(),
-                partner.getBundesland()
-        );
     }
 }

@@ -53,7 +53,7 @@ public class RepoSQL {
 
     private void setVertragParameters(PreparedStatement stmt, Vertrag v) throws SQLException {
         stmt.setInt(1, v.getVsnr());
-        stmt.setBoolean(2, v.getMonatlich());
+        stmt.setBoolean(2, v.isMonatlich());
         stmt.setDouble(3, v.getPreis());
         stmt.setDate(4, Date.valueOf(v.getVersicherungsbeginn()));
         stmt.setDate(5, Date.valueOf(v.getVersicherungsablauf()));
@@ -101,7 +101,7 @@ public class RepoSQL {
                 rs.getDate("versicherungsablauf").toLocalDate(),
                 rs.getDate("antragsDatum").toLocalDate(),
                 new Fahrzeug(
-                        rs.getString("fahrzeug_kennzeichen"),
+                        rs.getString("fahrzeug_ammtkennzeichen"),
                         rs.getString("fahrzeug_hersteller"),
                         rs.getString("fahrzeug_typ"),
                         rs.getInt("fahrzeug_hoechstgeschwindigkeit"),

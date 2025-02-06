@@ -77,7 +77,7 @@ public class HandleVertrag {
             return "handleVertrag";
         }
         vertragsverwaltung.vertragLoeschen(menuSpring.getVsnr());
-        boolean monatlich = vertrag.getMonatlich();
+        boolean monatlich = vertrag.isMonatlich();
         int vsnr = menuSpring.getVsnr();
         model.addAttribute("confirm", "Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(create.createVertragAndSave(vertrag, monatlich, vsnr)).replace('.', ',') + "€");
         return "home";
@@ -93,7 +93,7 @@ public class HandleVertrag {
         model.addAttribute("vsnr", v.getVsnr());
         model.addAttribute("preis", String.valueOf(v.getPreis()).replace('.', ','));
         model.addAttribute("preisnew", String.valueOf(v.getPreis()).replace('.', ','));
-        model.addAttribute("abrechnungszeitraumMonatlich", v.getMonatlich());
+        model.addAttribute("abrechnungszeitraumMonatlich", v.isMonatlich());
         model.addAttribute("start", v.getVersicherungsbeginn());
         model.addAttribute("end", v.getVersicherungsablauf());
         model.addAttribute("create", v.getAntragsDatum());
@@ -119,7 +119,7 @@ public class HandleVertrag {
     }
 
     private void initializeVertrag(Vertrag v, Vertrag vertrag) {
-        vertrag.setMonatlich(v.getMonatlich());
+        vertrag.setMonatlich(v.isMonatlich());
         vertrag.setVersicherungsbeginn(v.getVersicherungsbeginn());
         vertrag.setVersicherungsablauf(v.getVersicherungsablauf());
         vertrag.setAntragsDatum(v.getAntragsDatum());
