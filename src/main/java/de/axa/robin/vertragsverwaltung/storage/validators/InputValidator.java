@@ -48,7 +48,7 @@ public class InputValidator {
         try (InputStream fis = new FileInputStream(filePath);
              JsonReader jsonReader = Json.createReader(fis)) {
             JsonObject jsonObject = jsonReader.readObject();
-            return jsonObject.toString().contains(searchString);
+            return jsonObject.toString().contains("'"+searchString+"'");
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + filePath);
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class InputValidator {
         if (result == null) {
             return false;
         }
-        if (!isStringInJsonFile(vertrag.getFahrzeug().getHersteller())) { //ToDO: fix this when used from api
+        if (!isStringInJsonFile(vertrag.getFahrzeug().getHersteller())) {
             result.rejectValue("fahrzeug.hersteller", "error.fahrzeug.hersteller", ERROR_INVALID_MANUFACTURER);
             return true;
         }

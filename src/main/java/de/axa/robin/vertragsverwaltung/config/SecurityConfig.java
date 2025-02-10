@@ -24,8 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private static final String[] PERMITTED_PATHS = {"/static/**", "/js/**", "/css/**", "/", "/login", "/error", "/favicon.ico"};
-    private static final String[] ADMIN_PATHS = {"/home", "/printVertrage", "/editPreis", "/api/**", "/createVertrag", "/json/**", "/showEdit", "/showDelete", "/precalcPreis", "/createPreis", "/logout"};
+    private static final String[] PERMITTED_PATHS = {"/static/**", "/js/**", "/css/**", "/api/**", "/", "/login", "/error", "/favicon.ico"};
+    private static final String[] ADMIN_PATHS = {"/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/showEdit", "/showDelete", "/precalcPreis", "/createPreis", "/logout"};
 
     /**
      * Configures the security filter chain.
