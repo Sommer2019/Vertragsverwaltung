@@ -8,9 +8,13 @@ servers:
     description: Relative base url
   - url: http://localhost:8080/api/vertragsverwaltung
     description: Local Dev
+security:
+  - basicAuth: []
 paths:
   /vertrage:
     get:
+      security:
+        - basicAuth: [ ]
       summary: Alle Verträge abrufen
       responses:
         '200':
@@ -254,6 +258,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     Preis:
       type: object
@@ -303,19 +311,19 @@ components:
         versicherungsbeginn:
           type: string
           format: date
-          example: "2025-01-01"
+          example: "2026-01-01"
           description: "Startdatum der Versicherung im Format 'yyyy-MM-dd'."
 
         versicherungsablauf:
           type: string
           format: date
-          example: "2026-01-01"
+          example: "2027-01-01"
           description: "Ablaufdatum der Versicherung im Format 'yyyy-MM-dd'."
 
         antragsDatum:
           type: string
           format: date
-          example: "2024-12-15"
+          example: "2025-01-01"
           description: "Datum des Versicherungsantrags im Format 'yyyy-MM-dd'."
 
         fahrzeug:

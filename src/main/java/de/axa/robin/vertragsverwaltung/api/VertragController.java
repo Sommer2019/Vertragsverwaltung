@@ -1,23 +1,25 @@
 package de.axa.robin.vertragsverwaltung.api;
 
-import de.axa.robin.vertragsverwaltung.backend.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.backend.storage.Vertragsverwaltung;
-import de.axa.robin.vertragsverwaltung.backend.storage.editor.Create;
-import de.axa.robin.vertragsverwaltung.backend.storage.editor.Edit;
-import de.axa.robin.vertragsverwaltung.backend.storage.validators.InputValidator;
+import de.axa.robin.vertragsverwaltung.model.VertragDTO;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.editor.CreateData;
+import de.axa.robin.vertragsverwaltung.storage.editor.EditVertrag;
+import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-//ToDO: Mapping und Methoden implementieren
 //ToDo: Login implementieren
-//ToDo: Tests implementieren
 
 /**
- * REST controller for managing {@link Vertrag} entities.
+ * REST controller for managing {@link VertragDTO} entities.
  */
 @RestController
 @RequestMapping("/api/vertragsverwaltung/vertrage")
@@ -27,9 +29,9 @@ public class VertragController {
     @Autowired
     private Vertragsverwaltung vertragsverwaltung;
     @Autowired
-    private Edit edit;
+    private EditVertrag editVertrag;
     @Autowired
-    private Create create;
+    private CreateData createData;
 
     /**
      * Retrieves all contracts.
@@ -58,13 +60,15 @@ public class VertragController {
     /**
      * Creates a new contract.
      *
-     * @param vertrag the contract to create
+     * @param vertragDTO the contract to create
      * @return a {@link ResponseEntity} containing the created contract
      */
     @PutMapping
-    public ResponseEntity<Vertrag> createVertrag(@RequestBody Vertrag vertrag) { //Todo Bugfix: erstellung nicht möglich
-        vertrag.setPreis(create.createPreis(vertrag.isMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit()));
-        if (inputValidator.isInvalidVertrag(vertrag)) {
+    public ResponseEntity<Vertrag> createVertrag(@RequestBody @Valid VertragDTO vertragDTO, BindingResult result) {
+        Vertrag vertrag = VertragMapper.INSTANCE.toVertrag(vertragDTO);
+        vertrag.setVsnr(createData.createvsnr());
+        vertrag.setPreis(createData.createPreis(vertragDTO.getMonatlich(), vertragDTO.getPartner().getGeburtsdatum(), vertragDTO.getFahrzeug().getHoechstgeschwindigkeit()));
+        if (inputValidator.validateVertrag(vertrag, result)||vertrag.getVersicherungsbeginn().isBefore(LocalDate.now())||vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen())||vertragsverwaltung.vertragExistiert(vertrag.getVsnr())) {
             return ResponseEntity.status(400).build();
         }
         Vertrag createdVertrag = vertragsverwaltung.vertragAnlegen(vertrag);
@@ -75,13 +79,14 @@ public class VertragController {
      * Updates an existing contract.
      *
      * @param id the ID of the contract to update
-     * @param vertrag the updated contract data
+     * @param vertragDTO the updated contract data
      * @return a {@link ResponseEntity} containing the updated contract
      */
     @PostMapping("/{id}")
-    public ResponseEntity<Vertrag> updateVertrag(@PathVariable Integer id, @RequestBody Vertrag vertrag) { //Todo Bugfix: update nicht möglich
-        vertrag = edit.updateVertragFields(vertrag, vertragsverwaltung.getVertrag(id));
-        vertrag.setPreis(create.createPreis(vertrag.isMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit()));
+    public ResponseEntity<Vertrag> updateVertrag(@PathVariable Integer id, @RequestBody VertragDTO vertragDTO) {
+        Vertrag vertrag = VertragMapper.INSTANCE.toVertrag(vertragDTO);
+        vertrag = editVertrag.editVertrag(vertrag, id);
+        vertrag.setPreis(createData.createPreis(vertrag.isMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit()));
         boolean deleted = vertragsverwaltung.vertragLoeschen(id);
         if (!deleted) {
             return ResponseEntity.status(404).build();
