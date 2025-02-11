@@ -2,7 +2,6 @@ document.getElementById('calculatePrice').addEventListener('click', function () 
     const form = document.getElementById('myForm');
     const formData = new FormData(form);
     fetch('/createPreis', {method: 'POST', body: formData}).then(response => response.json()).then(data => {
-        data.preis = undefined;
         document.getElementById('preis').textContent = data.preis;
     }).catch(error => {
         console.error('Fehler:', error);
