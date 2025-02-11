@@ -158,17 +158,16 @@ public class InputValidator {
         return false;
     }
 
+
     /**
-     * Checks if the given contract is invalid.
+     * Performs a flexible check on the given contract.
      *
      * @param vertrag the contract to check
-     * @param result the binding result for validation errors
-     * @return true if the contract is invalid, false otherwise
+     * @return true if the contract's start date is before today, or if the license plate or contract number already exists, false otherwise
      */
-    public boolean isInvalidVertrag(Vertrag vertrag, BindingResult result) {
-        return validateVertrag(vertrag, result) ||
-                vertrag.getVersicherungsbeginn().isBefore(LocalDate.now()) ||
-                vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen()) ||
-                vertragsverwaltung.vertragExistiert(vertrag.getVsnr());
+    public boolean flexcheck(Vertrag vertrag) {
+        return vertrag.getVersicherungsbeginn().isBefore(LocalDate.now()) ||
+               vertragsverwaltung.kennzeichenExistiert(vertrag.getFahrzeug().getAmtlichesKennzeichen()) ||
+               vertragsverwaltung.vertragExistiert(vertrag.getVsnr());
     }
 }

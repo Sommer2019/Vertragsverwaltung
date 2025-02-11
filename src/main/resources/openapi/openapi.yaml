@@ -14,7 +14,7 @@ paths:
   /vertrage:
     get:
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
       summary: Alle Verträge abrufen
       responses:
         '200':
@@ -58,6 +58,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
     put:
+      security:
+        - basicAuth: []
       summary: Neuen Vertrag erstellen
       requestBody:
         required: true
@@ -100,6 +102,8 @@ paths:
                 $ref: "#/components/schemas/Problem"
   /vertrage/{id}:
     get:
+      security:
+        - basicAuth: []
       summary: Vertrag nach ID abrufen
       parameters:
         - name: id
@@ -151,6 +155,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
     post:
+      security:
+        - basicAuth: []
       summary: Vertrag aktualisieren
       parameters:
         - name: id
@@ -205,6 +211,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
     delete:
+      security:
+        - basicAuth: []
       summary: Vertrag löschen
       parameters:
         - name: id
@@ -257,18 +265,117 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /preismodell:
+    get:
+      security:
+        - basicAuth: [ ]
+      summary: Preismodell abrufen
+      responses:
+        '200':
+          description: Erfolgreiche Antwort mit Preismodell
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '403':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '404':
+          description: Keine Verträge gefunden
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        default:
+          description: Unexpected Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    post:
+      security:
+        - basicAuth: []
+      summary: Preise neu berechnen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreisDTO'
+      responses:
+        '200':
+          description: Erfolgreiche Antwort mit berechneten Einnahmen
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  preis:
+                    type: number
+                    format: double
+                    example: 100.0
+                    description: "Berechneter Preis für den Vertrag."
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '401':
+          description: Unauthenticated
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '403':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        '500':
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        default:
+          description: Unexpected Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 components:
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
+      in: header
+      name: Basic
   schemas:
-    Preis:
+    PreisDTO:
       type: object
       required:
-        - factor
-        - factorage
-        - factorspeed
+        - faktor
+        - age
+        - speed
       properties:
         speed:
           type: number

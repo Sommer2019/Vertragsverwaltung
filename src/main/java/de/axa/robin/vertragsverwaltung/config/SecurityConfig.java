@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,8 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 /**
  * Configuration class for Spring Security.
  */
@@ -24,9 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private static final String[] PERMITTED_PATHS = {"/static/**", "/js/**", "/css/**", "/api/**", "/", "/login", "/error", "/favicon.ico"};
-    private static final String[] ADMIN_PATHS = {"/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**", "/showEdit", "/showDelete", "/precalcPreis", "/createPreis", "/logout"};
-
+    private static final String[] PERMITTED_PATHS = {"/static/**", "/js/**", "/css/**", "/", "/login", "/error", "/favicon.ico"};
+    private static final String[] ADMIN_PATHS = {"/home", "/printVertrage", "/editPreis", "/createVertrag", "/json/**",  "/showEdit", "/showDelete", "/precalcPreis", "/createPreis", "/logout"};
+    private static final String[] API_PATHS = {"/api/**"};
     /**
      * Configures the security filter chain.
      *
@@ -37,26 +40,31 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository()))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(PERMITTED_PATHS).permitAll()  // Erlaube öffentliche Pfade wie Login
-                        .requestMatchers(ADMIN_PATHS).hasRole("ADMIN") // Admin Pfade schützen
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(API_PATHS)  // Disable CSRF for API paths
+                        .csrfTokenRepository(csrfTokenRepository())
                 )
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(PERMITTED_PATHS).permitAll()
+                        .requestMatchers(ADMIN_PATHS).hasRole("ADMIN")
+                        .requestMatchers(API_PATHS).hasRole("API_USER")
+                )
+                .httpBasic(withDefaults())  // Enable Basic Authentication
                 .formLogin(form -> form
-                        .loginPage("/")  // Die Index-Seite als Login-Seite verwenden
-                        .loginProcessingUrl("/login")  // Wo die Login-Daten gesendet werden
-                        .defaultSuccessUrl("/home", true)  // Ziel nach erfolgreichem Login
-                        .permitAll()  // Erlaube den Zugriff auf die Login-Seite ohne Authentifizierung
+                        .loginPage("/")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/home", false)
+                        .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")  // Logout URL
-                        .logoutSuccessHandler(customLogoutSuccessHandler())  // Nach dem Logout eine Weiterleitung
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(customLogoutSuccessHandler())
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))  // Fehlerbehandlung für nicht authentifizierte Zugriffe
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))
                 )
-                .csrf(AbstractHttpConfigurer::disable);  // Deaktiviere CSRF für diesen Fall
+                .csrf(AbstractHttpConfigurer::disable);  // Disable CSRF globally
 
         return http.build();
     }
@@ -78,13 +86,19 @@ public class SecurityConfig {
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
+        UserDetails admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder().encode("admin"))
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user);
+        UserDetails apiUser = User.builder()
+                .username("apiuser")
+                .password(passwordEncoder().encode("apiuser"))
+                .roles("API_USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, apiUser);
     }
 
     /**
@@ -96,7 +110,10 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.debug(true);
+    }
     /**
      * CSRF token repository configuration.
      *

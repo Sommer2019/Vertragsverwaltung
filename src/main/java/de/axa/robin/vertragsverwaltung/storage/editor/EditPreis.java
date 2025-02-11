@@ -32,6 +32,7 @@ public class EditPreis {
     @Autowired
     private CreateData createData;
 
+
     /**
      * Displays the edit price page with the current price factors.
      *
@@ -59,7 +60,13 @@ public class EditPreis {
     @ResponseBody
     public Map<String, Object> editPreis(@ModelAttribute Preis preismodell) {
         double factor, factoralter, factorspeed;
-        JsonObject jsonObject = repository.ladeFaktoren();
+        JsonObject jsonObject = null;
+        try {
+            jsonObject = repository.ladeFaktoren();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         factor = jsonObject.getJsonNumber("factor").doubleValue();
         factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
         factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
