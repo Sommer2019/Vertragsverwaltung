@@ -21,33 +21,50 @@ class RepoSQLTest {
     private static final String DB_USER = "sa";
     private static final String DB_PASS = "";
 
-    // Test-Setup-Implementierung für die DB-Verbindungsparameter
-    private static Setup testSetup;
-
     // Instanz der zu testenden Klasse
     private RepoSQL repoSQL;
 
     @BeforeEach
     void setUp() {
         // Implementierung von Setup, die die H2-Datenbank verwendet
-        testSetup = new Setup() {
+        // Für diese Tests sind die anderen Methoden nicht relevant
+        // Test-Setup-Implementierung für die DB-Verbindungsparameter
+        Setup testSetup = new Setup() {
             @Override
             public String getDb_url() {
                 return DB_URL;
             }
+
             @Override
             public String getDb_user() {
                 return DB_USER;
             }
+
             @Override
             public String getDb_pass() {
                 return DB_PASS;
             }
+
             // Für diese Tests sind die anderen Methoden nicht relevant
-            @Override public String getCheckURL() { return ""; }
-            @Override public String getTestURL() { return ""; }
-            @Override public String getProxy_host() { return ""; }
-            @Override public int getProxy_port() { return 0; }
+            @Override
+            public String getCheckURL() {
+                return "";
+            }
+
+            @Override
+            public String getTestURL() {
+                return "";
+            }
+
+            @Override
+            public String getProxy_host() {
+                return "";
+            }
+
+            @Override
+            public int getProxy_port() {
+                return 0;
+            }
         };
 
         repoSQL = new RepoSQL();
@@ -118,7 +135,7 @@ class RepoSQLTest {
         assertNotNull(loadedVertraege, "Die geladene Vertragsliste sollte nicht null sein.");
         assertEquals(1, loadedVertraege.size(), "Es sollte genau ein Vertrag geladen werden.");
 
-        Vertrag loadedVertrag = loadedVertraege.get(0);
+        Vertrag loadedVertrag = loadedVertraege.getFirst();
         assertEquals(vertrag.getVsnr(), loadedVertrag.getVsnr(), "Die Vertragsnummern sollten übereinstimmen.");
         assertEquals(vertrag.isMonatlich(), loadedVertrag.isMonatlich(), "Der Abrechnungszeitraum sollte übereinstimmen.");
         assertEquals(vertrag.getPreis(), loadedVertrag.getPreis(), 0.001, "Der Preis sollte übereinstimmen.");

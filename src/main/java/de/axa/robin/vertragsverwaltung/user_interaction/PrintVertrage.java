@@ -2,8 +2,6 @@ package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

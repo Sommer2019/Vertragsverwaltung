@@ -4,7 +4,7 @@ import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
-import org.junit.jupiter.api.Disabled;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,17 +37,7 @@ public class EditVertragTest {
         source.setVersicherungsablauf(versicherungsablauf);
         source.setAntragsDatum(antragsDatum);
 
-        Partner sourcePartner = new Partner();
-        sourcePartner.setVorname("Max");
-        sourcePartner.setNachname("Mustermann");
-        sourcePartner.setGeschlecht("M");
-        sourcePartner.setGeburtsdatum(LocalDate.of(1985, 5, 5));
-        sourcePartner.setLand("Deutschland");
-        sourcePartner.setStrasse("Musterstr");
-        sourcePartner.setHausnummer("1A");
-        sourcePartner.setPlz("12345");
-        sourcePartner.setStadt("Musterstadt");
-        sourcePartner.setBundesland("BW");
+        Partner sourcePartner = getPartner();
         source.setPartner(sourcePartner);
 
         Fahrzeug sourceFahrzeug = new Fahrzeug();
@@ -59,31 +49,7 @@ public class EditVertragTest {
         source.setFahrzeug(sourceFahrzeug);
 
         // Target-Vertrag mit alten Werten
-        Vertrag target = new Vertrag();
-        target.setVersicherungsbeginn(LocalDate.of(2020, 1, 1));
-        target.setVersicherungsablauf(LocalDate.of(2025, 1, 1));
-        target.setAntragsDatum(LocalDate.of(2020, 12, 12));
-
-        Partner targetPartner = new Partner();
-        targetPartner.setVorname("Anna");
-        targetPartner.setNachname("Beispiel");
-        targetPartner.setGeschlecht("F");
-        targetPartner.setGeburtsdatum(LocalDate.of(1990, 6, 6));
-        targetPartner.setLand("Österreich");
-        targetPartner.setStrasse("Beispielstr");
-        targetPartner.setHausnummer("2B");
-        targetPartner.setPlz("54321");
-        targetPartner.setStadt("Beispielstadt");
-        targetPartner.setBundesland("Bayern");
-        target.setPartner(targetPartner);
-
-        Fahrzeug targetFahrzeug = new Fahrzeug();
-        targetFahrzeug.setAmtlichesKennzeichen("XYZ789");
-        targetFahrzeug.setHersteller("BMW");
-        targetFahrzeug.setTyp("3er");
-        targetFahrzeug.setHoechstgeschwindigkeit(180);
-        targetFahrzeug.setWagnisskennziffer(3);
-        target.setFahrzeug(targetFahrzeug);
+        Vertrag target = getVertrag();
 
         when(vertragsverwaltung.getVertrag(target.getVsnr())).thenReturn(target);
         Vertrag updated = editVertrag.editVertrag(source, target.getVsnr());
@@ -116,5 +82,57 @@ public class EditVertragTest {
 
         verify(vertragsverwaltung).vertragLoeschen(target.getVsnr());
         verify(vertragsverwaltung).vertragAnlegen(updated);
+    }
+
+    @NotNull
+    private static Vertrag getVertrag() {
+        Vertrag target = new Vertrag();
+        target.setVersicherungsbeginn(LocalDate.of(2020, 1, 1));
+        target.setVersicherungsablauf(LocalDate.of(2025, 1, 1));
+        target.setAntragsDatum(LocalDate.of(2020, 12, 12));
+
+        Partner targetPartner = getTargetPartner();
+        target.setPartner(targetPartner);
+
+        Fahrzeug targetFahrzeug = new Fahrzeug();
+        targetFahrzeug.setAmtlichesKennzeichen("XYZ789");
+        targetFahrzeug.setHersteller("BMW");
+        targetFahrzeug.setTyp("3er");
+        targetFahrzeug.setHoechstgeschwindigkeit(180);
+        targetFahrzeug.setWagnisskennziffer(3);
+        target.setFahrzeug(targetFahrzeug);
+        return target;
+    }
+
+    @NotNull
+    private static Partner getTargetPartner() {
+        Partner targetPartner = new Partner();
+        targetPartner.setVorname("Anna");
+        targetPartner.setNachname("Beispiel");
+        targetPartner.setGeschlecht("F");
+        targetPartner.setGeburtsdatum(LocalDate.of(1990, 6, 6));
+        targetPartner.setLand("Österreich");
+        targetPartner.setStrasse("Beispielstr");
+        targetPartner.setHausnummer("2B");
+        targetPartner.setPlz("54321");
+        targetPartner.setStadt("Beispielstadt");
+        targetPartner.setBundesland("Bayern");
+        return targetPartner;
+    }
+
+    @NotNull
+    private static Partner getPartner() {
+        Partner sourcePartner = new Partner();
+        sourcePartner.setVorname("Max");
+        sourcePartner.setNachname("Mustermann");
+        sourcePartner.setGeschlecht("M");
+        sourcePartner.setGeburtsdatum(LocalDate.of(1985, 5, 5));
+        sourcePartner.setLand("Deutschland");
+        sourcePartner.setStrasse("Musterstr");
+        sourcePartner.setHausnummer("1A");
+        sourcePartner.setPlz("12345");
+        sourcePartner.setStadt("Musterstadt");
+        sourcePartner.setBundesland("BW");
+        return sourcePartner;
     }
 }

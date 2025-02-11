@@ -138,7 +138,7 @@ class HandleVertragTest {
         when(bindingResult.hasErrors()).thenReturn(true);
 
         // Um den richtigen Vertrag für das Setup bereitzustellen, wird der interne Zähler "handledVertrag" gesetzt.
-        setHandledVertrag(111);
+        setHandledVertrag();
         Vertrag existingVertrag = createDummyVertrag(111);
         when(vertragsverwaltung.getVertrag(111)).thenReturn(existingVertrag);
 
@@ -211,11 +211,11 @@ class HandleVertragTest {
     /**
      * Hilfsmethode, um mittels Reflection den privaten Zähler "handledVertrag" in der Controller-Klasse zu setzen.
      */
-    private void setHandledVertrag(int value) {
+    private void setHandledVertrag() {
         try {
             java.lang.reflect.Field field = HandleVertrag.class.getDeclaredField("handledVertrag");
             field.setAccessible(true);
-            field.set(handleVertrag, value);
+            field.set(handleVertrag, 111);
         } catch (Exception e) {
             fail("Failed to set handledVertrag: " + e.getMessage());
         }

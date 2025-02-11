@@ -35,8 +35,8 @@ function hideDelete() {
 }
 
 document.getElementById('calculatePrice').addEventListener('click', function () {
-    var form = document.getElementById('myForm');
-    var formData = new FormData(form);
+    const form = document.getElementById('myForm');
+    const formData = new FormData(form);
     fetch('/createPreis', {method: 'POST', body: formData})
         .then(response => response.json())
         .then(data => document.getElementById('preis').textContent = data.preis)

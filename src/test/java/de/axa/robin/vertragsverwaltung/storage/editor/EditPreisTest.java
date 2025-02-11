@@ -98,7 +98,7 @@ class EditPreisTest {
         when(repository.ladeFaktoren()).thenReturn(jsonObject);
 
         // Erstelle eine Liste mit einem Dummy-Vertrag (nicht monatlich)
-        Vertrag vertrag = createDummyVertrag(101, false);
+        Vertrag vertrag = createDummyVertrag(101);
         List<Vertrag> vertrage = List.of(vertrag);
         when(vertragsverwaltung.getVertrage()).thenReturn(vertrage);
 
@@ -132,7 +132,7 @@ class EditPreisTest {
         inputPreis.setSpeed(4.0);
 
         // Erstelle eine Liste mit einem Dummy-Vertrag (nicht monatlich)
-        Vertrag vertrag = createDummyVertrag(202, false);
+        Vertrag vertrag = createDummyVertrag(202);
         List<Vertrag> vertrage = List.of(vertrag);
         when(vertragsverwaltung.getVertrage()).thenReturn(vertrage);
 
@@ -158,14 +158,13 @@ class EditPreisTest {
     /**
      * Hilfsmethode zur Erstellung eines Dummy-Vertrags für die Tests.
      *
-     * @param vsnr    die Vertragsnummer
-     * @param monthly true, wenn der Vertrag monatlich abgerechnet wird
+     * @param vsnr die Vertragsnummer
      * @return ein Dummy-Vertrag
      */
-    private Vertrag createDummyVertrag(int vsnr, boolean monthly) {
+    private Vertrag createDummyVertrag(int vsnr) {
         Vertrag vertrag = new Vertrag();
         vertrag.setVsnr(vsnr);
-        vertrag.setMonatlich(monthly);
+        vertrag.setMonatlich(false);
         // Setze ein zukünftiges Ablaufdatum, damit der Vertrag gültig ist.
         vertrag.setVersicherungsablauf(LocalDate.now().plusDays(365));
 

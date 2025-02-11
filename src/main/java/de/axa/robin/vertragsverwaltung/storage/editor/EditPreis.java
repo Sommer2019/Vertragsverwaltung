@@ -59,17 +59,17 @@ public class EditPreis {
     @PostMapping("/precalcPreis")
     @ResponseBody
     public Map<String, Object> editPreis(@ModelAttribute Preis preismodell) {
-        double factor, factoralter, factorspeed;
-        JsonObject jsonObject = null;
+        double factor = 0, factoralter = 0, factorspeed = 0;
+        JsonObject jsonObject;
         try {
             jsonObject = repository.ladeFaktoren();
+            factor = jsonObject.getJsonNumber("factor").doubleValue();
+            factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
+            factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        factor = jsonObject.getJsonNumber("factor").doubleValue();
-        factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
-        factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
         BigDecimal preis = recalcPrice(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertragsverwaltung.getVertrage());
         Map<String, Object> response = new HashMap<>();
         response.put("preis", preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + " €");

@@ -5,6 +5,7 @@ import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,8 +45,10 @@ public class AdressValidatorTest {
             // - /test: Für den Internet-Check (HTTP 200)
             // - /check: Liefert eine JSON-Antwort mit gültigen Adressdaten
             Dispatcher dispatcher = new Dispatcher() {
+                @NotNull
                 @Override
                 public MockResponse dispatch(RecordedRequest request) {
+                    assert request.getPath() != null;
                     if (request.getPath().startsWith("/test")) {
                         return new MockResponse().setResponseCode(200);
                     } else if (request.getPath().startsWith("/check")) {
@@ -86,8 +89,10 @@ public class AdressValidatorTest {
         try (MockWebServer server = new MockWebServer()) {
             // Dispatcher liefert für /test einen HTTP 200 und für /check einen leeren JSON-Array
             Dispatcher dispatcher = new Dispatcher() {
+                @NotNull
                 @Override
                 public MockResponse dispatch(RecordedRequest request) {
+                    assert request.getPath() != null;
                     if (request.getPath().startsWith("/test")) {
                         return new MockResponse().setResponseCode(200);
                     } else if (request.getPath().startsWith("/check")) {

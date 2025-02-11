@@ -75,7 +75,7 @@ public class RepositoryTest {
         List<Vertrag> loadedVertrage = repository.ladeVertrage();
         assertEquals(1, loadedVertrage.size(), "Es sollte genau ein Vertrag geladen werden.");
 
-        Vertrag loaded = loadedVertrage.get(0);
+        Vertrag loaded = loadedVertrage.getFirst();
         // Überprüfe die Grundfelder
         assertEquals(vertrag.getVsnr(), loaded.getVsnr());
         assertEquals(vertrag.isMonatlich(), loaded.isMonatlich());

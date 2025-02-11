@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -76,8 +77,8 @@ class VertragControllerTest {
 
         ResponseEntity<List<Vertrag>> response = vertragController.getAllVertrage();
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(2, response.getBody().size());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(2, Objects.requireNonNull(response.getBody()).size());
     }
 
     @Test
@@ -87,7 +88,7 @@ class VertragControllerTest {
 
         ResponseEntity<Vertrag> response = vertragController.getVertragById(1);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(vertrag, response.getBody());
     }
 
@@ -109,7 +110,7 @@ class VertragControllerTest {
 
         ResponseEntity<Vertrag> response = vertragController.createVertrag(vertragDTO, null);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(vertrag, response.getBody());
     }
 
@@ -132,7 +133,7 @@ class VertragControllerTest {
 
         ResponseEntity<Vertrag> response = vertragController.updateVertrag(1, vertragDTO);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(vertrag, response.getBody());
     }
 
@@ -142,7 +143,7 @@ class VertragControllerTest {
 
         ResponseEntity<Void> response = vertragController.deleteVertrag(1);
 
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
     }
 
     @Test
@@ -155,7 +156,7 @@ class VertragControllerTest {
 
         ResponseEntity<String> response = vertragController.getPreismodell();
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals("Preisberechnung: Formel: preis = (alter * 0.2 + hoechstGeschwindigkeit * 0.1) * 1.5", response.getBody());
     }
 
@@ -168,6 +169,6 @@ class VertragControllerTest {
 
         ResponseEntity<String> response = vertragController.setPreismodell(preisDTO);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
     }
 }
