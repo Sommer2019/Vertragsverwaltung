@@ -1,37 +1,30 @@
 package de.axa.robin.vertragsverwaltung.storage.editor;
 
-import de.axa.robin.vertragsverwaltung.config.CustomTestConfig;
+import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.modell.Partner;
+import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
 import de.axa.robin.vertragsverwaltung.user_interaction.MenuSpring;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.*;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+
 import java.time.LocalDate;
 import java.util.Locale;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.Map;
 
-@AutoConfigureMockMvc
-@WebMvcTest(de.axa.robin.vertragsverwaltung.storage.editor.CreateVertrag.class)
-@Import(CustomTestConfig.class)
-@ExtendWith(MockitoExtension.class)
-public class CreateVertragTest {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
-    @Autowired
-    private MockMvc mockMvc;
+class CreateVertragTest {
+
+    @InjectMocks
+    private CreateVertrag createVertragController;
 
     @Mock
     private Vertragsverwaltung vertragsverwaltung;
@@ -45,147 +38,183 @@ public class CreateVertragTest {
     @Mock
     private InputValidator inputValidator;
 
-    @InjectMocks
-    private CreateVertrag createVertrag;
-
-    /**
-     * Testet den GET-Aufruf von /createVertrag.
-     * Hier wird überprüft, ob ein generierter VSNR im Modell vorhanden ist.
-     */
-    @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testGetCreateVertrag() throws Exception {
-        int generatedVsnr = 1000;
-        Mockito.when(createData.createvsnr()).thenReturn(generatedVsnr);
-        Mockito.when(menuSpring.getVsnr()).thenReturn(generatedVsnr);
-
-        mockMvc.perform(get("/createVertrag").with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("createVertrag"))
-                .andExpect(model().attributeExists("vertrag"))
-                .andExpect(model().attribute("vsnr", generatedVsnr));
+    @BeforeEach
+    void setUp() {
+        // Initialisiert alle mit @Mock annotierten Objekte
+        MockitoAnnotations.openMocks(this);
     }
 
     /**
-     * Testet den POST-Aufruf von /createVertrag im Erfolgsfall.
+     * Testet den GET-Endpunkt (/createVertrag).
+     * Erwartet, dass das Model die Attribute "vertrag" und "vsnr" enthält
+     * und der View-Name "createVertrag" zurückgegeben wird.
      */
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testPostCreateVertrag_Success() throws Exception {
-        mockMvc.perform(post("/createVertrag")
-                        .param("versicherungsbeginn", LocalDate.now().toString())
-                        .param("versicherungsablauf", LocalDate.now().plusDays(10).toString())
-                        .param("antragsDatum", LocalDate.now().toString())
-                        .param("monatlich", "true")
-                        .param("partner.vorname", "Max")
-                        .param("partner.nachname", "Mustermann")
-                        .param("partner.geburtsdatum", LocalDate.now().minusYears(30).toString())
-                        .param("partner.geschlecht", "M")
-                        .param("partner.land", "Deutschland")
-                        .param("partner.strasse", "Hauptstr.")
-                        .param("partner.hausnummer", "1")
-                        .param("partner.plz", "12345")
-                        .param("partner.stadt", "Berlin")
-                        .param("partner.bundesland", "BE")
-                        .param("fahrzeug.amtlichesKennzeichen", "ABC123")
-                        .param("fahrzeug.hoechstgeschwindigkeit", "200")
-                        .param("fahrzeug.wagnisskennziffer", "112")
-                        .with(csrf())
-                )
-                .andExpect(status().isOk())
-                .andExpect(view().name("createVertrag"));
+    void testGetCreateVertrag() {
+        // Arrange
+        Model model = new ExtendedModelMap();
+        int vsnr = 123;
+        when(createData.createvsnr()).thenReturn(vsnr);
+        when(menuSpring.getVsnr()).thenReturn(vsnr);
+
+        // Act
+        String viewName = createVertragController.createVertrag(model);
+
+        // Assert
+        assertEquals("createVertrag", viewName);
+        assertTrue(model.containsAttribute("vertrag"));
+        assertTrue(model.containsAttribute("vsnr"));
+        assertEquals(vsnr, model.getAttribute("vsnr"));
     }
 
     /**
-     * Testet den POST-Aufruf von /createVertrag bei Validierungsfehlern (z. B. ungültiges Datum).
+     * Testet den POST-Endpunkt (/createVertrag) im Falle von Validierungsfehlern.
+     * Es wird erwartet, dass der View "createVertrag" erneut angezeigt wird und
+     * keine Speicherung erfolgt.
      */
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testPostCreateVertrag_ValidationError() throws Exception {
-        LocalDate pastDate = LocalDate.now().minusDays(1);
+    void testPostCreateVertragWithErrors() {
+        // Arrange
+        // Erstellen eines minimalen Vertrag-Objekts (hier wird der Konstruktor mit Fahrzeug und Partner verwendet)
+        Partner partner = new Partner();
+        Fahrzeug fahrzeug = new Fahrzeug();
+        Vertrag vertrag = new Vertrag(fahrzeug, partner);
+        vertrag.setVersicherungsbeginn(LocalDate.now());
+        BindingResult bindingResult = mock(BindingResult.class);
+        Model model = new ExtendedModelMap();
+        when(bindingResult.hasErrors()).thenReturn(true);
+        int vsnr = 456;
+        when(menuSpring.getVsnr()).thenReturn(vsnr);
 
-        mockMvc.perform(post("/createVertrag")
-                        .param("versicherungsbeginn", pastDate.toString())
-                        .param("versicherungsablauf", LocalDate.now().plusDays(10).toString())
-                        .param("antragsDatum", LocalDate.now().toString())
-                        .param("monatlich", "true")
-                        .param("partner.vorname", "Max")
-                        .param("partner.nachname", "Mustermann")
-                        .param("partner.geburtsdatum", LocalDate.now().minusYears(30).toString())
-                        .param("partner.geschlecht", "M")
-                        .param("partner.land", "Deutschland")
-                        .param("partner.strasse", "Hauptstr.")
-                        .param("partner.hausnummer", "1")
-                        .param("partner.plz", "12345")
-                        .param("partner.stadt", "Berlin")
-                        .param("partner.bundesland", "BE")
-                        .param("fahrzeug.amtlichesKennzeichen", "ABC123")
-                        .param("fahrzeug.hoechstgeschwindigkeit", "200")
-                        .param("fahrzeug.wagnisskennziffer", "112")
-                        .with(csrf())
-                )
-                .andExpect(status().isOk())
-                .andExpect(view().name("createVertrag"));
+        // Act
+        String viewName = createVertragController.createVertrag(vertrag, bindingResult, model);
+
+        // Assert
+        assertEquals("createVertrag", viewName);
+        assertTrue(model.containsAttribute("vsnr"));
+        assertEquals(vsnr, model.getAttribute("vsnr"));
+        verify(vertragsverwaltung, never()).vertragAnlegen(any());
     }
 
     /**
-     * Testet den POST-Aufruf von /createPreis mit gültiger PLZ.
-     * Dabei wird die kalkulierte Preisangabe als JSON zurückgegeben.
+     * Testet den POST-Endpunkt (/createVertrag) ohne Validierungsfehler.
+     * Erwartet wird, dass eine Vertrag-Entität erstellt, gespeichert und der View "home" zurückgegeben wird.
      */
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testCreatePreis_WithValidPlz() throws Exception {
-        double preisValue = 123.45;
-        Mockito.when(createData.createPreis(Mockito.anyBoolean(), Mockito.any(), Mockito.anyInt()))
-                .thenReturn(preisValue);
+    void testPostCreateVertragWithoutErrors() {
+        // Arrange
+        Partner partner = new Partner();
+        Fahrzeug fahrzeug = new Fahrzeug();
+        Vertrag inputVertrag = new Vertrag(fahrzeug, partner);
+        inputVertrag.setVersicherungsbeginn(LocalDate.now());
+        BindingResult bindingResult = mock(BindingResult.class);
+        Model model = new ExtendedModelMap();
+        when(bindingResult.hasErrors()).thenReturn(false);
+        int vsnr = 789;
+        double preis = 250.75;
+        when(createData.createvsnr()).thenReturn(vsnr);
+        when(createData.createPreis(anyBoolean(), any(), anyInt())).thenReturn(preis);
 
-        mockMvc.perform(post("/createPreis")
-                        .param("partner.plz", "12345")
-                        .param("versicherungsablauf", LocalDate.now().plusDays(10).toString())
-                        .param("monatlich", "true")
-                        .param("partner.geburtsdatum", LocalDate.now().minusYears(30).toString())
-                        .param("fahrzeug.hoechstgeschwindigkeit", "200")
-                        .with(csrf())
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.preis", is(String.format(Locale.GERMANY, "%.2f €", preisValue))));
+        // Act
+        String viewName = createVertragController.createVertrag(inputVertrag, bindingResult, model);
+
+        // Assert
+        verify(vertragsverwaltung, times(1)).vertragAnlegen(any(Vertrag.class));
+        assertEquals("home", viewName);
+        assertTrue(model.containsAttribute("confirm"));
+        String confirmMessage = (String) model.getAttribute("confirm");
+        assert confirmMessage != null;
+        assertTrue(confirmMessage.contains(String.valueOf(vsnr)));
+        // Überprüfung, ob der Preis korrekt formatiert wurde (z. B. "250,75")
+        assertTrue(confirmMessage.contains(String.format(Locale.GERMANY, "%.2f", preis)));
     }
 
     /**
-     * Testet den POST-Aufruf von /createPreis, wenn die Versicherung bereits abgelaufen ist.
-     * In diesem Fall soll der Preis "0,00 €" zurückgegeben werden.
+     * Testet den Preisberechnungs-Endpunkt (/createPreis),
+     * wenn die PLZ des Partners nicht leer ist.
      */
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testCreatePreis_WithExpiredInsurance() throws Exception {
-        mockMvc.perform(post("/createPreis")
-                        .param("partner.plz", "12345")
-                        .param("versicherungsablauf", LocalDate.now().minusDays(1).toString())
-                        .param("monatlich", "true")
-                        .param("partner.geburtsdatum", LocalDate.now().minusYears(30).toString())
-                        .param("fahrzeug.hoechstgeschwindigkeit", "200")
-                        .with(csrf())
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.preis", is("0,00 €")));
+    void testCreatePreisWhenPlzNotEmpty() {
+        // Arrange
+        Vertrag vertrag = new Vertrag();
+        Partner partner = new Partner();
+        partner.setPlz("12345");
+        partner.setGeburtsdatum(LocalDate.of(1990, 1, 1));
+        Fahrzeug fahrzeug = new Fahrzeug();
+        fahrzeug.setHoechstgeschwindigkeit(180);
+        vertrag.setPartner(partner);
+        vertrag.setFahrzeug(fahrzeug);
+        vertrag.setMonatlich(true);
+
+        double preis = 150.50;
+        when(createData.createPreis(true, partner.getGeburtsdatum(), fahrzeug.getHoechstgeschwindigkeit()))
+                .thenReturn(preis);
+
+        // Act
+        Map<String, Object> response = createVertragController.createPreis(vertrag);
+
+        // Assert
+        String expectedPreis = String.format(Locale.GERMANY, "%.2f €", preis);
+        assertEquals(expectedPreis, response.get("preis"));
     }
 
     /**
-     * Testet den POST-Aufruf von /createPreis, wenn die PLZ fehlt.
-     * In diesem Fall soll ein Platzhalterwert ("--,-- €") zurückgegeben werden.
+     * Testet den Preisberechnungs-Endpunkt (/createPreis),
+     * wenn die PLZ leer und der Versicherungsablauf null ist.
      */
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testCreatePreis_WithMissingPlz() throws Exception {
-        mockMvc.perform(post("/createPreis")
-                        .param("partner.plz", "")
-                        .param("versicherungsablauf", LocalDate.now().plusDays(10).toString())
-                        .param("monatlich", "true")
-                        .param("partner.geburtsdatum", LocalDate.now().minusYears(30).toString())
-                        .param("fahrzeug.hoechstgeschwindigkeit", "200")
-                        .with(csrf())
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.preis", is("--,-- €")));
+    void testCreatePreisWhenPlzEmptyAndVersicherungsablaufNull() {
+        // Arrange
+        Vertrag vertrag = new Vertrag();
+        Partner partner = new Partner();
+        partner.setPlz("");
+        vertrag.setPartner(partner);
+        vertrag.setVersicherungsablauf(null);
+
+        // Act
+        Map<String, Object> response = createVertragController.createPreis(vertrag);
+
+        // Assert
+        assertEquals("--,-- €", response.get("preis"));
+    }
+
+    /**
+     * Testet den Preisberechnungs-Endpunkt (/createPreis),
+     * wenn die PLZ leer ist und der Versicherungsablauf in der Vergangenheit liegt.
+     */
+    @Test
+    void testCreatePreisWhenPlzEmptyAndVersicherungsablaufBeforeToday() {
+        // Arrange
+        Vertrag vertrag = new Vertrag();
+        Partner partner = new Partner();
+        partner.setPlz("");
+        vertrag.setPartner(partner);
+        vertrag.setVersicherungsablauf(LocalDate.now().minusDays(1));
+
+        // Act
+        Map<String, Object> response = createVertragController.createPreis(vertrag);
+
+        // Assert
+        assertEquals("0,00 €", response.get("preis"));
+    }
+
+    /**
+     * Testet den Preisberechnungs-Endpunkt (/createPreis),
+     * wenn die PLZ leer ist und der Versicherungsablauf in der Zukunft liegt.
+     */
+    @Test
+    void testCreatePreisWhenPlzEmptyAndVersicherungsablaufNotBeforeToday() {
+        // Arrange
+        Vertrag vertrag = new Vertrag();
+        Partner partner = new Partner();
+        partner.setPlz("");
+        vertrag.setPartner(partner);
+        vertrag.setVersicherungsablauf(LocalDate.now().plusDays(1));
+
+        // Act
+        Map<String, Object> response = createVertragController.createPreis(vertrag);
+
+        // Assert
+        assertEquals("--,-- €", response.get("preis"));
     }
 }
