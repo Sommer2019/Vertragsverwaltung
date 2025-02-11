@@ -42,6 +42,7 @@
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <org.projectlombok.mapstruck.version>0.2.0</org.projectlombok.mapstruck.version>
+        <org.apache.maven.plugins.version>3.13.0</org.apache.maven.plugins.version>
     </properties>
 
     <dependencies>
@@ -125,7 +126,13 @@
             <version>${org.mockito.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <!-- MockWebServer für HTTP-Tests -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>${com.squareup.okhttp3.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!-- ==================== Zusätzliche Spring/Web-Komponenten ==================== -->
         <!-- Spezifische Spring MVC Komponente (falls benötigt) -->
         <dependency>
@@ -222,7 +229,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>${org.apache.maven.plugins.version}</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>

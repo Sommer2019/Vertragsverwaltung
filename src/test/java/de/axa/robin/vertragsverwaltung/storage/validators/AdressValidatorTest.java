@@ -1,156 +1,152 @@
 package de.axa.robin.vertragsverwaltung.storage.validators;
 
 import de.axa.robin.vertragsverwaltung.config.Setup;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import static org.mockito.Mockito.*;
+import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-class AdressValidatorTest {
-    //ToDO Tests
-    @Mock
+public class AdressValidatorTest {
+
+    private AdressValidator adressValidator;
     private Setup setup;
 
-    @InjectMocks
-    private AdressValidator adressValidator;
-
-    private final String street = "Hauptstraße";
-    private final String houseNumber = "11";
-    private final String plz = "51429";
-    private final String place = "Bergisch Gladbach";
-    private final String bundesland = "Nodrhein-Westfalen";
-    private final String land = "Deutschland";
-
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    @Disabled("not ready yet")
-    void testValidateAddress_ValidAddress() throws Exception {
-        // Setup mock
-        String mockUrl = "http://mock-api-url.com";
-        when(setup.getCheckURL()).thenReturn(mockUrl);
-        when(setup.getTestURL()).thenReturn(mockUrl);
-
-        // Mock the proxy settings to return valid values
-        when(setup.getProxy_host()).thenReturn("proxy.example.com");
+    public void setUp() throws Exception {
+        // Erstellen eines Mock-Setup-Objekts
+        setup = mock(Setup.class);
+        when(setup.getProxy_host()).thenReturn("127.0.0.1");
         when(setup.getProxy_port()).thenReturn(8080);
 
-        // Mock the response from HttpURLConnection
-        HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-        when(mockConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_OK);
+        adressValidator = new AdressValidator();
 
-        // Mock JSON response from API
-        String jsonResponse = "[{\"display_name\": \"Hauptstraße 11, 51429 Bergisch Gladbach, Nordrhein-Westfalen, Deutschland\"}]";
-        InputStream inputStream = new ByteArrayInputStream(jsonResponse.getBytes());
-        when(mockConnection.getInputStream()).thenReturn(inputStream);
-
-        // Mock the URI connection
-        URI uri = new URI(mockUrl + "testquery");
-        when(mockConnection.getURL()).thenReturn(uri.toURL());
-
-        // Call the method with the test data
-        boolean isValid = adressValidator.validateAddress(street, houseNumber, plz, place, bundesland, land);
-
-        // Verify the result
-        assertTrue(isValid, "Address should be valid.");
+        // Injection des gemockten Setup-Objekts in die private Variable 'setup'
+        Field setupField = AdressValidator.class.getDeclaredField("setup");
+        setupField.setAccessible(true);
+        setupField.set(adressValidator, setup);
     }
 
-
+    /**
+     * Testet den Fall einer gültigen Adresse, bei der der externe Service eine JSON-Antwort mit
+     * passendem "display_name" zurückliefert.
+     */
     @Test
-    void testValidateAddress_InvalidAddress() throws Exception {
-        // Setup mock
-        String mockUrl = "http://mock-api-url.com";
-        when(setup.getCheckURL()).thenReturn(mockUrl);
-        when(setup.getTestURL()).thenReturn(mockUrl);
+    public void testValidateAddress_valid() throws Exception {
+        try (MockWebServer server = new MockWebServer()) {
+            // Dispatcher simuliert zwei Endpunkte:
+            // - /test: Für den Internet-Check (HTTP 200)
+            // - /check: Liefert eine JSON-Antwort mit gültigen Adressdaten
+            Dispatcher dispatcher = new Dispatcher() {
+                @Override
+                public MockResponse dispatch(RecordedRequest request) {
+                    if (request.getPath().startsWith("/test")) {
+                        return new MockResponse().setResponseCode(200);
+                    } else if (request.getPath().startsWith("/check")) {
+                        String responseBody = "[{\"display_name\": \"musterstrasse, 1, 12345, musterstadt, bayern, deutschland\"}]";
+                        return new MockResponse()
+                                .setResponseCode(200)
+                                .setBody(responseBody)
+                                .addHeader("Content-Type", "application/json");
+                    }
+                    return new MockResponse().setResponseCode(404);
+                }
+            };
+            server.setDispatcher(dispatcher);
+            server.start();
 
-        // Mock the response from HttpURLConnection
-        HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-        when(mockConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_OK);
+            // Die URLs für den Internet-Check und den Address-Check werden auf den MockWebServer umgeleitet
+            when(setup.getTestURL()).thenReturn(server.url("/test").toString());
+            when(setup.getCheckURL()).thenReturn(server.url("/check?query=").toString());
 
-        // Mock an invalid JSON response
-        String jsonResponse = "[{\"display_name\": \"Wrong Street 999, 99999 Nowhere, Unknown, Unknown\"}]";
-        InputStream inputStream = new ByteArrayInputStream(jsonResponse.getBytes());
-        when(mockConnection.getInputStream()).thenReturn(inputStream);
+            // Vorgabe der Adresskomponenten
+            String street = "Musterstrasse";
+            String houseNumber = "1";
+            String plz = "12345";
+            String place = "Musterstadt";
+            String bundesland = "Bayern";
+            String land = "Deutschland";
 
-        // Mocking URI connection
-        URI uri = new URI(mockUrl + "testquery");
-        when(mockConnection.getURL()).thenReturn(uri.toURL());
-
-        // Call the method
-        boolean isValid = adressValidator.validateAddress(street, houseNumber, plz, place, bundesland, land);
-
-        // Verify the result
-        assertFalse(isValid, "Address should be invalid.");
+            boolean result = adressValidator.validateAddress(street, houseNumber, plz, place, bundesland, land);
+            assertTrue(result, "Die Adresse sollte als gültig erkannt werden.");
+        }
     }
 
-    @Disabled("not ready yet")
+    /**
+     * Testet den Fall einer ungültigen Adresse (leere JSON-Antwort vom externen Service).
+     */
     @Test
-    void testIsInternetAvailable_InternetAvailable() throws Exception {
-        // Setup mock
-        String mockUrl = "https://google.com";
-        when(setup.getTestURL()).thenReturn(mockUrl);
+    public void testValidateAddress_invalidEmptyResponse() throws Exception {
+        try (MockWebServer server = new MockWebServer()) {
+            // Dispatcher liefert für /test einen HTTP 200 und für /check einen leeren JSON-Array
+            Dispatcher dispatcher = new Dispatcher() {
+                @Override
+                public MockResponse dispatch(RecordedRequest request) {
+                    if (request.getPath().startsWith("/test")) {
+                        return new MockResponse().setResponseCode(200);
+                    } else if (request.getPath().startsWith("/check")) {
+                        return new MockResponse()
+                                .setResponseCode(200)
+                                .setBody("[]")
+                                .addHeader("Content-Type", "application/json");
+                    }
+                    return new MockResponse().setResponseCode(404);
+                }
+            };
+            server.setDispatcher(dispatcher);
+            server.start();
 
-        HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-        when(mockConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_OK);
+            when(setup.getTestURL()).thenReturn(server.url("/test").toString());
+            when(setup.getCheckURL()).thenReturn(server.url("/check?query=").toString());
 
-        // Call the method
-        boolean isAvailable = adressValidator.isInternetAvailable();
-
-        // Verify the result
-        assertTrue(isAvailable, "Internet should be available.");
+            boolean result = adressValidator.validateAddress("Musterstrasse", "1", "12345", "Musterstadt", "Bayern", "Deutschland");
+            assertFalse(result, "Bei leerer Antwort sollte die Adresse als ungültig erkannt werden.");
+        }
     }
 
+    /**
+     * Testet, dass isInternetAvailable() true zurückgibt, wenn der Test-URL-Endpunkt HTTP 200 liefert.
+     */
     @Test
-    void testIsInternetAvailable_InternetUnavailable() throws Exception {
-        // Setup mock
-        String mockUrl = "http://mock-test-url.com";
-        when(setup.getTestURL()).thenReturn(mockUrl);
+    public void testIsInternetAvailable_success() throws Exception {
+        try (MockWebServer server = new MockWebServer()) {
+            server.enqueue(new MockResponse().setResponseCode(200));
+            server.start();
 
-        HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-        when(mockConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_INTERNAL_ERROR);
-
-        // Call the method
-        boolean isAvailable = adressValidator.isInternetAvailable();
-
-        // Verify the result
-        assertFalse(isAvailable, "Internet should not be available.");
+            when(setup.getTestURL()).thenReturn(server.url("/test").toString());
+            boolean available = adressValidator.isInternetAvailable();
+            assertTrue(available, "Die Internetverbindung sollte als verfügbar erkannt werden.");
+        }
     }
 
+    /**
+     * Testet, dass isInternetAvailable() false zurückgibt, wenn der Test-URL-Endpunkt keinen HTTP 200 Status liefert.
+     */
     @Test
-    void testIsProxyReachable_ProxyReachable() {
-        // Setup mock
-        when(setup.getProxy_host()).thenReturn("localhost");
-        when(setup.getProxy_port()).thenReturn(3128);
+    public void testIsInternetAvailable_failure() throws Exception {
+        try (MockWebServer server = new MockWebServer()) {
+            server.enqueue(new MockResponse().setResponseCode(500));
+            server.start();
 
-        // Call the method
-        boolean reachable = adressValidator.isProxyReachable("localhost", 3128);
-
-        // Verify the result
-        assertTrue(reachable, "Proxy should be reachable.");
+            when(setup.getTestURL()).thenReturn(server.url("/test").toString());
+            boolean available = adressValidator.isInternetAvailable();
+            assertFalse(available, "Bei einem Fehlerstatus sollte die Internetverbindung als nicht verfügbar erkannt werden.");
+        }
     }
 
+    /**
+     * Testet die Methode isProxyReachable() für einen vermutlich nicht erreichbaren Proxy.
+     */
     @Test
-    void testIsProxyReachable_ProxyNotReachable() {
-        // Setup mock
-        when(setup.getProxy_host()).thenReturn("invalid.proxy.com");
-        when(setup.getProxy_port()).thenReturn(8080);
-
-        // Call the method
-        boolean reachable = adressValidator.isProxyReachable("invalid.proxy.com", 8080);
-
-        // Verify the result
-        assertFalse(reachable, "Proxy should not be reachable.");
+    public void testIsProxyReachable_unreachable() {
+        // Hier wird davon ausgegangen, dass auf Port 9999 kein Dienst läuft.
+        boolean reachable = adressValidator.isProxyReachable("127.0.0.1", 9999);
+        assertFalse(reachable, "Der Proxy sollte als nicht erreichbar erkannt werden.");
     }
 }

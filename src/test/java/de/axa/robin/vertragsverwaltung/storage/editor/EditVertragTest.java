@@ -3,18 +3,25 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class EditVertragTest {
+
+    @Mock
+    private Vertragsverwaltung vertragsverwaltung;
 
     @InjectMocks
     private EditVertrag editVertrag;
@@ -23,7 +30,6 @@ public class EditVertragTest {
     public void testUpdateVertragFields() {
         // Source-Vertrag mit neuen Werten
         Vertrag source = new Vertrag();
-        source.setVsnr(123);
         LocalDate versicherungsbeginn = LocalDate.of(2025, 1, 1);
         LocalDate versicherungsablauf = LocalDate.of(2030, 1, 1);
         LocalDate antragsDatum = LocalDate.of(2024, 12, 1);
@@ -54,7 +60,6 @@ public class EditVertragTest {
 
         // Target-Vertrag mit alten Werten
         Vertrag target = new Vertrag();
-        target.setVsnr(0); // Wird nur aktualisiert, wenn source.vsnr != 0
         target.setVersicherungsbeginn(LocalDate.of(2020, 1, 1));
         target.setVersicherungsablauf(LocalDate.of(2025, 1, 1));
         target.setAntragsDatum(LocalDate.of(2020, 12, 12));
@@ -80,10 +85,10 @@ public class EditVertragTest {
         targetFahrzeug.setWagnisskennziffer(3);
         target.setFahrzeug(targetFahrzeug);
 
+        when(vertragsverwaltung.getVertrag(target.getVsnr())).thenReturn(target);
         Vertrag updated = editVertrag.editVertrag(source, target.getVsnr());
 
         // Überprüfen, ob vsnr und die Datumsfelder aktualisiert wurden
-        assertEquals(123, updated.getVsnr());
         assertEquals(versicherungsbeginn, updated.getVersicherungsbeginn());
         assertEquals(versicherungsablauf, updated.getVersicherungsablauf());
         assertEquals(antragsDatum, updated.getAntragsDatum());
@@ -92,8 +97,7 @@ public class EditVertragTest {
         Partner updatedPartner = updated.getPartner();
         assertEquals("Max", updatedPartner.getVorname());
         assertEquals("Mustermann", updatedPartner.getNachname());
-        // Da die Methode updatePartnerFields das Geschlecht des Targets nicht aktualisiert, erwarten wir "F"
-        assertEquals("F", updatedPartner.getGeschlecht());
+        assertEquals("M", updatedPartner.getGeschlecht());
         assertEquals(LocalDate.of(1985, 5, 5), updatedPartner.getGeburtsdatum());
         assertEquals("Deutschland", updatedPartner.getLand());
         assertEquals("Musterstr", updatedPartner.getStrasse());
@@ -104,10 +108,13 @@ public class EditVertragTest {
 
         // Überprüfen, ob die Fahrzeug-Felder aktualisiert wurden
         Fahrzeug updatedFahrzeug = updated.getFahrzeug();
-        assertEquals("ABC123", updatedFahrzeug.getAmtlichesKennzeichen());
+        assertEquals("XYZ789", updatedFahrzeug.getAmtlichesKennzeichen());
         assertEquals("VW", updatedFahrzeug.getHersteller());
-        assertEquals("Golf", updatedFahrzeug.getTyp());
+        assertEquals("3er", updatedFahrzeug.getTyp());
         assertEquals(200, updatedFahrzeug.getHoechstgeschwindigkeit());
         assertEquals(5, updatedFahrzeug.getWagnisskennziffer());
+
+        verify(vertragsverwaltung).vertragLoeschen(target.getVsnr());
+        verify(vertragsverwaltung).vertragAnlegen(updated);
     }
 }

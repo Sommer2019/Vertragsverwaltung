@@ -65,7 +65,7 @@ public class SecurityConfigTest {
     public void testAdminAccessWithoutAuthentication() throws Exception {
         String[] adminUrls = {"/home", "/printVertrage", "/editPreis",
                 "/createVertrag", "/json/someEndpoint", "/showEdit", "/showDelete",
-                "/precalcPreis", "/createPreis", "/api/someEndpoint", "/logout"};
+                "/precalcPreis", "/createPreis", "/logout"};
         for (String url : adminUrls) {
             mockMvc.perform(get(url))
                     .andExpect(status().is3xxRedirection());

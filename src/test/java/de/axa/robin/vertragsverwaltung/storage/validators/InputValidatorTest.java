@@ -5,6 +5,7 @@ import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @Import(CustomTestConfig.class)
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +39,8 @@ class InputValidatorTest {
     private Setup setup;
     @Mock
     private AdressValidator adressValidator;
+    @Mock
+    private Vertragsverwaltung vertragsverwaltung;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -121,6 +125,26 @@ class InputValidatorTest {
         partner.setLand("Deutschland");
         vertrag.setPartner(partner);
         return vertrag;
+    }
+
+    @Test
+    void testFlexcheck() {
+        Vertrag vertrag = createValidVertrag();
+        vertrag.setVersicherungsbeginn(LocalDate.now().minusDays(1));
+        assertTrue(inputValidator.flexcheck(vertrag));
+
+        vertrag.setVersicherungsbeginn(LocalDate.now().plusDays(1));
+        vertrag.getFahrzeug().setAmtlichesKennzeichen("EXISTING_PLATE");
+        when(vertragsverwaltung.kennzeichenExistiert("EXISTING_PLATE")).thenReturn(true);
+        assertTrue(inputValidator.flexcheck(vertrag));
+
+        vertrag.getFahrzeug().setAmtlichesKennzeichen("NEW_PLATE");
+        vertrag.setVsnr(10000000);
+        when(vertragsverwaltung.vertragExistiert(10000000)).thenReturn(true);
+        assertTrue(inputValidator.flexcheck(vertrag));
+
+        vertrag.setVsnr(99999999);
+        assertFalse(inputValidator.flexcheck(vertrag));
     }
 
     @AfterEach
