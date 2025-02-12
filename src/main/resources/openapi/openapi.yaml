@@ -24,7 +24,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/VertragDTO'
+                  $ref: '#/components/schemas/VertragApi'
         '400':
           description: Bad Request
           content:
@@ -70,6 +70,10 @@ paths:
       responses:
         '200':
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VertragApi'
         '400':
           description: Bad Request
           content:
@@ -117,7 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VertragDTO'
+                $ref: '#/components/schemas/VertragApi'
         '400':
           description: Bad Request
           content:
@@ -169,15 +173,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              $ref: '#/components/schemas/VertragDTO'
       responses:
         '200':
           description: Vertrag erfolgreich aktualisiert
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VertragDTO'
+                $ref: '#/components/schemas/VertragApi'
         '400':
           description: Bad Request
           content:
@@ -226,13 +229,13 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/VertragDTO"
+                $ref: "#/components/schemas/VertragApi"
         '204':
           description: Vertrag erfolgreich gelöscht
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/VertragDTO"
+                $ref: "#/components/schemas/VertragApi"
         '400':
           description: Bad Request
           content:
@@ -400,6 +403,59 @@ components:
           maximum: 9.9999999
           example: 1.7
           description: "Multiplikationsfaktor, muss größer als 0 und kleiner als 10 sein."
+    VertragApi:
+      type: object
+      required:
+        - vsnr
+        - preis
+        - monatlich
+        - versicherungsbeginn
+        - antragsDatum
+        - partner
+        - fahrzeug
+      properties:
+        vsnr:
+          type: integer
+          format: int32
+          example: 10000000
+          minimum: 10000000
+          maximum: 99999999
+          description: "Versicherungsnummer des Vertrags."
+
+        preis:
+          type: number
+          format: double
+          example: 100.0
+          description: "Preis des Vertrags."
+
+        monatlich:
+          type: boolean
+          example: true
+          description: "Gibt an, ob die Zahlung monatlich erfolgt (true) oder jährlich (false)."
+
+        versicherungsbeginn:
+          type: string
+          format: date
+          example: "2026-01-01"
+          description: "Startdatum der Versicherung im Format 'yyyy-MM-dd'."
+
+        versicherungsablauf:
+          type: string
+          format: date
+          example: "2027-01-01"
+          description: "Ablaufdatum der Versicherung im Format 'yyyy-MM-dd'."
+
+        antragsDatum:
+          type: string
+          format: date
+          example: "2025-01-01"
+          description: "Datum des Versicherungsantrags im Format 'yyyy-MM-dd'."
+
+        fahrzeug:
+          $ref: "#/components/schemas/FahrzeugDTO"
+
+        partner:
+          $ref: "#/components/schemas/PartnerDTO"
     VertragDTO:
       type: object
       required:

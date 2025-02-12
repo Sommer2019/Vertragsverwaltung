@@ -1,9 +1,9 @@
 package de.axa.robin.vertragsverwaltung.storage;
 
 import de.axa.robin.vertragsverwaltung.config.Setup;
-import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.modell.Partner;
-import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.models.Partner;
+import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import jakarta.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class Repository {
                 .build();
     }
 
-    public List<Vertrag> ladeVertrage() {
+    public List<Vertrag> ladeVertrage(){
         logger.info("Starting to load contracts from JSON file");
         List<Vertrag> vertrage = new ArrayList<>();
         try (FileReader file = new FileReader(setup.getJson_repositoryPath())) {

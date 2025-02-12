@@ -1,13 +1,10 @@
 package de.axa.robin.vertragsverwaltung.api;
 
-import de.axa.robin.vertragsverwaltung.model.FahrzeugDTO;
-import de.axa.robin.vertragsverwaltung.model.PartnerDTO;
-import de.axa.robin.vertragsverwaltung.model.PreisDTO;
-import de.axa.robin.vertragsverwaltung.model.VertragDTO;
-import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.modell.Partner;
-import de.axa.robin.vertragsverwaltung.modell.Preis;
-import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.model.*;
+import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.models.Partner;
+import de.axa.robin.vertragsverwaltung.models.Preis;
+import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
@@ -53,4 +50,14 @@ public interface Mapper {
     @Mapping(target = "age", source = "age")
     @Mapping(target = "faktor", source = "faktor")
     Preis toPreis(PreisDTO preisDTO);
+
+    @Mapping(target = "vsnr", source = "vsnr")
+    @Mapping(target = "preis", source = "preis")
+    @Mapping(target = "monatlich", source = "monatlich")
+    @Mapping(target = "versicherungsbeginn", source = "versicherungsbeginn")
+    @Mapping(target = "versicherungsablauf", source = "versicherungsablauf")
+    @Mapping(target = "antragsDatum", source = "antragsDatum")
+    @Mapping(target = "fahrzeug", source = "fahrzeug")
+    @Mapping(target = "partner", source = "partner")
+    VertragApi toVertragApi(Vertrag vertrag);
 }

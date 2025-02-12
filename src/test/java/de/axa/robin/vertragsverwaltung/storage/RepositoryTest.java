@@ -2,9 +2,9 @@ package de.axa.robin.vertragsverwaltung.storage;
 
 import de.axa.robin.vertragsverwaltung.config.CustomTestConfig;
 import de.axa.robin.vertragsverwaltung.config.Setup;
-import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.modell.Partner;
-import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.models.Partner;
+import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;

@@ -1,9 +1,9 @@
 package de.axa.robin.vertragsverwaltung.storage;
 
 import de.axa.robin.vertragsverwaltung.config.Setup;
-import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.modell.Partner;
-import de.axa.robin.vertragsverwaltung.modell.Vertrag;
+import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
+import de.axa.robin.vertragsverwaltung.models.Partner;
+import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import jakarta.json.*;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 
 @Component

@@ -26,9 +26,9 @@
     <h3>Bestimmter Vertrag</h3>
     <label for="vsnr">VSNR:</label>
     <br><br>
+    <div th:if="${result}" th:text="${result}"></div>
     <div style="display: flex; gap: 10px;">
         <input type="number" id="vsnr" name="vsnr" min="10000000" max="99999999" required>
-        <div th:if="${result}" th:text="${result}"></div>
         <button type="submit">Vertrag abrufen</button>
     </div>
 </form>

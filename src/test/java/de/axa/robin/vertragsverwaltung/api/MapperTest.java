@@ -1,7 +1,7 @@
 package de.axa.robin.vertragsverwaltung.api;
 
 import de.axa.robin.vertragsverwaltung.model.*;
-import de.axa.robin.vertragsverwaltung.modell.*;
+import de.axa.robin.vertragsverwaltung.models.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;

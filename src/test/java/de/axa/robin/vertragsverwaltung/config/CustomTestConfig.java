@@ -1,11 +1,14 @@
 package de.axa.robin.vertragsverwaltung.config;
 
+import de.axa.robin.vertragsverwaltung.services.CreateUnsetableData;
 import de.axa.robin.vertragsverwaltung.api.Mapper;
-import de.axa.robin.vertragsverwaltung.storage.VertragsService;
-import de.axa.robin.vertragsverwaltung.storage.editor.*;
-import de.axa.robin.vertragsverwaltung.storage.validators.AdressValidator;
-import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
-import de.axa.robin.vertragsverwaltung.user_interaction.MenuSpring;
+import de.axa.robin.vertragsverwaltung.controller.CreateVertrag;
+import de.axa.robin.vertragsverwaltung.controller.EditPreis;
+import de.axa.robin.vertragsverwaltung.controller.HandleVertrag;
+import de.axa.robin.vertragsverwaltung.services.VertragsService;
+import de.axa.robin.vertragsverwaltung.validators.AdressValidator;
+import de.axa.robin.vertragsverwaltung.validators.InputValidator;
+import de.axa.robin.vertragsverwaltung.controller.MenuSpring;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import static org.mockito.Mockito.mock;
@@ -29,13 +32,8 @@ public class CustomTestConfig {
     }
 
     @Bean
-    public CreateData create() {
-        return mock(CreateData.class);
-    }
-
-    @Bean
-    public EditVertrag edit() {
-        return mock(EditVertrag.class);
+    public CreateUnsetableData create() {
+        return mock(CreateUnsetableData.class);
     }
 
     @Bean
