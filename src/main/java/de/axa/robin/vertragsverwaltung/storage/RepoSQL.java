@@ -6,6 +6,8 @@ import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import jakarta.json.*;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +15,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 @Component
 public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
-    private final Logger logger = Logger.getLogger(RepoSQL.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(RepoSQL.class.getName());
     @Setter
     @Autowired
     private Setup setup;
@@ -27,27 +29,16 @@ public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
     private static final String SELECT_FAKTOREN_SQL = "SELECT * FROM faktoren LIMIT 1"; // Assumes a single row of factors
     private static final String UPDATE_FAKTOREN_SQL = "UPDATE faktoren SET factor = ?, factorage = ?, factorspeed = ? WHERE id = 1"; // Assuming a single row for factors
 
-
-    /**
-     * Gets a database connection using the setup configuration.
-     *
-     * @return the database connection
-     * @throws SQLException if a database access error occurs
-     */
     private Connection getConnection() throws SQLException {
         try {
+            logger.info("Attempting to establish a database connection");
             return DriverManager.getConnection(setup.getDb_url(), setup.getDb_user(), setup.getDb_pass());
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database connection error", e);
+            logger.error("Database connection error", e);
             throw e;
         }
     }
 
-    /**
-     * Saves a list of contracts to the database.
-     *
-     * @param vertrage the list of contracts to save
-     */
     public void speichereVertrage(List<Vertrag> vertrage) {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(INSERT_VERTRAG_SQL)) {
@@ -55,20 +46,15 @@ public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
             for (Vertrag v : vertrage) {
                 setVertragParameters(stmt, v);
                 stmt.addBatch();
+                logger.info("Added contract to batch: " + v);
             }
             stmt.executeBatch();
+            logger.info("Batch execution completed successfully");
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error saving contracts to the database", e);
+            logger.error("Error saving contracts to the database", e);
         }
     }
 
-    /**
-     * Sets the parameters of a PreparedStatement for a contract.
-     *
-     * @param stmt the PreparedStatement
-     * @param v the contract
-     * @throws SQLException if a database access error occurs
-     */
     private void setVertragParameters(PreparedStatement stmt, Vertrag v) throws SQLException {
         stmt.setInt(1, v.getVsnr());
         stmt.setBoolean(2, v.isMonatlich());
@@ -91,13 +77,9 @@ public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
         stmt.setString(19, v.getPartner().getPlz());
         stmt.setString(20, v.getPartner().getStadt());
         stmt.setString(21, v.getPartner().getBundesland());
+        logger.info("Set parameters for contract: " + v);
     }
 
-    /**
-     * Loads a list of contracts from the database.
-     *
-     * @return the list of contracts
-     */
     public List<Vertrag> ladeVertrage() {
         List<Vertrag> vertrage = new ArrayList<>();
 
@@ -106,23 +88,18 @@ public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
              ResultSet rs = stmt.executeQuery(SELECT_VERTRAG_SQL)) {
 
             while (rs.next()) {
-                vertrage.add(createVertragFromResultSet(rs));
+                Vertrag vertrag = createVertragFromResultSet(rs);
+                vertrage.add(vertrag);
+                logger.info("Loaded contract from database: " + vertrag);
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error loading contracts from the database", e);
+            logger.error("Error loading contracts from the database", e);
         }
         return vertrage;
     }
 
-    /**
-     * Creates a contract from a ResultSet.
-     *
-     * @param rs the ResultSet
-     * @return the contract
-     * @throws SQLException if a database access error occurs
-     */
     private Vertrag createVertragFromResultSet(ResultSet rs) throws SQLException {
-        return new Vertrag(
+        Vertrag vertrag = new Vertrag(
                 rs.getInt("vsnr"),
                 rs.getBoolean("abrechnungszeitraum_monatlich"),
                 rs.getDouble("preis"),
@@ -149,13 +126,10 @@ public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
                         rs.getString("partner_bundesland")
                 )
         );
+        logger.info("Created contract from ResultSet: " + vertrag);
+        return vertrag;
     }
 
-    /**
-     * Loads factors from the database.
-     *
-     * @return the JSON object representing the factors
-     */
     public JsonObject ladeFaktoren() {
         JsonObject jsonObject = null;
 
@@ -169,20 +143,14 @@ public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
                         .add("factorage", rs.getDouble("factorage"))
                         .add("factorspeed", rs.getDouble("factorspeed"))
                         .build();
+                logger.info("Loaded factors from database: " + jsonObject);
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error loading factors from the database", e);
+            logger.error("Error loading factors from the database", e);
         }
         return jsonObject;
     }
 
-    /**
-     * Saves factors to the database.
-     *
-     * @param factor the factor
-     * @param factorage the age factor
-     * @param factorspeed the speed factor
-     */
     public void speichereFaktoren(double factor, double factorage, double factorspeed) {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(UPDATE_FAKTOREN_SQL)) {
@@ -190,8 +158,9 @@ public class RepoSQL  { //ToDO: umbau auf echte DB, JBA, tests
             stmt.setDouble(2, factorage);
             stmt.setDouble(3, factorspeed);
             stmt.executeUpdate();
+            logger.info("Saved factors to database: factor=" + factor + ", factorage=" + factorage + ", factorspeed=" + factorspeed);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error saving factors to the database", e);
+            logger.error("Error saving factors to the database", e);
         }
     }
 }

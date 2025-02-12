@@ -5,6 +5,8 @@ import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import jakarta.json.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
@@ -14,57 +16,40 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- * Repository class for managing contracts and factors.
- */
 @org.springframework.stereotype.Repository
 public class Repository {
-    private final Logger logger = Logger.getLogger(Repository.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(Repository.class.getName());
     @Autowired
     private Setup setup;
     private static final String ERROR_LOADING = "Fehler beim Laden";
     private static final String ERROR_SAVING = "Fehler beim Speichern";
     private static final String FILE_NOT_FOUND = "Datei 'vertrage.json' nicht gefunden";
 
-    /**
-     * Saves a list of contracts to a JSON file.
-     *
-     * @param vertrage the list of contracts to save
-     */
     public void speichereVertrage(List<Vertrag> vertrage) {
+        logger.info("Starting to save contracts to JSON file");
         try (FileWriter file = new FileWriter(setup.getJson_repositoryPath(), false)) {
             JsonArray jsonArray = createVertraegeJsonArray(vertrage);
             JsonWriter writer = Json.createWriter(file);
             writer.writeArray(jsonArray);
+            logger.info("Successfully saved contracts to JSON file");
         } catch (IOException e) {
-            logger.log(Level.SEVERE, ERROR_SAVING, e);
+            logger.error(ERROR_SAVING, e);
         }
     }
 
-    /**
-     * Creates a JSON array from a list of contracts.
-     *
-     * @param vertrage the list of contracts
-     * @return the JSON array representing the contracts
-     */
     private JsonArray createVertraegeJsonArray(List<Vertrag> vertrage) {
+        logger.debug("Creating JSON array from contracts");
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Vertrag v : vertrage) {
             arrayBuilder.add(createVertragJsonObject(v));
+            logger.debug("Added contract to JSON array: {}", v);
         }
         return arrayBuilder.build();
     }
 
-    /**
-     * Creates a JSON object from a contract.
-     *
-     * @param v the contract
-     * @return the JSON object representing the contract
-     */
     private JsonObject createVertragJsonObject(Vertrag v) {
+        logger.debug("Creating JSON object from contract: {}", v);
         return Json.createObjectBuilder()
                 .add("vsnr", v.getVsnr())
                 .add("abrechnungszeitraum monatlich", v.isMonatlich())
@@ -77,13 +62,8 @@ public class Repository {
                 .build();
     }
 
-    /**
-     * Creates a JSON object from a vehicle.
-     *
-     * @param fahrzeug the vehicle
-     * @return the JSON object representing the vehicle
-     */
     private JsonObject createFahrzeugJsonObject(Fahrzeug fahrzeug) {
+        logger.debug("Creating JSON object from vehicle: {}", fahrzeug);
         return Json.createObjectBuilder()
                 .add("amtlichesKennzeichen", fahrzeug.getAmtlichesKennzeichen())
                 .add("hersteller", fahrzeug.getHersteller())
@@ -93,13 +73,8 @@ public class Repository {
                 .build();
     }
 
-    /**
-     * Creates a JSON object from a partner.
-     *
-     * @param partner the partner
-     * @return the JSON object representing the partner
-     */
     private JsonObject createPartnerJsonObject(Partner partner) {
+        logger.debug("Creating JSON object from partner: {}", partner);
         return Json.createObjectBuilder()
                 .add("vorname", partner.getVorname())
                 .add("nachname", partner.getNachname())
@@ -114,34 +89,28 @@ public class Repository {
                 .build();
     }
 
-    /**
-     * Loads a list of contracts from a JSON file.
-     *
-     * @return the list of contracts
-     */
     public List<Vertrag> ladeVertrage() {
+        logger.info("Starting to load contracts from JSON file");
         List<Vertrag> vertrage = new ArrayList<>();
         try (FileReader file = new FileReader(setup.getJson_repositoryPath())) {
             JsonReader reader = Json.createReader(file);
             JsonArray jsonArray = reader.readArray();
             for (JsonValue jsonValue : jsonArray) {
-                vertrage.add(createVertragFromJson(jsonValue.asJsonObject()));
+                Vertrag vertrag = createVertragFromJson(jsonValue.asJsonObject());
+                vertrage.add(vertrag);
+                logger.debug("Loaded contract from JSON: {}", vertrag);
             }
+            logger.info("Successfully loaded contracts from JSON file");
         } catch (FileNotFoundException e) {
-            logger.log(Level.WARNING, FILE_NOT_FOUND, e);
+            logger.warn(FILE_NOT_FOUND, e);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, ERROR_LOADING, e);
+            logger.error(ERROR_LOADING, e);
         }
         return vertrage;
     }
 
-    /**
-     * Creates a contract from a JSON object.
-     *
-     * @param jsonObject the JSON object
-     * @return the contract
-     */
     private Vertrag createVertragFromJson(JsonObject jsonObject) {
+        logger.debug("Creating contract from JSON object: {}", jsonObject);
         return new Vertrag(
                 jsonObject.getInt("vsnr"),
                 jsonObject.getBoolean("abrechnungszeitraum monatlich"),
@@ -154,13 +123,8 @@ public class Repository {
         );
     }
 
-    /**
-     * Creates a vehicle from a JSON object.
-     *
-     * @param jsonObject the JSON object
-     * @return the vehicle
-     */
     private Fahrzeug createFahrzeugFromJson(JsonObject jsonObject) {
+        logger.debug("Creating vehicle from JSON object: {}", jsonObject);
         return new Fahrzeug(
                 jsonObject.getString("amtlichesKennzeichen"),
                 jsonObject.getString("hersteller"),
@@ -170,13 +134,8 @@ public class Repository {
         );
     }
 
-    /**
-     * Creates a partner from a JSON object.
-     *
-     * @param jsonObject the JSON object
-     * @return the partner
-     */
     private Partner createPartnerFromJson(JsonObject jsonObject) {
+        logger.debug("Creating partner from JSON object: {}", jsonObject);
         return new Partner(
                 jsonObject.getString("vorname"),
                 jsonObject.getString("nachname"),
@@ -191,28 +150,20 @@ public class Repository {
         );
     }
 
-    /**
-     * Loads factors from a JSON file.
-     *
-     * @return the JSON object representing the factors
-     */
     public JsonObject ladeFaktoren() {
+        logger.info("Starting to load factors from JSON file");
         try (JsonReader reader = Json.createReader(new FileReader(setup.getJson_preisPath()))) {
-            return reader.readObject();
+            JsonObject jsonObject = reader.readObject();
+            logger.info("Successfully loaded factors from JSON file: {}", jsonObject);
+            return jsonObject;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Fehler beim Laden der Faktoren", e);
+            logger.error("Fehler beim Laden der Faktoren", e);
         }
         return null;
     }
 
-    /**
-     * Saves factors to a JSON file.
-     *
-     * @param factor the factor
-     * @param factorage the age factor
-     * @param factorspeed the speed factor
-     */
     public void speichereFaktoren(double factor, double factorage, double factorspeed) {
+        logger.info("Starting to save factors to JSON file");
         try (FileWriter file = new FileWriter(setup.getJson_preisPath(), false)) {
             JsonObject jsonObject = Json.createObjectBuilder()
                     .add("factor", factor)
@@ -221,8 +172,9 @@ public class Repository {
                     .build();
             JsonWriter writer = Json.createWriter(file);
             writer.writeObject(jsonObject);
+            logger.info("Successfully saved factors to JSON file: factor={}, factorage={}, factorspeed={}", factor, factorage, factorspeed);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Fehler beim Speichern der Faktoren", e);
+            logger.error("Fehler beim Speichern der Faktoren", e);
         }
     }
 }

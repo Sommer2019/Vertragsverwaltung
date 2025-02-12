@@ -6,7 +6,7 @@ import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Repository;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -36,7 +36,7 @@ public class CreateDataDataTest {
     private CreateData createData;
 
     @Mock
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
 
     @Mock
     private Repository repository;
@@ -47,7 +47,7 @@ public class CreateDataDataTest {
     @Test
     void createvsnr() {
         // Arrange
-        when(vertragsverwaltung.getVertrag(anyInt())).thenReturn(null);
+        when(vertragsService.getVertrag(anyInt())).thenReturn(null);
 
         // Act
         int vsnr = createData.createvsnr();
@@ -122,7 +122,7 @@ public class CreateDataDataTest {
 
         // Erfasse das an die Methode vertragAnlegen übergebene Argument
         ArgumentCaptor<Vertrag> vertragCaptor = ArgumentCaptor.forClass(Vertrag.class);
-        verify(vertragsverwaltung).vertragAnlegen(vertragCaptor.capture());
+        verify(vertragsService).vertragAnlegen(vertragCaptor.capture());
         Vertrag savedVertrag = vertragCaptor.getValue();
 
         // Überprüfe, ob die Werte im gespeicherten Vertrag den Erwartungen entsprechen

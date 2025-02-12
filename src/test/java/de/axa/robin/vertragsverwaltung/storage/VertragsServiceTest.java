@@ -16,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class VertragsverwaltungTest {
+public class VertragsServiceTest {
 
     @InjectMocks
-    private Vertragsverwaltung verwaltung;
+    private VertragsService verwaltung;
 
     @Mock
     private Repository repository;

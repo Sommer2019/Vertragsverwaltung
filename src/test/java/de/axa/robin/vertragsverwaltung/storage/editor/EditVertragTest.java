@@ -3,7 +3,7 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class EditVertragTest {
 
     @Mock
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
 
     @InjectMocks
     private EditVertrag editVertrag;
@@ -51,7 +51,7 @@ public class EditVertragTest {
         // Target-Vertrag mit alten Werten
         Vertrag target = getVertrag();
 
-        when(vertragsverwaltung.getVertrag(target.getVsnr())).thenReturn(target);
+        when(vertragsService.getVertrag(target.getVsnr())).thenReturn(target);
         Vertrag updated = editVertrag.editVertrag(source, target.getVsnr());
 
         // Überprüfen, ob vsnr und die Datumsfelder aktualisiert wurden
@@ -80,8 +80,8 @@ public class EditVertragTest {
         assertEquals(200, updatedFahrzeug.getHoechstgeschwindigkeit());
         assertEquals(5, updatedFahrzeug.getWagnisskennziffer());
 
-        verify(vertragsverwaltung).vertragLoeschen(target.getVsnr());
-        verify(vertragsverwaltung).vertragAnlegen(updated);
+        verify(vertragsService).vertragLoeschen(target.getVsnr());
+        verify(vertragsService).vertragAnlegen(updated);
     }
 
     @NotNull

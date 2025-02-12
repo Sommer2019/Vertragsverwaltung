@@ -4,7 +4,7 @@ import de.axa.robin.vertragsverwaltung.config.CustomTestConfig;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
 import de.axa.robin.vertragsverwaltung.user_interaction.MenuSpring;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ class HandleVertragTest {
     private HandleVertrag handleVertrag;
 
     @Mock
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
 
     @Mock
     private MenuSpring menuSpring;
@@ -78,7 +78,7 @@ class HandleVertragTest {
     void testProcessPrintVertrag_notFound() {
         String vsnr = "123";
         int vsnrInt = 123;
-        when(vertragsverwaltung.getVertrag(vsnrInt)).thenReturn(null);
+        when(vertragsService.getVertrag(vsnrInt)).thenReturn(null);
 
         String view = handleVertrag.processPrintVertrag(vsnr, model);
         assertEquals("home", view);
@@ -94,7 +94,7 @@ class HandleVertragTest {
         String vsnr = "456";
         int vsnrInt = 456;
         Vertrag vertrag = createDummyVertrag(vsnrInt);
-        when(vertragsverwaltung.getVertrag(vsnrInt)).thenReturn(vertrag);
+        when(vertragsService.getVertrag(vsnrInt)).thenReturn(vertrag);
 
         String view = handleVertrag.processPrintVertrag(vsnr, model);
         assertEquals("handleVertrag", view);
@@ -125,7 +125,7 @@ class HandleVertragTest {
         String view = handleVertrag.deleteVertrag(model);
         assertEquals("home", view);
         assertEquals("Vertrag erfolgreich gelöscht!", model.asMap().get("confirm"));
-        verify(vertragsverwaltung).vertragLoeschen(vsnr);
+        verify(vertragsService).vertragLoeschen(vsnr);
     }
 
     /**
@@ -140,7 +140,7 @@ class HandleVertragTest {
         // Um den richtigen Vertrag für das Setup bereitzustellen, wird der interne Zähler "handledVertrag" gesetzt.
         setHandledVertrag();
         Vertrag existingVertrag = createDummyVertrag(111);
-        when(vertragsverwaltung.getVertrag(111)).thenReturn(existingVertrag);
+        when(vertragsService.getVertrag(111)).thenReturn(existingVertrag);
 
         String view = handleVertrag.editVertrag(inputVertrag, bindingResult, true, model);
         assertEquals("handleVertrag", view);
@@ -170,7 +170,7 @@ class HandleVertragTest {
         String expectedMsg = "Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet! Neuer Preis: " +
                 String.valueOf(newPrice).replace('.', ',') + "€";
         assertEquals(expectedMsg, model.asMap().get("confirm"));
-        verify(vertragsverwaltung).vertragLoeschen(vsnr);
+        verify(vertragsService).vertragLoeschen(vsnr);
     }
 
     /**

@@ -3,7 +3,7 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
 import de.axa.robin.vertragsverwaltung.user_interaction.MenuSpring;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ class CreateVertragTest {
     private CreateVertrag createVertragController;
 
     @Mock
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
 
     @Mock
     private CreateData createData;
@@ -93,7 +93,7 @@ class CreateVertragTest {
         assertEquals("createVertrag", viewName);
         assertTrue(model.containsAttribute("vsnr"));
         assertEquals(vsnr, model.getAttribute("vsnr"));
-        verify(vertragsverwaltung, never()).vertragAnlegen(any());
+        verify(vertragsService, never()).vertragAnlegen(any());
     }
 
     /**
@@ -119,7 +119,7 @@ class CreateVertragTest {
         String viewName = createVertragController.createVertrag(inputVertrag, bindingResult, model);
 
         // Assert
-        verify(vertragsverwaltung, times(1)).vertragAnlegen(any(Vertrag.class));
+        verify(vertragsService, times(1)).vertragAnlegen(any(Vertrag.class));
         assertEquals("home", viewName);
         assertTrue(model.containsAttribute("confirm"));
         String confirmMessage = (String) model.getAttribute("confirm");

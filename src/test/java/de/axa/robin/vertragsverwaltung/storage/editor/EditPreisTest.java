@@ -6,7 +6,7 @@ import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Preis;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Repository;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,7 @@ class EditPreisTest {
     private EditPreis editPreisController;
 
     @Mock
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
 
     @Mock
     private Repository repository;
@@ -100,7 +100,7 @@ class EditPreisTest {
         // Erstelle eine Liste mit einem Dummy-Vertrag (nicht monatlich)
         Vertrag vertrag = createDummyVertrag(101);
         List<Vertrag> vertrage = List.of(vertrag);
-        when(vertragsverwaltung.getVertrage()).thenReturn(vertrage);
+        when(vertragsService.getVertrage()).thenReturn(vertrage);
 
         // Stub: createData.createPreis soll einen festen Preis zurückgeben (z. B. 100.0)
         when(createData.createPreis(anyBoolean(), any(), anyInt())).thenReturn(100.0);
@@ -134,7 +134,7 @@ class EditPreisTest {
         // Erstelle eine Liste mit einem Dummy-Vertrag (nicht monatlich)
         Vertrag vertrag = createDummyVertrag(202);
         List<Vertrag> vertrage = List.of(vertrag);
-        when(vertragsverwaltung.getVertrage()).thenReturn(vertrage);
+        when(vertragsService.getVertrage()).thenReturn(vertrage);
 
         // Stub: createData.createPreis soll einen festen Preis zurückgeben (z. B. 100.0)
         when(createData.createPreis(anyBoolean(), any(), anyInt())).thenReturn(100.0);
@@ -151,8 +151,8 @@ class EditPreisTest {
         // Überprüfe, dass repository.speichereFaktoren mit den Eingabefaktoren aufgerufen wurde
         verify(repository).speichereFaktoren(2.0, 3.0, 4.0);
         // Verifiziere, dass für den Vertrag vertragLoeschen und vertragAnlegen aufgerufen wurden
-        verify(vertragsverwaltung).vertragLoeschen(vertrag.getVsnr());
-        verify(vertragsverwaltung).vertragAnlegen(vertrag);
+        verify(vertragsService).vertragLoeschen(vertrag.getVsnr());
+        verify(vertragsService).vertragAnlegen(vertrag);
     }
 
     /**

@@ -3,7 +3,7 @@ package de.axa.robin.vertragsverwaltung.user_interaction;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ class PrintVertrageTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
 
     @BeforeEach
     void setUp() {
@@ -46,7 +46,7 @@ class PrintVertrageTest {
         Partner partner1 = new Partner("Max", "Mustermann", 'M', LocalDate.of(1980, 1, 1), "Deutschland", "Musterstraße", "1", "12345", "Musterstadt", "NRW");
         List<Vertrag> vertrage = getVertrags(fahrzeug1, partner1, fahrzeug2);
 
-        given(vertragsverwaltung.getVertrage()).willReturn(vertrage);
+        given(vertragsService.getVertrage()).willReturn(vertrage);
     }
 
     private static List<Vertrag> getVertrags(Fahrzeug fahrzeug1, Partner partner1, Fahrzeug fahrzeug2) {

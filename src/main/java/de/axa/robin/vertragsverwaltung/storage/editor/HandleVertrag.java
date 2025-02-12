@@ -3,10 +3,12 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
 import de.axa.robin.vertragsverwaltung.user_interaction.MenuSpring;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,13 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
-/**
- * This class provides methods to handle insurance contracts (Vertrag).
- */
 @Controller
 public class HandleVertrag {
+    private static final Logger logger = LoggerFactory.getLogger(HandleVertrag.class);
+
     @Autowired
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
     @Autowired
     private MenuSpring menuSpring;
     @Autowired
@@ -33,90 +34,66 @@ public class HandleVertrag {
     private InputValidator inputValidator;
     private int handledVertrag = 0;
 
-    /**
-     * Processes the request to print the contract details.
-     *
-     * @param vsnr the insurance contract number
-     * @param model the model to add attributes to
-     * @return the name of the view to render
-     */
     @PostMapping("/home")
     public String processPrintVertrag(@RequestParam String vsnr, Model model) {
         if (vsnr == null || vsnr.isEmpty()) {
+            logger.warn("VSNR is null or empty");
             return "home";
         }
         try {
             int vsnrInt = Integer.parseInt(vsnr);
             menuSpring.setVsnr(vsnrInt);
             handledVertrag = vsnrInt;
-            Vertrag v = vertragsverwaltung.getVertrag(vsnrInt);
+            Vertrag v = vertragsService.getVertrag(vsnrInt);
             if (v == null) {
+                logger.warn("Contract not found for VSNR: {}", vsnrInt);
                 model.addAttribute("result", "Vertrag nicht gefunden!");
                 return "home";
             }
             setupVertragModel(model, v);
+            logger.info("Contract found and model set up for VSNR: {}", vsnrInt);
             return "handleVertrag";
         } catch (NumberFormatException e) {
+            logger.error("Invalid VSNR format: {}", vsnr, e);
             model.addAttribute("result", "Ungültige VSNR!");
             return "home";
         }
     }
 
-    /**
-     * Displays the delete contract page.
-     *
-     * @param model the model to add attributes to
-     * @return the name of the view to render
-     */
     @GetMapping("/showDelete")
     public String showDelete(Model model) {
         model.addAttribute("showFields", true);
+        logger.info("Show delete fields");
         return "handleVertrag";
     }
 
-    /**
-     * Deletes the contract.
-     *
-     * @param model the model to add attributes to
-     * @return the name of the view to render
-     */
     @PostMapping("/showDelete")
     public String deleteVertrag(Model model) {
-        vertragsverwaltung.vertragLoeschen(menuSpring.getVsnr());
+        vertragsService.vertragLoeschen(menuSpring.getVsnr());
         model.addAttribute("confirm", "Vertrag erfolgreich gelöscht!");
+        logger.info("Contract successfully deleted for VSNR: {}", menuSpring.getVsnr());
         return "home";
     }
 
-    /**
-     * Edits the contract.
-     *
-     * @param vertrag the contract to edit
-     * @param result the binding result for validation
-     * @param editVisible whether the edit fields are visible
-     * @param model the model to add attributes to
-     * @return the name of the view to render
-     */
     @PostMapping("/showEdit")
     public String editVertrag(@ModelAttribute @Valid Vertrag vertrag, BindingResult result, @RequestParam("editVisible") boolean editVisible, Model model) {
+        logger.info("Editing contract: {}", vertrag);
         inputValidator.validateVertrag(vertrag, result);
         if (result.hasErrors()) {
-            Vertrag v = vertragsverwaltung.getVertrag(handledVertrag);
+            logger.warn("Validation errors found: {}", result.getAllErrors());
+            Vertrag v = vertragsService.getVertrag(handledVertrag);
             setupVertragModel(model, v);
             model.addAttribute("editVisible", editVisible);
             return "handleVertrag";
         }
-        vertragsverwaltung.vertragLoeschen(menuSpring.getVsnr());
+        vertragsService.vertragLoeschen(menuSpring.getVsnr());
         boolean monatlich = vertrag.isMonatlich();
         int vsnr = menuSpring.getVsnr();
-        model.addAttribute("confirm", "Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(createData.createVertragAndSave(vertrag, monatlich, vsnr)).replace('.', ',') + "€");
+        double newPrice = createData.createVertragAndSave(vertrag, monatlich, vsnr);
+        model.addAttribute("confirm", "Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(newPrice).replace('.', ',') + "€");
+        logger.info("Contract successfully edited for VSNR: {}. New price: {}€", vsnr, newPrice);
         return "home";
     }
-
-    /**
-     * Sets up the contract model.
-     * @param model the model to add attributes to
-     * @param v the contract to set up the model for
-     */
 
     private void setupVertragModel(Model model, Vertrag v) {
         Partner partner = new Partner();
@@ -150,14 +127,9 @@ public class HandleVertrag {
 
         if (v.getVersicherungsablauf().isBefore(LocalDate.now())) {
             model.addAttribute("gueltig", "Vertrag abgelaufen!");
+            logger.warn("Contract expired for VSNR: {}", v.getVsnr());
         }
     }
-
-    /**
-     * Initializes the contract.
-     * @param v the contract to initialize
-     * @param vertrag the contract to initialize from
-     */
 
     private void initializeVertrag(Vertrag v, Vertrag vertrag) {
         vertrag.setMonatlich(v.isMonatlich());

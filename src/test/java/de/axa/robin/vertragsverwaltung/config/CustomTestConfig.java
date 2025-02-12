@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.config;
 
 import de.axa.robin.vertragsverwaltung.api.Mapper;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import de.axa.robin.vertragsverwaltung.storage.editor.*;
 import de.axa.robin.vertragsverwaltung.storage.validators.AdressValidator;
 import de.axa.robin.vertragsverwaltung.storage.validators.InputValidator;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import static org.mockito.Mockito.mock;
 import de.axa.robin.vertragsverwaltung.storage.Repository;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
 
 @TestConfiguration
 public class CustomTestConfig {
@@ -39,8 +39,8 @@ public class CustomTestConfig {
     }
 
     @Bean
-    public Vertragsverwaltung vertragsverwaltung() {
-        return mock(Vertragsverwaltung.class);
+    public VertragsService vertragsverwaltung() {
+        return mock(VertragsService.class);
     }
 
     @Bean

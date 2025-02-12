@@ -3,8 +3,10 @@ package de.axa.robin.vertragsverwaltung.storage.editor;
 import de.axa.robin.vertragsverwaltung.modell.Preis;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Repository;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import jakarta.json.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,13 +27,14 @@ import java.util.Map;
  */
 @Controller
 public class EditPreis {
+    private static final Logger logger = LoggerFactory.getLogger(EditPreis.class);
+
     @Autowired
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
     @Autowired
     private Repository repository;
     @Autowired
     private CreateData createData;
-
 
     /**
      * Displays the edit price page with the current price factors.
@@ -41,12 +44,14 @@ public class EditPreis {
      */
     @GetMapping("/editPreis")
     public String editPreis(Model model) {
+        logger.info("Displaying edit price page");
         Preis preismodell = new Preis();
         JsonObject jsonObject = repository.ladeFaktoren();
         preismodell.setFaktor(jsonObject.getJsonNumber("factor").doubleValue());
         preismodell.setAge(jsonObject.getJsonNumber("factorage").doubleValue());
         preismodell.setSpeed(jsonObject.getJsonNumber("factorspeed").doubleValue());
         model.addAttribute("preismodell", preismodell);
+        logger.debug("Current price factors loaded: {}", preismodell);
         return "editPreis";
     }
 
@@ -59,6 +64,7 @@ public class EditPreis {
     @PostMapping("/precalcPreis")
     @ResponseBody
     public Map<String, Object> editPreis(@ModelAttribute Preis preismodell) {
+        logger.info("Calculating new price with provided factors: {}", preismodell);
         double factor = 0, factoralter = 0, factorspeed = 0;
         JsonObject jsonObject;
         try {
@@ -66,14 +72,15 @@ public class EditPreis {
             factor = jsonObject.getJsonNumber("factor").doubleValue();
             factoralter = jsonObject.getJsonNumber("factorage").doubleValue();
             factorspeed = jsonObject.getJsonNumber("factorspeed").doubleValue();
+            logger.debug("Loaded current factors from repository: factor={}, factorage={}, factorspeed={}", factor, factoralter, factorspeed);
+        } catch (Exception e) {
+            logger.error("Error loading factors from repository", e);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        BigDecimal preis = recalcPrice(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertragsverwaltung.getVertrage());
+        BigDecimal preis = recalcPrice(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertragsService.getVertrage());
         Map<String, Object> response = new HashMap<>();
         response.put("preis", preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + " €");
-        recalcPrice(factor, factoralter, factorspeed, vertragsverwaltung.getVertrage());
+        logger.debug("New price calculated: {}", response.get("preis"));
+        recalcPrice(factor, factoralter, factorspeed, vertragsService.getVertrage());
         return response;
     }
 
@@ -86,8 +93,10 @@ public class EditPreis {
      */
     @PostMapping("/editPreis")
     public String editPreis(@ModelAttribute Preis preismodell, Model model) {
-        BigDecimal preis = recalcPrice(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertragsverwaltung.getVertrage());
+        logger.info("Updating price model with new factors: {}", preismodell);
+        BigDecimal preis = recalcPrice(preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed(), vertragsService.getVertrage());
         model.addAttribute("confirm", "Preise erfolgreich aktualisiert! neue Preissumme: " + preis.setScale(2, RoundingMode.HALF_DOWN).toString().replace('.', ',') + "€ pro Jahr");
+        logger.info("Prices successfully updated. New total price: {}€ per year", preis.setScale(2, RoundingMode.HALF_DOWN));
         return "home";
     }
 
@@ -101,6 +110,7 @@ public class EditPreis {
      * @return the total price of all contracts
      */
     public BigDecimal recalcPrice(double factor, double factoralter, double factorspeed, List<Vertrag> vertrage) {
+        logger.info("Recalculating prices with factors: factor={}, factorage={}, factorspeed={}", factor, factoralter, factorspeed);
         repository.speichereFaktoren(factor, factoralter, factorspeed);
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertrage) {
@@ -112,10 +122,11 @@ public class EditPreis {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
                 }
             }
-            vertragsverwaltung.vertragLoeschen(v.getVsnr());
-            vertragsverwaltung.vertragAnlegen(v);
+            vertragsService.vertragLoeschen(v.getVsnr());
+            vertragsService.vertragAnlegen(v);
+            logger.debug("Updated contract: {}", v);
         }
-        System.out.println("Neue Summe aller Beiträge im Jahr: " + summe.setScale(2, RoundingMode.HALF_DOWN) + "€");
+        logger.info("New total price of all contracts per year: {}€", summe.setScale(2, RoundingMode.HALF_DOWN));
         return summe;
     }
 }

@@ -1,7 +1,9 @@
 package de.axa.robin.vertragsverwaltung.user_interaction;
 
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +14,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 /**
  * Controller class for handling the printing of contracts.
@@ -20,8 +21,8 @@ import java.util.logging.Logger;
 @Controller
 public class PrintVertrage {
     @Autowired
-    private Vertragsverwaltung vertragsverwaltung;
-    private static final Logger logger = Logger.getLogger(PrintVertrage.class.getName());
+    private VertragsService vertragsService;
+    private static final Logger logger = LoggerFactory.getLogger(PrintVertrage.class.getName());
     private static final String PRICE_FORMAT_PATTERN = "#,##0.00";
 
     /**
@@ -32,11 +33,13 @@ public class PrintVertrage {
      */
     @GetMapping("/printVertrage")
     public String showAll(Model model) {
-        List<Vertrag> vertrage = vertragsverwaltung.getVertrage();
+        List<Vertrag> vertrage = vertragsService.getVertrage();
         BigDecimal summe = calculateTotalPrice(vertrage);
 
         model.addAttribute("vertrage", vertrage);
         model.addAttribute("preis", summe);
+        logger.info("Contracts: " + vertrage);
+        logger.info("Total price: " + summe);
         return "printVertrage";
     }
 

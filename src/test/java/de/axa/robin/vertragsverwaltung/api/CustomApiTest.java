@@ -9,7 +9,7 @@ import de.axa.robin.vertragsverwaltung.modell.Partner;
 import de.axa.robin.vertragsverwaltung.modell.Preis;
 import de.axa.robin.vertragsverwaltung.modell.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Repository;
-import de.axa.robin.vertragsverwaltung.storage.Vertragsverwaltung;
+import de.axa.robin.vertragsverwaltung.storage.VertragsService;
 import de.axa.robin.vertragsverwaltung.storage.editor.CreateData;
 import de.axa.robin.vertragsverwaltung.storage.editor.EditPreis;
 import de.axa.robin.vertragsverwaltung.storage.editor.EditVertrag;
@@ -36,13 +36,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
-class VertragControllerTest {
+class CustomApiTest {
 
     @Mock
     private InputValidator inputValidator;
 
     @Mock
-    private Vertragsverwaltung vertragsverwaltung;
+    private VertragsService vertragsService;
 
     @Mock
     private EditVertrag editVertrag;
@@ -60,7 +60,7 @@ class VertragControllerTest {
     private EditPreis editPreis;
 
     @InjectMocks
-    private VertragController vertragController;
+    private CustomApi customApi;
 
     @BeforeEach
     void setUp() {
@@ -73,9 +73,9 @@ class VertragControllerTest {
         Vertrag vertrag2 = new Vertrag();
         List<Vertrag> vertrage = Arrays.asList(vertrag1, vertrag2);
 
-        when(vertragsverwaltung.getVertrage()).thenReturn(vertrage);
+        when(vertragsService.getVertrage()).thenReturn(vertrage);
 
-        ResponseEntity<List<Vertrag>> response = vertragController.getAllVertrage();
+        ResponseEntity<List<Vertrag>> response = customApi.getAllVertrage();
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(2, Objects.requireNonNull(response.getBody()).size());
@@ -84,9 +84,9 @@ class VertragControllerTest {
     @Test
     void testGetVertragById() {
         Vertrag vertrag = new Vertrag();
-        when(vertragsverwaltung.getVertrag(1)).thenReturn(vertrag);
+        when(vertragsService.getVertrag(1)).thenReturn(vertrag);
 
-        ResponseEntity<Vertrag> response = vertragController.getVertragById(1);
+        ResponseEntity<Vertrag> response = customApi.getVertragById(1);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(vertrag, response.getBody());
@@ -106,9 +106,9 @@ class VertragControllerTest {
         when(createData.createPreis(any(Boolean.class), any(LocalDate.class), any(Integer.class))).thenReturn(100.0);
         when(inputValidator.validateVertrag(any(Vertrag.class), any(BindingResult.class))).thenReturn(false);
         when(inputValidator.flexcheck(any(Vertrag.class))).thenReturn(false);
-        when(vertragsverwaltung.vertragAnlegen(any(Vertrag.class))).thenReturn(vertrag);
+        when(vertragsService.vertragAnlegen(any(Vertrag.class))).thenReturn(vertrag);
 
-        ResponseEntity<Vertrag> response = vertragController.createVertrag(vertragDTO, null);
+        ResponseEntity<Vertrag> response = customApi.createVertrag(vertragDTO, null);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(vertrag, response.getBody());
@@ -128,10 +128,10 @@ class VertragControllerTest {
         when(mapper.toVertrag(any(VertragDTO.class))).thenReturn(vertrag);
         when(editVertrag.editVertrag(any(Vertrag.class), anyInt())).thenReturn(vertrag);
         when(createData.createPreis(any(Boolean.class), any(LocalDate.class), any(Integer.class))).thenReturn(100.0);
-        when(vertragsverwaltung.vertragLoeschen(anyInt())).thenReturn(true);
-        when(vertragsverwaltung.vertragAnlegen(any(Vertrag.class))).thenReturn(vertrag);
+        when(vertragsService.vertragLoeschen(anyInt())).thenReturn(true);
+        when(vertragsService.vertragAnlegen(any(Vertrag.class))).thenReturn(vertrag);
 
-        ResponseEntity<Vertrag> response = vertragController.updateVertrag(1, vertragDTO);
+        ResponseEntity<Vertrag> response = customApi.updateVertrag(1, vertragDTO);
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals(vertrag, response.getBody());
@@ -139,9 +139,9 @@ class VertragControllerTest {
 
     @Test
     void testDeleteVertrag() {
-        when(vertragsverwaltung.vertragLoeschen(anyInt())).thenReturn(true);
+        when(vertragsService.vertragLoeschen(anyInt())).thenReturn(true);
 
-        ResponseEntity<Void> response = vertragController.deleteVertrag(1);
+        ResponseEntity<Void> response = customApi.deleteVertrag(1);
 
         assertEquals(204, response.getStatusCode().value());
     }
@@ -154,7 +154,7 @@ class VertragControllerTest {
         when(jsonObject.getJsonNumber("factorage")).thenReturn(Json.createValue(0.2));
         when(jsonObject.getJsonNumber("factorspeed")).thenReturn(Json.createValue(0.1));
 
-        ResponseEntity<String> response = vertragController.getPreismodell();
+        ResponseEntity<String> response = customApi.getPreismodell();
 
         assertEquals(200, response.getStatusCode().value());
         assertEquals("Preisberechnung: Formel: preis = (alter * 0.2 + hoechstGeschwindigkeit * 0.1) * 1.5", response.getBody());
@@ -167,7 +167,7 @@ class VertragControllerTest {
         when(mapper.toPreis(any(PreisDTO.class))).thenReturn(preis);
         when(editPreis.recalcPrice(any(Double.class), any(Double.class), any(Double.class), any(List.class))).thenReturn(BigDecimal.valueOf(100.0));
 
-        ResponseEntity<String> response = vertragController.setPreismodell(preisDTO);
+        ResponseEntity<String> response = customApi.setPreismodell(preisDTO);
 
         assertEquals(200, response.getStatusCode().value());
     }
