@@ -1,6 +1,7 @@
 package de.axa.robin.vertragsverwaltung.validators;
 
 import de.axa.robin.vertragsverwaltung.config.Setup;
+import de.axa.robin.vertragsverwaltung.validators.AdressValidator;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;

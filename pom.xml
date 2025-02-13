@@ -256,6 +256,7 @@
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <version>${openapi.generator.maven.plugin.version}</version>
                 <executions>
+                    <!-- Konfiguration für die VertragAPI-Generierung -->
                     <execution>
                         <id>vertragsverwaltung</id>
                         <phase>generate-sources</phase>
@@ -263,7 +264,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/VertragApi.yaml</inputSpec>
                             <generatorName>java</generatorName>
                             <library>resttemplate</library>
                             <generateSupportingFiles>true</generateSupportingFiles>
@@ -272,6 +273,38 @@
                             <generateApis>true</generateApis>
                             <generateApiTests>false</generateApiTests>
                             <modelPackage>de.axa.robin.vertragsverwaltung.model</modelPackage>
+                            <generateModels>true</generateModels>
+                            <generateModelTests>false</generateModelTests>
+                            <generateApiDocumentation>true</generateApiDocumentation>
+                            <skipValidateSpec>false</skipValidateSpec>
+                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                            <configOptions>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useTags>true</useTags>
+                                <delegatePattern>true</delegatePattern>
+                                <unhandledException>true</unhandledException>
+                                <dateLibrary>java8</dateLibrary>
+                                <java8>true</java8>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <!-- Konfiguration für die PreisAPI-Generierung -->
+                    <execution>
+                        <id>preisverwaltung</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/PreisApi.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>resttemplate</library>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <apiPackage>de.axa.robin.preisverwaltung</apiPackage>
+                            <invokerPackage>de.axa.robin.preisverwaltung</invokerPackage>
+                            <generateApis>true</generateApis>
+                            <generateApiTests>false</generateApiTests>
+                            <modelPackage>de.axa.robin.preisverwaltung.model</modelPackage>
                             <generateModels>true</generateModels>
                             <generateModelTests>false</generateModelTests>
                             <generateApiDocumentation>true</generateApiDocumentation>

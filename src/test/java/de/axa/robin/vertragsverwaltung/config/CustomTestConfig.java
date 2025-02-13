@@ -1,9 +1,9 @@
 package de.axa.robin.vertragsverwaltung.config;
 
-import de.axa.robin.vertragsverwaltung.services.CreateUnsetableData;
-import de.axa.robin.vertragsverwaltung.api.Mapper;
+import de.axa.robin.vertragsverwaltung.mapper.VertragMapper;
+import de.axa.robin.vertragsverwaltung.util.VertragUtilTest;
 import de.axa.robin.vertragsverwaltung.controller.CreateVertrag;
-import de.axa.robin.vertragsverwaltung.controller.EditPreis;
+import de.axa.robin.vertragsverwaltung.controller.EditPreisModel;
 import de.axa.robin.vertragsverwaltung.controller.HandleVertrag;
 import de.axa.robin.vertragsverwaltung.services.VertragsService;
 import de.axa.robin.vertragsverwaltung.validators.AdressValidator;
@@ -27,13 +27,13 @@ public class CustomTestConfig {
     }
 
     @Bean
-    public Mapper vertragMapper() {
-        return mock(Mapper.class);
+    public VertragMapper vertragMapper() {
+        return mock(VertragMapper.class);
     }
 
     @Bean
-    public CreateUnsetableData create() {
-        return mock(CreateUnsetableData.class);
+    public VertragUtilTest create() {
+        return mock(VertragUtilTest.class);
     }
 
     @Bean
@@ -57,8 +57,8 @@ public class CustomTestConfig {
     }
 
     @Bean
-    public EditPreis editPreis() {
-        return mock(EditPreis.class);
+    public EditPreisModel editPreis() {
+        return mock(EditPreisModel.class);
     }
 
     @Bean
@@ -70,4 +70,5 @@ public class CustomTestConfig {
     public AdressValidator adressValidator() {
         return mock(AdressValidator.class);
     }
+
 }

@@ -3,7 +3,7 @@ package de.axa.robin.vertragsverwaltung.controller;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
-import de.axa.robin.vertragsverwaltung.services.PreisService;
+import de.axa.robin.vertragsverwaltung.services.PreisModelService;
 import de.axa.robin.vertragsverwaltung.services.VertragsService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -21,6 +21,9 @@ import java.time.LocalDate;
 
 import static java.lang.Integer.parseInt;
 
+/**
+ * Controller class for handling insurance contracts.
+ */
 @Controller
 public class HandleVertrag {
     private static final Logger logger = LoggerFactory.getLogger(HandleVertrag.class);
@@ -30,10 +33,17 @@ public class HandleVertrag {
     @Autowired
     private MenuSpring menuSpring;
     @Autowired
-    private PreisService preisService;
+    private PreisModelService preisModelService;
 
     private int handledVertrag = 0;
 
+    /**
+     * Processes the request to print the contract details.
+     *
+     * @param vsnr  the insurance contract number
+     * @param model the model to add attributes to
+     * @return the name of the view to render
+     */
     @PostMapping("/home")
     public String processPrintVertrag(@RequestParam String vsnr, Model model) {
         try {
@@ -58,6 +68,12 @@ public class HandleVertrag {
         }
     }
 
+    /**
+     * Displays the delete contract page.
+     *
+     * @param model the model to add attributes to
+     * @return the name of the view to render
+     */
     @GetMapping("/showDelete")
     public String showDelete(Model model) {
         model.addAttribute("showFields", true);
@@ -65,6 +81,12 @@ public class HandleVertrag {
         return "handleVertrag";
     }
 
+    /**
+     * Deletes the contract.
+     *
+     * @param model the model to add attributes to
+     * @return the name of the view to render
+     */
     @PostMapping("/showDelete")
     public String deleteVertrag(Model model) {
         vertragsService.vertragLoeschen(menuSpring.getVsnr(), vertragsService.getVertrage());
@@ -73,12 +95,21 @@ public class HandleVertrag {
         return "home";
     }
 
+    /**
+     * Edits the contract.
+     *
+     * @param vertrag     the insurance contract to edit
+     * @param result      the binding result for validation
+     * @param editVisible whether the edit fields are visible
+     * @param model       the model to add attributes to
+     * @return the name of the view to render
+     */
     @PostMapping("/showEdit")
     public String editVertrag(@ModelAttribute @Valid Vertrag vertrag, BindingResult result, @RequestParam("editVisible") boolean editVisible, Model model) {
         vertrag.setVsnr(menuSpring.getVsnr());
         logger.info("Editing contract: {}", vertrag);
-        try{
-            vertragsService.vertragBearbeiten(vertrag, vertrag.getVsnr(), preisService.getPreismodell(), result);
+        try {
+            vertragsService.vertragBearbeiten(vertrag, vertrag.getVsnr(), preisModelService.getPreismodell(), result);
         } catch (IllegalArgumentException e) {
             logger.warn("Validation errors found: {}", result.getAllErrors());
             Vertrag v = vertragsService.getVertrag(handledVertrag);
@@ -91,6 +122,12 @@ public class HandleVertrag {
         return "home";
     }
 
+    /**
+     * Sets up the model with contract details.
+     *
+     * @param model the model to add attributes to
+     * @param v     the insurance contract
+     */
     private void setupVertragModel(Model model, Vertrag v) {
         Partner partner = new Partner();
         Fahrzeug fahrzeug = new Fahrzeug();
@@ -127,6 +164,12 @@ public class HandleVertrag {
         }
     }
 
+    /**
+     * Initializes a new insurance contract with values from an existing contract.
+     *
+     * @param v       the existing insurance contract
+     * @param vertrag the new insurance contract to initialize
+     */
     private void initializeVertrag(Vertrag v, Vertrag vertrag) {
         vertrag.setMonatlich(v.isMonatlich());
         vertrag.setVersicherungsbeginn(v.getVersicherungsbeginn());

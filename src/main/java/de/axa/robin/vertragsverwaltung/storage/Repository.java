@@ -17,6 +17,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repository class for handling the storage and retrieval of contracts and factors.
+ */
 @org.springframework.stereotype.Repository
 public class Repository {
     private final Logger logger = LoggerFactory.getLogger(Repository.class.getName());
@@ -26,6 +29,11 @@ public class Repository {
     private static final String ERROR_SAVING = "Fehler beim Speichern";
     private static final String FILE_NOT_FOUND = "Datei 'vertrage.json' nicht gefunden";
 
+    /**
+     * Saves a list of contracts to a JSON file.
+     *
+     * @param vertrage the list of contracts to save
+     */
     public void speichereVertrage(List<Vertrag> vertrage) {
         logger.info("Starting to save contracts to JSON file");
         try (FileWriter file = new FileWriter(setup.getJson_repositoryPath(), false)) {
@@ -38,6 +46,12 @@ public class Repository {
         }
     }
 
+    /**
+     * Creates a JSON array from a list of contracts.
+     *
+     * @param vertrage the list of contracts
+     * @return the created JSON array
+     */
     private JsonArray createVertraegeJsonArray(List<Vertrag> vertrage) {
         logger.debug("Creating JSON array from contracts");
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -48,6 +62,12 @@ public class Repository {
         return arrayBuilder.build();
     }
 
+    /**
+     * Creates a JSON object from a contract.
+     *
+     * @param v the contract
+     * @return the created JSON object
+     */
     private JsonObject createVertragJsonObject(Vertrag v) {
         logger.debug("Creating JSON object from contract: {}", v);
         return Json.createObjectBuilder()
@@ -62,6 +82,12 @@ public class Repository {
                 .build();
     }
 
+    /**
+     * Creates a JSON object from a vehicle.
+     *
+     * @param fahrzeug the vehicle
+     * @return the created JSON object
+     */
     private JsonObject createFahrzeugJsonObject(Fahrzeug fahrzeug) {
         logger.debug("Creating JSON object from vehicle: {}", fahrzeug);
         return Json.createObjectBuilder()
@@ -73,6 +99,12 @@ public class Repository {
                 .build();
     }
 
+    /**
+     * Creates a JSON object from a partner.
+     *
+     * @param partner the partner
+     * @return the created JSON object
+     */
     private JsonObject createPartnerJsonObject(Partner partner) {
         logger.debug("Creating JSON object from partner: {}", partner);
         return Json.createObjectBuilder()
@@ -89,7 +121,12 @@ public class Repository {
                 .build();
     }
 
-    public List<Vertrag> ladeVertrage(){
+    /**
+     * Loads a list of contracts from a JSON file.
+     *
+     * @return the loaded list of contracts
+     */
+    public List<Vertrag> ladeVertrage() {
         logger.info("Starting to load contracts from JSON file");
         List<Vertrag> vertrage = new ArrayList<>();
         try (FileReader file = new FileReader(setup.getJson_repositoryPath())) {
@@ -109,6 +146,12 @@ public class Repository {
         return vertrage;
     }
 
+    /**
+     * Creates a contract from a JSON object.
+     *
+     * @param jsonObject the JSON object
+     * @return the created contract
+     */
     private Vertrag createVertragFromJson(JsonObject jsonObject) {
         logger.debug("Creating contract from JSON object: {}", jsonObject);
         return new Vertrag(
@@ -123,6 +166,12 @@ public class Repository {
         );
     }
 
+    /**
+     * Creates a vehicle from a JSON object.
+     *
+     * @param jsonObject the JSON object
+     * @return the created vehicle
+     */
     private Fahrzeug createFahrzeugFromJson(JsonObject jsonObject) {
         logger.debug("Creating vehicle from JSON object: {}", jsonObject);
         return new Fahrzeug(
@@ -134,6 +183,12 @@ public class Repository {
         );
     }
 
+    /**
+     * Creates a partner from a JSON object.
+     *
+     * @param jsonObject the JSON object
+     * @return the created partner
+     */
     private Partner createPartnerFromJson(JsonObject jsonObject) {
         logger.debug("Creating partner from JSON object: {}", jsonObject);
         return new Partner(
@@ -150,6 +205,11 @@ public class Repository {
         );
     }
 
+    /**
+     * Loads the factors from a JSON file.
+     *
+     * @return the loaded JSON object with the factors
+     */
     public JsonObject ladeFaktoren() {
         logger.info("Starting to load factors from JSON file");
         try (JsonReader reader = Json.createReader(new FileReader(setup.getJson_preisPath()))) {
@@ -162,6 +222,13 @@ public class Repository {
         return null;
     }
 
+    /**
+     * Saves the factors to a JSON file.
+     *
+     * @param factor the factor
+     * @param factorage the age factor
+     * @param factorspeed the speed factor
+     */
     public void speichereFaktoren(double factor, double factorage, double factorspeed) {
         logger.info("Starting to save factors to JSON file");
         try (FileWriter file = new FileWriter(setup.getJson_preisPath(), false)) {

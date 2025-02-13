@@ -2,24 +2,24 @@ package de.axa.robin.vertragsverwaltung.services;
 
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
+import de.axa.robin.vertragsverwaltung.models.Preis;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Repository;
-import org.jetbrains.annotations.NotNull;
+import de.axa.robin.vertragsverwaltung.util.VertragUtil;
+import de.axa.robin.vertragsverwaltung.validators.InputValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 public class VertragsServiceTest {
 
     @InjectMocks
@@ -28,206 +28,294 @@ public class VertragsServiceTest {
     @Mock
     private Repository repository;
 
-    // Eine mutable Liste, die von repository.ladeVertrage() zurückgegeben wird
-    private List<Vertrag> vertrage;
+    @Mock
+    private InputValidator inputValidator;
+
+    @Mock
+    private VertragUtil vertragUtil;
 
     @BeforeEach
     public void setUp() {
-        // Erstellen einer leeren Liste, die als Rückgabewert für ladeVertrage() dient.
-        vertrage = new ArrayList<>();
-        when(repository.ladeVertrage()).thenReturn(vertrage);
+        MockitoAnnotations.openMocks(this);
     }
 
+    // Test getVertrage()
     @Test
     public void testGetVertrage() {
-        // Arrange: Erstelle zwei Beispiel-Verträge
-        Vertrag vertrag1 = createVertrag(1, "ABC123");
-        Vertrag vertrag2 = createVertrag(2, "DEF456");
-        vertrage.add(vertrag1);
-        vertrage.add(vertrag2);
+        List<Vertrag> vertragsListe = new ArrayList<>();
+        Vertrag vertrag = new Vertrag();
+        vertragsListe.add(vertrag);
+        when(repository.ladeVertrage()).thenReturn(vertragsListe);
 
-        // Act: Aufruf der getVertrage()-Methode
         List<Vertrag> result = vertragsService.getVertrage();
-
-        // Assert: Überprüfe, ob beide Verträge zurückgegeben werden
-        assertEquals(2, result.size());
-        assertTrue(result.contains(vertrag1));
-        assertTrue(result.contains(vertrag2));
+        assertEquals(vertragsListe, result, "Die Liste der Verträge sollte zurückgegeben werden.");
     }
 
+    // Test getVertrag() - Vertrag gefunden
     @Test
     public void testGetVertragFound() {
-        // Arrange: Füge einen Vertrag mit vsnr=10 zur Liste hinzu
-        Vertrag vertrag = createVertrag(10, "GHI789");
-        vertrage.add(vertrag);
-
-        // Act: Suche nach einem Vertrag mit vsnr=10
-        Vertrag result = vertragsService.getVertrag(10);
-
-        // Assert: Es muss ein Vertrag gefunden werden, der die vsnr 10 hat.
-        assertNotNull(result);
-        assertEquals(10, result.getVsnr());
-    }
-
-    @Test
-    public void testGetVertragNotFound() {
-        // Act & Assert: Suche nach einem Vertrag, der nicht existiert, und erwarte null.
-        Vertrag result = vertragsService.getVertrag(99);
-        assertNull(result);
-    }
-
-    @Test
-    public void testVertragAnlegen() {
-        // Arrange: Erstelle einen neuen Vertrag
-        Vertrag newVertrag = createVertrag(3, "JKL012");
-        // Vorher ist die Liste leer.
-        assertTrue(vertragsService.getVertrage().isEmpty());
-
-        // Act: Vertrag anlegen
-
-        // Assert:
-        // - Der zurückgegebene Vertrag entspricht dem neuen Vertrag.
-        // - Der Vertrag wurde zur Liste hinzugefügt.
-        // - repository.speichereVertrage() wurde mit der aktualisierten Liste aufgerufen.
-        assertTrue(vertragsService.getVertrage().contains(newVertrag));
-        verify(repository).speichereVertrage(vertrage);
-    }
-
-    @Test
-    public void testVertragLoeschen() {
-        // Arrange: Füge zwei Verträge hinzu, von denen einer gelöscht werden soll.
-        Vertrag vertragToDelete = createVertrag(5, "MNO345");
-        vertrage.add(vertragToDelete);
-        vertrage.add(createVertrag(6, "PQR678"));
-
-        // Act: Lösche den Vertrag mit vsnr=5
-
-        // Assert:
-        // - Die Methode soll true zurückliefern.
-        // - Der Vertrag mit vsnr=5 darf nicht mehr in der Liste enthalten sein.
-        // - repository.speichereVertrage() wird aufgerufen.
-        assertFalse(vertragsService.getVertrage().stream().anyMatch(v -> v.getVsnr() == 5));
-        verify(repository).speichereVertrage(vertrage);
-    }
-    @Test
-    public void testMergeVertrage() {
-        // Source-Vertrag mit neuen Werten
-        Vertrag source = new Vertrag();
-        LocalDate versicherungsbeginn = LocalDate.of(2025, 1, 1);
-        LocalDate versicherungsablauf = LocalDate.of(2030, 1, 1);
-        LocalDate antragsDatum = LocalDate.of(2024, 12, 1);
-        source.setVersicherungsbeginn(versicherungsbeginn);
-        source.setVersicherungsablauf(versicherungsablauf);
-        source.setAntragsDatum(antragsDatum);
-
-        Partner sourcePartner = getPartner();
-        source.setPartner(sourcePartner);
-
-        Fahrzeug sourceFahrzeug = new Fahrzeug();
-        sourceFahrzeug.setAmtlichesKennzeichen("ABC123");
-        sourceFahrzeug.setHersteller("VW");
-        sourceFahrzeug.setTyp("Golf");
-        sourceFahrzeug.setHoechstgeschwindigkeit(200);
-        sourceFahrzeug.setWagnisskennziffer(5);
-        source.setFahrzeug(sourceFahrzeug);
-
-        // Target-Vertrag mit alten Werten
-        Vertrag target = getVertrag();
-
-        when(getVertrag()).thenReturn(target);
-        Vertrag updated = vertragsService.mergeVertrage(source, target);
-
-        // Überprüfen, ob vsnr und die Datumsfelder aktualisiert wurden
-        assertEquals(versicherungsbeginn, updated.getVersicherungsbeginn());
-        assertEquals(versicherungsablauf, updated.getVersicherungsablauf());
-        assertEquals(antragsDatum, updated.getAntragsDatum());
-
-        // Überprüfen, ob die Partner-Felder aktualisiert wurden
-        Partner updatedPartner = updated.getPartner();
-        assertEquals("Max", updatedPartner.getVorname());
-        assertEquals("Mustermann", updatedPartner.getNachname());
-        assertEquals("M", updatedPartner.getGeschlecht());
-        assertEquals(LocalDate.of(1985, 5, 5), updatedPartner.getGeburtsdatum());
-        assertEquals("Deutschland", updatedPartner.getLand());
-        assertEquals("Musterstr", updatedPartner.getStrasse());
-        assertEquals("1A", updatedPartner.getHausnummer());
-        assertEquals("12345", updatedPartner.getPlz());
-        assertEquals("Musterstadt", updatedPartner.getStadt());
-        assertEquals("BW", updatedPartner.getBundesland());
-
-        // Überprüfen, ob die Fahrzeug-Felder aktualisiert wurden
-        Fahrzeug updatedFahrzeug = updated.getFahrzeug();
-        assertEquals("XYZ789", updatedFahrzeug.getAmtlichesKennzeichen());
-        assertEquals("VW", updatedFahrzeug.getHersteller());
-        assertEquals("3er", updatedFahrzeug.getTyp());
-        assertEquals(200, updatedFahrzeug.getHoechstgeschwindigkeit());
-        assertEquals(5, updatedFahrzeug.getWagnisskennziffer());
-
-    }
-
-    @NotNull
-    private static Vertrag getVertrag() {
-        Vertrag target = new Vertrag();
-        target.setVersicherungsbeginn(LocalDate.of(2020, 1, 1));
-        target.setVersicherungsablauf(LocalDate.of(2025, 1, 1));
-        target.setAntragsDatum(LocalDate.of(2020, 12, 12));
-
-        Partner targetPartner = getTargetPartner();
-        target.setPartner(targetPartner);
-
-        Fahrzeug targetFahrzeug = new Fahrzeug();
-        targetFahrzeug.setAmtlichesKennzeichen("XYZ789");
-        targetFahrzeug.setHersteller("BMW");
-        targetFahrzeug.setTyp("3er");
-        targetFahrzeug.setHoechstgeschwindigkeit(180);
-        targetFahrzeug.setWagnisskennziffer(3);
-        target.setFahrzeug(targetFahrzeug);
-        return target;
-    }
-
-    @NotNull
-    private static Partner getTargetPartner() {
-        Partner targetPartner = new Partner();
-        targetPartner.setVorname("Anna");
-        targetPartner.setNachname("Beispiel");
-        targetPartner.setGeschlecht("F");
-        targetPartner.setGeburtsdatum(LocalDate.of(1990, 6, 6));
-        targetPartner.setLand("Österreich");
-        targetPartner.setStrasse("Beispielstr");
-        targetPartner.setHausnummer("2B");
-        targetPartner.setPlz("54321");
-        targetPartner.setStadt("Beispielstadt");
-        targetPartner.setBundesland("Bayern");
-        return targetPartner;
-    }
-
-    @NotNull
-    private static Partner getPartner() {
-        Partner sourcePartner = new Partner();
-        sourcePartner.setVorname("Max");
-        sourcePartner.setNachname("Mustermann");
-        sourcePartner.setGeschlecht("M");
-        sourcePartner.setGeburtsdatum(LocalDate.of(1985, 5, 5));
-        sourcePartner.setLand("Deutschland");
-        sourcePartner.setStrasse("Musterstr");
-        sourcePartner.setHausnummer("1A");
-        sourcePartner.setPlz("12345");
-        sourcePartner.setStadt("Musterstadt");
-        sourcePartner.setBundesland("BW");
-        return sourcePartner;
-    }
-    /**
-     * Hilfsmethode zum Erstellen eines minimalen Vertrag-Objekts.
-     * Hierbei wird angenommen, dass:
-     * - Vertrag über einen Setter für vsnr und Fahrzeug verfügt.
-     * - Fahrzeug einen Setter für das amtliche Kennzeichen hat.
-     */
-    private Vertrag createVertrag(int vsnr, String kennzeichen) {
-        Fahrzeug fahrzeug = new Fahrzeug();
-        fahrzeug.setAmtlichesKennzeichen(kennzeichen);
+        int vsnr = 123;
         Vertrag vertrag = new Vertrag();
         vertrag.setVsnr(vsnr);
+        List<Vertrag> vertragsListe = new ArrayList<>();
+        vertragsListe.add(vertrag);
+        when(repository.ladeVertrage()).thenReturn(vertragsListe);
+
+        Vertrag result = vertragsService.getVertrag(vsnr);
+        assertNotNull(result, "Der Vertrag sollte gefunden werden.");
+        assertEquals(vsnr, result.getVsnr(), "Die VSNR des gefundenen Vertrags sollte übereinstimmen.");
+    }
+
+    // Test getVertrag() - Vertrag nicht gefunden
+    @Test
+    public void testGetVertragNotFound() {
+        when(repository.ladeVertrage()).thenReturn(new ArrayList<>());
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            vertragsService.getVertrag(999);
+        });
+        assertTrue(exception.getMessage().contains("Contract not found"), "Es sollte eine passende Exception geworfen werden.");
+    }
+
+    // Test vertragAnlegen() - Erfolgreiche Anlage
+    @Test
+    public void testVertragAnlegenSuccess() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        List<Vertrag> vertragsListe = new ArrayList<>();
+        when(repository.ladeVertrage()).thenReturn(vertragsListe);
+        // Simuliere, dass für den generierten VSNR noch kein Vertrag existiert.
+        when(inputValidator.vertragExistiert(anyList(), anyInt())).thenReturn(false);
+
+        // Erstelle einen Vertrag mit notwendigen Feldern
+        Vertrag vertrag = new Vertrag();
+        vertrag.setMonatlich(true);
+        Partner partner = new Partner();
+        partner.setGeburtsdatum(LocalDate.of(1990, 1, 1));
+        vertrag.setPartner(partner);
+        Fahrzeug fahrzeug = new Fahrzeug();
+        fahrzeug.setHoechstgeschwindigkeit(200);
         vertrag.setFahrzeug(fahrzeug);
-        return vertrag;
+        // Dummy-Werte für weitere Felder können nach Bedarf ergänzt werden.
+
+        // Dummy-Preis-Objekt
+        Preis preismodell = new Preis();
+        preismodell.setAge(1.0);
+        preismodell.setSpeed(1.0);
+        preismodell.setFaktor(1.0);
+
+        // Aufruf der Methode
+        Vertrag created = vertragsService.vertragAnlegen(vertrag, preismodell, bindingResult);
+
+        // Berechne den erwarteten Preis: alter = aktuelles Jahr - 1990, Preis = (alter + 200) * 1.0
+        int alter = LocalDate.now().getYear() - 1990;
+        double expectedPrice = alter + 200;
+        expectedPrice = Math.round(expectedPrice * 100.0) / 100.0;
+
+        assertNotNull(created.getVsnr(), "Die VSNR sollte gesetzt sein.");
+        assertTrue(created.getVsnr() >= 10000000, "Die VSNR sollte >= 10000000 sein.");
+        assertEquals(expectedPrice, created.getPreis(), 0.001, "Der berechnete Preis sollte korrekt sein.");
+
+        // Überprüfe, ob der Vertrag in die Liste eingefügt und im Repository gespeichert wurde
+        verify(repository).speichereVertrage(vertragsListe);
+    }
+
+    // Test vertragAnlegen() - Validierungsfehler
+    @Test
+    public void testVertragAnlegenValidationError() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        List<Vertrag> vertragsListe = new ArrayList<>();
+        when(repository.ladeVertrage()).thenReturn(vertragsListe);
+        when(inputValidator.vertragExistiert(anyList(), anyInt())).thenReturn(false);
+
+        Vertrag vertrag = new Vertrag();
+        vertrag.setMonatlich(true);
+        Partner partner = new Partner();
+        partner.setGeburtsdatum(LocalDate.of(1990, 1, 1));
+        vertrag.setPartner(partner);
+        Fahrzeug fahrzeug = new Fahrzeug();
+        fahrzeug.setHoechstgeschwindigkeit(200);
+        vertrag.setFahrzeug(fahrzeug);
+
+        Preis preismodell = new Preis();
+        preismodell.setAge(1.0);
+        preismodell.setSpeed(1.0);
+        preismodell.setFaktor(1.0);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            vertragsService.vertragAnlegen(vertrag, preismodell, bindingResult);
+        }, "Bei Validierungsfehlern sollte eine IllegalArgumentException geworfen werden.");
+    }
+
+    // Test vertragBearbeiten() - Erfolgreiche Bearbeitung
+    @Test
+    public void testVertragBearbeitenSuccess() {
+        int vsnr = 123;
+        // Vorhandener Vertrag
+        Vertrag existing = new Vertrag();
+        existing.setVsnr(vsnr);
+        existing.setMonatlich(true);
+        Partner partner = new Partner();
+        partner.setGeburtsdatum(LocalDate.of(1990, 1, 1));
+        existing.setPartner(partner);
+        Fahrzeug fahrzeug = new Fahrzeug();
+        fahrzeug.setHoechstgeschwindigkeit(200);
+        existing.setFahrzeug(fahrzeug);
+
+        List<Vertrag> vertragsListe = new ArrayList<>();
+        vertragsListe.add(existing);
+        when(repository.ladeVertrage()).thenReturn(vertragsListe);
+
+        // Neue Vertragsdaten (z. B. könnten hier Änderungen vorgenommen werden)
+        Vertrag neueDaten = new Vertrag();
+        neueDaten.setMonatlich(true);
+        Partner neuerPartner = new Partner();
+        neuerPartner.setGeburtsdatum(LocalDate.of(1990, 1, 1));
+        neueDaten.setPartner(neuerPartner);
+        Fahrzeug neuesFahrzeug = new Fahrzeug();
+        neuesFahrzeug.setHoechstgeschwindigkeit(200);
+        neueDaten.setFahrzeug(neuesFahrzeug);
+
+        // Simuliere das Zusammenführen (Merge) der Verträge
+        Vertrag merged = new Vertrag();
+        merged.setMonatlich(neueDaten.isMonatlich());
+        merged.setPartner(neueDaten.getPartner());
+        merged.setFahrzeug(neueDaten.getFahrzeug());
+        when(vertragUtil.mergeVertrage(existing, neueDaten)).thenReturn(merged);
+
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        Preis preismodell = new Preis();
+        preismodell.setAge(1.0);
+        preismodell.setSpeed(1.0);
+        preismodell.setFaktor(1.0);
+
+        Vertrag updated = vertragsService.vertragBearbeiten(neueDaten, vsnr, preismodell, bindingResult);
+
+        assertEquals(vsnr, updated.getVsnr(), "Die VSNR des aktualisierten Vertrags sollte unverändert bleiben.");
+        int alter = LocalDate.now().getYear() - 1990;
+        double expectedPrice = (alter + 200) * 1.0; // Da monatlich true, keine Multiplikation mit 11.
+        expectedPrice = Math.round(expectedPrice * 100.0) / 100.0;
+        assertEquals(expectedPrice, updated.getPreis(), 0.001, "Der aktualisierte Preis sollte korrekt berechnet werden.");
+
+        verify(repository, atLeastOnce()).speichereVertrage(anyList());
+    }
+
+    // Test vertragBearbeiten() - Validierungsfehler
+    @Test
+    public void testVertragBearbeitenValidationError() {
+        int vsnr = 123;
+        Vertrag existing = new Vertrag();
+        existing.setVsnr(vsnr);
+        existing.setMonatlich(true);
+        Partner partner = new Partner();
+        partner.setGeburtsdatum(LocalDate.of(1990, 1, 1));
+        existing.setPartner(partner);
+        Fahrzeug fahrzeug = new Fahrzeug();
+        fahrzeug.setHoechstgeschwindigkeit(200);
+        existing.setFahrzeug(fahrzeug);
+
+        List<Vertrag> vertragsListe = new ArrayList<>();
+        vertragsListe.add(existing);
+        when(repository.ladeVertrage()).thenReturn(vertragsListe);
+
+        Vertrag neueDaten = new Vertrag();
+        neueDaten.setMonatlich(true);
+        Partner neuerPartner = new Partner();
+        neuerPartner.setGeburtsdatum(LocalDate.of(1990, 1, 1));
+        neueDaten.setPartner(neuerPartner);
+        Fahrzeug neuesFahrzeug = new Fahrzeug();
+        neuesFahrzeug.setHoechstgeschwindigkeit(200);
+        neueDaten.setFahrzeug(neuesFahrzeug);
+
+        Vertrag merged = new Vertrag();
+        merged.setMonatlich(neueDaten.isMonatlich());
+        merged.setPartner(neueDaten.getPartner());
+        merged.setFahrzeug(neueDaten.getFahrzeug());
+        when(vertragUtil.mergeVertrage(existing, neueDaten)).thenReturn(merged);
+
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        Preis preismodell = new Preis();
+        preismodell.setAge(1.0);
+        preismodell.setSpeed(1.0);
+        preismodell.setFaktor(1.0);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            vertragsService.vertragBearbeiten(neueDaten, vsnr, preismodell, bindingResult);
+        }, "Bei Validierungsfehlern sollte eine Exception geworfen werden.");
+    }
+
+    // Test vertragLoeschen()
+    @Test
+    public void testVertragLoeschen() {
+        int vsnr = 123;
+        Vertrag vertrag = new Vertrag();
+        vertrag.setVsnr(vsnr);
+        List<Vertrag> vertragsListe = new ArrayList<>();
+        vertragsListe.add(vertrag);
+
+        vertragsService.vertragLoeschen(vsnr, vertragsListe);
+        assertTrue(vertragsListe.stream().noneMatch(v -> v.getVsnr() == vsnr), "Der Vertrag sollte aus der Liste entfernt worden sein.");
+        verify(repository).speichereVertrage(vertragsListe);
+    }
+
+    // Test createvsnr()
+    @Test
+    public void testCreatevsnr() {
+        Vertrag vertrag1 = new Vertrag();
+        vertrag1.setVsnr(10000000);
+        Vertrag vertrag2 = new Vertrag();
+        vertrag2.setVsnr(10000001);
+        List<Vertrag> vertragsListe = new ArrayList<>();
+        vertragsListe.add(vertrag1);
+        vertragsListe.add(vertrag2);
+
+        when(inputValidator.vertragExistiert(vertragsListe, 10000000)).thenReturn(true);
+        when(inputValidator.vertragExistiert(vertragsListe, 10000001)).thenReturn(true);
+        when(inputValidator.vertragExistiert(vertragsListe, 10000002)).thenReturn(false);
+
+        int newVsnr = vertragsService.createvsnr(vertragsListe);
+        assertEquals(10000002, newVsnr, "Die generierte VSNR sollte 10000002 sein.");
+    }
+
+    // Test createPreis() für monatliche Verträge
+    @Test
+    public void testCreatePreisMonthly() {
+        LocalDate geburtsdatum = LocalDate.of(1990, 1, 1);
+        int hoechstGeschwindigkeit = 200;
+        Preis preismodell = new Preis();
+        preismodell.setAge(1.0);
+        preismodell.setSpeed(1.0);
+        preismodell.setFaktor(1.0);
+
+        int alter = LocalDate.now().getYear() - 1990;
+        double expected = (alter * 1.0 + hoechstGeschwindigkeit * 1.0) * 1.0;
+        expected = Math.round(expected * 100.0) / 100.0;
+        double calculated = vertragsService.createPreis(true, geburtsdatum, hoechstGeschwindigkeit, preismodell);
+        assertEquals(expected, calculated, 0.001, "Der berechnete Preis für einen monatlichen Vertrag sollte korrekt sein.");
+    }
+
+    // Test createPreis() für nicht-monatliche Verträge
+    @Test
+    public void testCreatePreisNotMonthly() {
+        LocalDate geburtsdatum = LocalDate.of(1990, 1, 1);
+        int hoechstGeschwindigkeit = 200;
+        Preis preismodell = new Preis();
+        preismodell.setAge(1.0);
+        preismodell.setSpeed(1.0);
+        preismodell.setFaktor(1.0);
+
+        int alter = LocalDate.now().getYear() - 1990;
+        double preis = (alter * 1.0 + hoechstGeschwindigkeit * 1.0) * 1.0;
+        preis = preis * 11;
+        preis = Math.round(preis * 100.0) / 100.0;
+        double calculated = vertragsService.createPreis(false, geburtsdatum, hoechstGeschwindigkeit, preismodell);
+        assertEquals(preis, calculated, 0.001, "Der berechnete Preis für einen nicht-monatlichen Vertrag sollte korrekt sein.");
     }
 }

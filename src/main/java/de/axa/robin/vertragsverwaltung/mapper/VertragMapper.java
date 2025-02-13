@@ -1,18 +1,17 @@
-package de.axa.robin.vertragsverwaltung.api;
+package de.axa.robin.vertragsverwaltung.mapper;
 
 import de.axa.robin.vertragsverwaltung.model.*;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
-import de.axa.robin.vertragsverwaltung.models.Preis;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 /**
- * Mapper interface for converting between VertragDTO and Vertrag.
+ * Mapper interface for converting Vertrag-Details.
  */
 @org.mapstruct.Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface Mapper {
+public interface VertragMapper {
     /**
      * Converts a VertragDTO to a Vertrag.
      *
@@ -27,6 +26,12 @@ public interface Mapper {
     @Mapping(target = "partner", source = "partner")
     Vertrag toVertrag(VertragDTO vertragDTO);
 
+    /**
+     * Converts a PartnerDTO to a Partner.
+     *
+     * @param partnerDTO the PartnerDTO to convert
+     * @return the converted Partner
+     */
     @Mapping(target = "vorname", source = "vorname")
     @Mapping(target = "nachname", source = "nachname")
     @Mapping(target = "geschlecht", source = "geschlecht")
@@ -39,6 +44,12 @@ public interface Mapper {
     @Mapping(target = "bundesland", source = "bundesland")
     Partner toPartner(PartnerDTO partnerDTO);
 
+    /**
+     * Converts a FahrzeugDTO to a Fahrzeug.
+     *
+     * @param fahrzeugDTO the FahrzeugDTO to convert
+     * @return the converted Fahrzeug
+     */
     @Mapping(target = "amtlichesKennzeichen", source = "amtlichesKennzeichen")
     @Mapping(target = "hersteller", source = "hersteller")
     @Mapping(target = "typ", source = "typ")
@@ -46,11 +57,12 @@ public interface Mapper {
     @Mapping(target = "wagnisskennziffer", source = "wagnisskennziffer")
     Fahrzeug toFahrzeug(FahrzeugDTO fahrzeugDTO);
 
-    @Mapping(target = "speed", source = "speed")
-    @Mapping(target = "age", source = "age")
-    @Mapping(target = "faktor", source = "faktor")
-    Preis toPreis(PreisDTO preisDTO);
-
+    /**
+     * Converts a Vertrag to a VertragApi.
+     *
+     * @param vertrag the Vertrag to convert
+     * @return the converted VertragApi
+     */
     @Mapping(target = "vsnr", source = "vsnr")
     @Mapping(target = "preis", source = "preis")
     @Mapping(target = "monatlich", source = "monatlich")

@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.api;
+package de.axa.robin.vertragsverwaltung.mapper;
 
 import de.axa.robin.vertragsverwaltung.model.*;
 import de.axa.robin.vertragsverwaltung.models.*;
@@ -10,13 +10,13 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MapperTest {
+public class VertragMapperTest {
 
-    private Mapper mapper;
+    private VertragMapper vertragMapper;
 
     @BeforeEach
     public void setUp() {
-        mapper = Mappers.getMapper(Mapper.class);
+        vertragMapper = Mappers.getMapper(VertragMapper.class);
     }
 
     @Test
@@ -30,7 +30,7 @@ public class MapperTest {
         vertragDTO.setFahrzeug(new FahrzeugDTO());
         vertragDTO.setPartner(new PartnerDTO());
 
-        Vertrag vertrag = mapper.toVertrag(vertragDTO);
+        Vertrag vertrag = vertragMapper.toVertrag(vertragDTO);
 
         assertNotNull(vertrag);
         assertEquals(vertragDTO.getMonatlich(), vertrag.isMonatlich());
@@ -48,7 +48,7 @@ public class MapperTest {
         partnerDTO.setVorname("John");
         partnerDTO.setNachname("Doe");
 
-        Partner partner = mapper.toPartner(partnerDTO);
+        Partner partner = vertragMapper.toPartner(partnerDTO);
 
         assertNotNull(partner);
         assertEquals(partnerDTO.getVorname(), partner.getVorname());
@@ -62,7 +62,7 @@ public class MapperTest {
         fahrzeugDTO.setAmtlichesKennzeichen("ABC123");
         fahrzeugDTO.setHersteller("BMW");
 
-        Fahrzeug fahrzeug = mapper.toFahrzeug(fahrzeugDTO);
+        Fahrzeug fahrzeug = vertragMapper.toFahrzeug(fahrzeugDTO);
 
         assertNotNull(fahrzeug);
         assertEquals(fahrzeugDTO.getAmtlichesKennzeichen(), fahrzeug.getAmtlichesKennzeichen());
@@ -70,16 +70,28 @@ public class MapperTest {
     }
 
     @Test
-    public void testToPreis() {
-        PreisDTO preisDTO = new PreisDTO();
-        // Set properties on preisDTO as needed for the test
-        preisDTO.setSpeed(0.1);
-        preisDTO.setAge(0.5);
+    public void testToVertragApi() {
+        Vertrag vertrag = new Vertrag();
+        // Set properties on vertrag as needed for the test
+        vertrag.setVsnr(123456789);
+        vertrag.setPreis(100.0);
+        vertrag.setMonatlich(true);
+        vertrag.setVersicherungsbeginn(LocalDate.of(2023, 1, 1));
+        vertrag.setVersicherungsablauf(LocalDate.of(2023, 12, 31));
+        vertrag.setAntragsDatum(LocalDate.of(2022, 12, 1));
+        vertrag.setFahrzeug(new Fahrzeug());
+        vertrag.setPartner(new Partner());
 
-        Preis preis = mapper.toPreis(preisDTO);
+        VertragApi vertragApi = vertragMapper.toVertragApi(vertrag);
 
-        assertNotNull(preis);
-        assertEquals(preisDTO.getSpeed(), preis.getSpeed());
-        assertEquals(preisDTO.getAge(), preis.getAge());
+        assertNotNull(vertragApi);
+        assertEquals(vertrag.getVsnr(), vertragApi.getVsnr());
+        assertEquals(vertrag.getPreis(), vertragApi.getPreis());
+        assertEquals(vertrag.isMonatlich(), vertragApi.getMonatlich());
+        assertEquals(vertrag.getVersicherungsbeginn(), vertragApi.getVersicherungsbeginn());
+        assertEquals(vertrag.getVersicherungsablauf(), vertragApi.getVersicherungsablauf());
+        assertEquals(vertrag.getAntragsDatum(), vertragApi.getAntragsDatum());
+        assertNotNull(vertragApi.getFahrzeug());
+        assertNotNull(vertragApi.getPartner());
     }
 }

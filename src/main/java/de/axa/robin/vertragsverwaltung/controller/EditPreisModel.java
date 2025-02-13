@@ -1,7 +1,9 @@
 package de.axa.robin.vertragsverwaltung.controller;
 
 import de.axa.robin.vertragsverwaltung.models.Preis;
-import de.axa.robin.vertragsverwaltung.services.PreisService;
+import de.axa.robin.vertragsverwaltung.models.Vertrag;
+import de.axa.robin.vertragsverwaltung.services.PreisModelService;
+import de.axa.robin.vertragsverwaltung.services.VertragsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +16,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 /**
  * This class provides methods to edit the price model of insurance contracts.
  */
 @Controller
-public class EditPreis {
-    private static final Logger logger = LoggerFactory.getLogger(EditPreis.class);
+public class EditPreisModel {
+    private static final Logger logger = LoggerFactory.getLogger(EditPreisModel.class);
 
     @Autowired
-    private PreisService preisService;
+    private PreisModelService preisModelService;
+
+    @Autowired
+    private VertragsService vertragsService;
 
     /**
      * Displays the edit price page with the current price factors.
@@ -34,7 +40,7 @@ public class EditPreis {
     @GetMapping("/editPreis")
     public String editPreis(Model model) {
         logger.info("Displaying edit price page");
-        Preis preismodell = preisService.getPreismodell();
+        Preis preismodell = preisModelService.getPreismodell();
         model.addAttribute("preismodell", preismodell);
         logger.debug("Current price factors loaded: {}", preismodell);
         return "editPreis";
@@ -52,7 +58,7 @@ public class EditPreis {
         logger.info("Calculating new price with provided factors: {}", preismodell);
         logger.debug("Loaded current factors from repository: factor={}, factorage={}, factorspeed={}", preismodell.getFaktor(), preismodell.getAge(), preismodell.getSpeed());
         Map<String, Object> response = new HashMap<>();
-        response.put("preis", preisService.updatePreismodell(preismodell, true) + " €");
+        response.put("preis", preisModelService.updatePreisAndModell(preismodell, true, vertragsService.getVertrage()) + " €");
         logger.debug("New price calculated: {}", response.get("preis"));
         return response;
     }
@@ -66,7 +72,8 @@ public class EditPreis {
      */
     @PostMapping("/editPreis")
     public String editPreis(@ModelAttribute Preis preismodell, Model model) {
-        model.addAttribute("confirm", "Preise erfolgreich angepasst. Neue Einnahmensumme: "+preisService.updatePreismodell(preismodell, false)+"€.");
+        List<Vertrag> vertrage = vertragsService.getVertrage();
+        model.addAttribute("confirm", "Preise erfolgreich angepasst. Neue Einnahmensumme: "+ preisModelService.updatePreisAndModell(preismodell, false, vertrage)+"€.");
         logger.info("Prices successfully updated.");
         return "home";
     }

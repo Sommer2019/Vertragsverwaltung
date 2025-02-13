@@ -1,219 +1,221 @@
 package de.axa.robin.vertragsverwaltung.controller;
 
-import de.axa.robin.vertragsverwaltung.services.CreateUnsetableData;
-import de.axa.robin.vertragsverwaltung.config.CustomTestConfig;
+import de.axa.robin.vertragsverwaltung.VertragsverwaltungApplication;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
+import de.axa.robin.vertragsverwaltung.services.PreisModelService;
 import de.axa.robin.vertragsverwaltung.services.VertragsService;
-import de.axa.robin.vertragsverwaltung.validators.InputValidator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.Import;
-import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
-@Import(CustomTestConfig.class)
-class HandleVertragTest {
+@SpringBootTest(classes = VertragsverwaltungApplication.class)
+@AutoConfigureMockMvc
+public class HandleVertragTest {
 
-    @InjectMocks
-    private HandleVertrag handleVertrag;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockitoBean
     private VertragsService vertragsService;
 
-    @Mock
+    @MockitoBean
     private MenuSpring menuSpring;
 
-    @Mock
-    private CreateUnsetableData createUnsetableData;
-
-    @Mock
-    private InputValidator inputValidator;
-
-    @Mock
-    private BindingResult bindingResult;
-
-    private Model model;
-
-    @BeforeEach
-    void setUp() {
-        model = new ExtendedModelMap();
-    }
+    @MockitoBean
+    private PreisModelService preisModelService;
 
     /**
-     * Testet, dass processPrintVertrag bei leerer VSNR den View "home" zurückgibt.
+     * Hilfsmethode zur Erstellung eines gültigen Vertrags.
      */
-    @Test
-    void testProcessPrintVertrag_emptyVsnr() {
-        String view = handleVertrag.processPrintVertrag("", model);
-        assertEquals("home", view);
-    }
-
-    /**
-     * Testet, dass processPrintVertrag bei einer ungültigen (nicht-numerischen) VSNR "Ungültige VSNR!" im Modell setzt.
-     */
-    @Test
-    void testProcessPrintVertrag_invalidVsnr() {
-        String view = handleVertrag.processPrintVertrag("abc", model);
-        assertEquals("home", view);
-        assertEquals("Ungültige VSNR!", model.asMap().get("result"));
-    }
-
-    /**
-     * Testet den Fall, wenn der Vertrag nicht gefunden wird.
-     */
-    @Test
-    void testProcessPrintVertrag_notFound() {
-        String vsnr = "123";
-        int vsnrInt = 123;
-        when(vertragsService.getVertrag(vsnrInt)).thenReturn(null);
-
-        String view = handleVertrag.processPrintVertrag(vsnr, model);
-        assertEquals("home", view);
-        assertEquals("Vertrag nicht gefunden!", model.asMap().get("result"));
-        verify(menuSpring).setVsnr(vsnrInt);
-    }
-
-    /**
-     * Testet den erfolgreichen Abruf eines vorhandenen Vertrags.
-     */
-    @Test
-    void testProcessPrintVertrag_found() {
-        String vsnr = "456";
-        int vsnrInt = 456;
-        Vertrag vertrag = createDummyVertrag(vsnrInt);
-        when(vertragsService.getVertrag(vsnrInt)).thenReturn(vertrag);
-
-        String view = handleVertrag.processPrintVertrag(vsnr, model);
-        assertEquals("handleVertrag", view);
-        // Überprüft, ob das Modell u.a. den Vertrag und die VSNR enthält
-        assertTrue(model.asMap().containsKey("vertrag"));
-        assertTrue(model.asMap().containsKey("vsnr"));
-        verify(menuSpring).setVsnr(vsnrInt);
-    }
-
-    /**
-     * Testet, dass die Methode showDelete den View "handleVertrag" zurückgibt und das Attribut "showFields" auf true gesetzt wird.
-     */
-    @Test
-    void testShowDelete() {
-        String view = handleVertrag.showDelete(model);
-        assertEquals("handleVertrag", view);
-        assertEquals(true, model.asMap().get("showFields"));
-    }
-
-    /**
-     * Testet die deleteVertrag-Methode: Der Vertrag wird gelöscht und es wird eine Bestätigung im Modell gesetzt.
-     */
-    @Test
-    void testDeleteVertrag() {
-        int vsnr = 789;
-        when(menuSpring.getVsnr()).thenReturn(vsnr);
-
-        String view = handleVertrag.deleteVertrag(model);
-        assertEquals("home", view);
-        assertEquals("Vertrag erfolgreich gelöscht!", model.asMap().get("confirm"));
-    }
-
-    /**
-     * Testet editVertrag, wenn Validierungsfehler vorliegen. In diesem Fall
-     * soll der View "handleVertrag" zurückgegeben und das Modell mit dem existierenden Vertrag befüllt werden.
-     */
-    @Test
-    void testEditVertrag_withErrors() {
-        Vertrag inputVertrag = createDummyVertrag(111);
-        when(bindingResult.hasErrors()).thenReturn(true);
-
-        // Um den richtigen Vertrag für das Setup bereitzustellen, wird der interne Zähler "handledVertrag" gesetzt.
-        setHandledVertrag();
-        Vertrag existingVertrag = createDummyVertrag(111);
-        when(vertragsService.getVertrag(111)).thenReturn(existingVertrag);
-
-        String view = handleVertrag.editVertrag(inputVertrag, bindingResult, true, model);
-        assertEquals("handleVertrag", view);
-        assertTrue(model.asMap().containsKey("editVisible"));
-        assertEquals(true, model.asMap().get("editVisible"));
-        // Das Modell sollte auch den (erneuerten) Vertrag enthalten
-        assertTrue(model.asMap().containsKey("vertrag"));
-    }
-
-    /**
-     * Testet editVertrag ohne Validierungsfehler: Der Vertrag wird gelöscht,
-     * ein neuer Preis wird berechnet und eine Bestätigung im Modell gesetzt.
-     */
-    @Test
-    void testEditVertrag_noErrors() {
-        Vertrag inputVertrag = createDummyVertrag(222);
-        when(bindingResult.hasErrors()).thenReturn(false);
-        int vsnr = 222;
-        when(menuSpring.getVsnr()).thenReturn(vsnr);
-        inputVertrag.setMonatlich(true);
-
-        double newPrice = 123.45;
-        String view = handleVertrag.editVertrag(inputVertrag, bindingResult, false, model);
-        assertEquals("home", view);
-        String expectedMsg = "Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet! Neuer Preis: " +
-                String.valueOf(newPrice).replace('.', ',') + "€";
-        assertEquals(expectedMsg, model.asMap().get("confirm"));
-    }
-
-    /**
-     * Hilfsmethode zur Erstellung eines Dummy-Vertrags für die Tests.
-     */
-    private Vertrag createDummyVertrag(int vsnr) {
-        Vertrag vertrag = new Vertrag();
-        Fahrzeug fahrzeug = new Fahrzeug();
-        fahrzeug.setAmtlichesKennzeichen("ABC123");
-        fahrzeug.setHersteller("Hersteller");
-        fahrzeug.setTyp("Typ");
-        fahrzeug.setHoechstgeschwindigkeit(200);
-        fahrzeug.setWagnisskennziffer(112);
-
+    private Vertrag createValidVertrag(int vsnr, double preis, boolean monatlich, LocalDate beginn, LocalDate ablauf) {
         Partner partner = new Partner();
         partner.setVorname("Max");
         partner.setNachname("Mustermann");
         partner.setGeschlecht("M");
         partner.setGeburtsdatum(LocalDate.of(1990, 1, 1));
-        partner.setStrasse("Musterstrasse");
+        partner.setStrasse("Musterstraße");
         partner.setHausnummer("1");
         partner.setPlz("12345");
         partner.setStadt("Musterstadt");
-        partner.setBundesland("Bayern");
+        partner.setBundesland("Bundesland");
         partner.setLand("Deutschland");
 
-        vertrag.setFahrzeug(fahrzeug);
-        vertrag.setPartner(partner);
+        Fahrzeug fahrzeug = new Fahrzeug();
+        fahrzeug.setAmtlichesKennzeichen("AB-123");
+        fahrzeug.setHersteller("VW");
+        fahrzeug.setTyp("Golf");
+        fahrzeug.setHoechstgeschwindigkeit(200);
+        fahrzeug.setWagnisskennziffer(112);
+
+        Vertrag vertrag = new Vertrag(fahrzeug, partner);
         vertrag.setVsnr(vsnr);
-        vertrag.setPreis(100.0);
-        vertrag.setMonatlich(false);
-        vertrag.setVersicherungsbeginn(LocalDate.now().minusDays(1));
-        vertrag.setVersicherungsablauf(LocalDate.now().plusDays(365));
-        vertrag.setAntragsDatum(LocalDate.now().minusDays(10));
+        vertrag.setPreis(preis);
+        vertrag.setMonatlich(monatlich);
+        vertrag.setVersicherungsbeginn(beginn);
+        vertrag.setVersicherungsablauf(ablauf);
+        vertrag.setAntragsDatum(LocalDate.now());
         return vertrag;
     }
 
     /**
-     * Hilfsmethode, um mittels Reflection den privaten Zähler "handledVertrag" in der Controller-Klasse zu setzen.
+     * Testet den POST-Endpunkt "/home" mit gültiger VSNR, sodass ein existierender Vertrag gefunden und
+     * das Model korrekt befüllt wird.
      */
-    private void setHandledVertrag() {
-        try {
-            java.lang.reflect.Field field = HandleVertrag.class.getDeclaredField("handledVertrag");
-            field.setAccessible(true);
-            field.set(handleVertrag, 111);
-        } catch (Exception e) {
-            fail("Failed to set handledVertrag: " + e.getMessage());
-        }
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testProcessPrintVertragSuccess() throws Exception {
+        int vsnr = 123;
+        Vertrag vertrag = createValidVertrag(vsnr, 100.0, true, LocalDate.now(), LocalDate.now().plusDays(30));
+        Mockito.when(vertragsService.getVertrag(vsnr)).thenReturn(vertrag);
+        Mockito.doNothing().when(menuSpring).setVsnr(vsnr);
+        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+
+        mockMvc.perform(post("/home")
+                        .param("vsnr", String.valueOf(vsnr)).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("vertrag"))
+                .andExpect(model().attribute("vsnr", vsnr))
+                .andExpect(view().name("handleVertrag"));
+    }
+
+    /**
+     * Testet den POST-Endpunkt "/home" mit ungültigem VSNR-Format.
+     */
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testProcessPrintVertragInvalidFormat() throws Exception {
+        mockMvc.perform(post("/home")
+                        .param("vsnr", "abc").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("result", "Ungültige VSNR!"))
+                .andExpect(view().name("home"));
+    }
+
+    /**
+     * Testet den POST-Endpunkt "/home", wenn der Vertrag nicht gefunden wird.
+     */
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testProcessPrintVertragNotFound() throws Exception {
+        int vsnr = 123;
+        Mockito.doNothing().when(menuSpring).setVsnr(vsnr);
+        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+        Mockito.when(vertragsService.getVertrag(vsnr)).thenThrow(new IllegalArgumentException("Not found"));
+
+        mockMvc.perform(post("/home")
+                        .param("vsnr", String.valueOf(vsnr)).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("result", "Vertrag nicht gefunden!"))
+                .andExpect(view().name("home"));
+    }
+
+    // Beispiel für testDeleteVertrag: Verwende eq() für vsnr
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testDeleteVertrag() throws Exception {
+        int vsnr = 123;
+        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+        // Verwende eq(vsnr) statt des Rohwerts
+        Mockito.doNothing().when(vertragsService).vertragLoeschen(ArgumentMatchers.eq(vsnr), ArgumentMatchers.anyList());
+
+        mockMvc.perform(post("/showDelete").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("confirm", "Vertrag erfolgreich gelöscht!"))
+                .andExpect(view().name("home"));
+    }
+
+    // Beispiel für testEditVertragSuccess: Stub die Methode mit thenReturn()
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testEditVertragSuccess() throws Exception {
+        int vsnr = 123;
+        Vertrag vertrag = createValidVertrag(vsnr, 150.0, true, LocalDate.now(), LocalDate.now().plusDays(30));
+        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+        // Statt doNothing(), simuliere ein erfolgreiches Bearbeitungsergebnis
+        Mockito.when(vertragsService.vertragBearbeiten(
+                        ArgumentMatchers.any(Vertrag.class),
+                        ArgumentMatchers.eq(vsnr),
+                        ArgumentMatchers.any(),
+                        ArgumentMatchers.any()))
+                .thenReturn(vertrag);
+
+        mockMvc.perform(post("/showEdit")
+                        .param("editVisible", "true")
+                        // ... weitere Parameter ...
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("confirm"))
+                .andExpect(model().attribute("confirm", containsString("Vertrag mit VSNR " + vsnr + " erfolgreich bearbeitet!")))
+                .andExpect(view().name("home"));
+    }
+
+
+    /**
+     * Testet den POST-Endpunkt "/showEdit", wenn während der Bearbeitung eine IllegalArgumentException geworfen wird.
+     */
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void testEditVertragValidationError() throws Exception {
+        int vsnr = 123;
+        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+        // Simuliere, dass bei der Bearbeitung eine Exception auftritt
+        Mockito.doThrow(new IllegalArgumentException("Validation error"))
+                .when(vertragsService).vertragBearbeiten(
+                        ArgumentMatchers.any(Vertrag.class),
+                        ArgumentMatchers.eq(vsnr),
+                        ArgumentMatchers.any(),
+                        ArgumentMatchers.any());
+        // Simuliere, dass ein bestehender Vertrag zurückgegeben wird, um das Model erneut zu befüllen
+        Vertrag existingVertrag = createValidVertrag(vsnr, 150.0, true, LocalDate.now(), LocalDate.now().plusDays(30));
+        Mockito.when(vertragsService.getVertrag(vsnr)).thenReturn(existingVertrag);
+
+        mockMvc.perform(post("/showEdit")
+                        .param("editVisible", "true")
+                        .param("monatlich", "true")
+                        .param("versicherungsbeginn", LocalDate.now().toString())
+                        .param("versicherungsablauf", LocalDate.now().plusDays(30).toString())
+                        .param("antragsDatum", LocalDate.now().toString())
+                        // Partner-Daten
+                        .param("partner.vorname", "Max")
+                        .param("partner.nachname", "Mustermann")
+                        .param("partner.geschlecht", "M")
+                        .param("partner.geburtsdatum", "1990-01-01")
+                        .param("partner.strasse", "Musterstraße")
+                        .param("partner.hausnummer", "1")
+                        .param("partner.plz", "12345")
+                        .param("partner.stadt", "Musterstadt")
+                        .param("partner.bundesland", "Bundesland")
+                        .param("partner.land", "Deutschland")
+                        // Fahrzeug-Daten
+                        .param("fahrzeug.amtlichesKennzeichen", "AB-123")
+                        .param("fahrzeug.hersteller", "VW")
+                        .param("fahrzeug.typ", "Golf")
+                        .param("fahrzeug.hoechstgeschwindigkeit", "200")
+                        .param("fahrzeug.wagnisskennziffer", "112").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("editVisible"))
+                .andExpect(model().attribute("editVisible", true))
+                .andExpect(view().name("handleVertrag"));
     }
 }

@@ -1,10 +1,9 @@
 package de.axa.robin.vertragsverwaltung.services;
 
-import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
-import de.axa.robin.vertragsverwaltung.models.Partner;
 import de.axa.robin.vertragsverwaltung.models.Preis;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import de.axa.robin.vertragsverwaltung.storage.Repository;
+import de.axa.robin.vertragsverwaltung.util.VertragUtil;
 import de.axa.robin.vertragsverwaltung.validators.InputValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +12,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Service class for handling contract-related operations.
+ */
 @Service
 @Component
 public class VertragsService {
@@ -24,7 +27,7 @@ public class VertragsService {
     @Autowired
     private InputValidator inputValidator;
     @Autowired
-    private CreateUnsetableData createUnsetableData;
+    private VertragUtil vertragUtil;
 
     /**
      * Retrieves all contracts.
@@ -44,8 +47,7 @@ public class VertragsService {
      */
     public Vertrag getVertrag(int vsnr) {
         logger.info("Retrieving contract with VSNR: {}", vsnr);
-        List<Vertrag> vertrage;
-        vertrage = getVertrage();
+        List<Vertrag> vertrage = getVertrage();
         Vertrag vertrag = vertrage.stream()
                 .filter(v -> v.getVsnr() == vsnr)
                 .findFirst()
@@ -62,14 +64,17 @@ public class VertragsService {
     /**
      * Creates a new contract.
      *
-     * @param vertrag the contract to create
+     * @param vertrag     the contract to create
+     * @param preismodell the pricing model to use
+     * @param result      the binding result for validation
      * @return the created contract
+     * @throws IllegalArgumentException if validation errors are found
      */
     public Vertrag vertragAnlegen(Vertrag vertrag, Preis preismodell, BindingResult result) throws IllegalArgumentException {
         logger.info("Creating new contract: {}", vertrag);
         List<Vertrag> vertrage = getVertrage();
-        vertrag.setVsnr(createUnsetableData.createvsnr(vertrage));
-        vertrag.setPreis(createUnsetableData.createPreis(vertrag.isMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit(), preismodell));
+        vertrag.setVsnr(createvsnr(vertrage));
+        vertrag.setPreis(createPreis(vertrag.isMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit(), preismodell));
         inputValidator.validateVertrag(vertrage, vertrag, result);
         if (result != null && result.hasErrors()) {
             logger.warn("Validation errors found: {}", result.getAllErrors());
@@ -81,17 +86,27 @@ public class VertragsService {
         return vertrag;
     }
 
+    /**
+     * Edits an existing contract.
+     *
+     * @param vertragalt  the old contract details
+     * @param vsnr        the VSNR of the contract to edit
+     * @param preismodell the pricing model to use
+     * @param result      the binding result for validation
+     * @return the edited contract
+     * @throws IllegalArgumentException if validation errors are found
+     */
     public Vertrag vertragBearbeiten(Vertrag vertragalt, int vsnr, Preis preismodell, BindingResult result) throws IllegalArgumentException {
-        Vertrag vertragneu = mergeVertrage(vertragalt, vertragalt);
+        Vertrag vertragneu = vertragUtil.mergeVertrage(getVertrag(vsnr), vertragalt);
         List<Vertrag> vertrage = getVertrage();
-        if(result!=null){
+        if (result != null) {
             inputValidator.validateVertrag(vertrage, vertragneu, result);
             if (result.hasErrors()) {
                 logger.warn("Validation errors found: {}", result.getAllErrors());
                 throw new IllegalArgumentException("Validation errors found: " + result.getAllErrors());
             }
         }
-        vertragneu.setPreis(createUnsetableData.createPreis(vertragneu.isMonatlich(), vertragneu.getPartner().getGeburtsdatum(), vertragneu.getFahrzeug().getHoechstgeschwindigkeit(), preismodell));
+        vertragneu.setPreis(createPreis(vertragneu.isMonatlich(), vertragneu.getPartner().getGeburtsdatum(), vertragneu.getFahrzeug().getHoechstgeschwindigkeit(), preismodell));
         vertragneu.setVsnr(vsnr);
         vertragLoeschen(vsnr, vertrage);
         vertrage = getVertrage();
@@ -103,15 +118,14 @@ public class VertragsService {
     /**
      * Deletes a contract by its VSNR.
      *
-     * @param vsnr the VSNR of the contract to delete
+     * @param vsnr     the VSNR of the contract to delete
+     * @param vertrage the list of contracts
      */
     public void vertragLoeschen(int vsnr, List<Vertrag> vertrage) {
         logger.info("Deleting contract with ID: {}", vsnr);
         boolean removed = vertrage.removeIf(v -> v.getVsnr() == vsnr);
         if (removed) {
             logger.info("Contract successfully deleted with VSNR: {}", vsnr);
-            logger.info("Contract removed: " + removed);
-            logger.info("VSNR: " + vsnr);
             repository.speichereVertrage(vertrage);
         } else {
             logger.warn("Contract not found for deletion with VSNR: {}", vsnr);
@@ -119,84 +133,51 @@ public class VertragsService {
     }
 
     /**
-     * Edits an existing insurance contract (Vertrag) identified by the given vsnr.
-     * Updates the fields of the existing contract with the values from the provided contract.
+     * Generates a unique insurance number (VSNR).
      *
-     * @param vertrag the contract containing the new values
-     * @return the updated contract, or null if no contract with the given vsnr exists
+     * @param vertrage the list of contracts
+     * @return the generated insurance number
+     * @throws IllegalStateException if no free insurance numbers are available
      */
-    public Vertrag mergeVertrage(Vertrag vertrag, Vertrag vertragold) {
-        logger.info("Editing contract with VSNR: {}", vertragold.getVsnr());
-        if (vertrag.getVersicherungsbeginn() != null) {
-            vertragold.setVersicherungsbeginn(vertrag.getVersicherungsbeginn());
-            logger.debug("Updated insurance start date to: {}", vertrag.getVersicherungsbeginn());
+    public int createvsnr(List<Vertrag> vertrage) {
+        logger.info("Generating unique insurance number (VSNR)");
+        int vsnr = 10000000;
+        while (inputValidator.vertragExistiert(vertrage, vsnr)) {
+            vsnr++;
         }
-        if (vertrag.getVersicherungsablauf() != null) {
-            vertragold.setVersicherungsablauf(vertrag.getVersicherungsablauf());
-            logger.debug("Updated insurance expiry date to: {}", vertrag.getVersicherungsablauf());
+        if (vsnr > 99999999) {
+            logger.error("No free insurance numbers available");
+            throw new IllegalStateException("Keine freien Versicherungsnummern mehr!");
         }
-        if (vertrag.getAntragsDatum() != null) {
-            vertragold.setAntragsDatum(vertrag.getAntragsDatum());
-            logger.debug("Updated application date to: {}", vertrag.getAntragsDatum());
+        logger.debug("Generated VSNR: {}", vsnr);
+        return vsnr;
+    }
+
+    /**
+     * Calculates the insurance price based on various factors.
+     *
+     * @param monatlich              whether the payment is monthly
+     * @param geburtsDatum           the birthdate of the insured person
+     * @param hoechstGeschwindigkeit the maximum speed of the vehicle
+     * @param preismodell            the pricing model to use
+     * @return the calculated insurance price
+     * @throws IllegalStateException if an error occurs during price calculation
+     */
+    public double createPreis(boolean monatlich, LocalDate geburtsDatum, int hoechstGeschwindigkeit, Preis preismodell) {
+        logger.info("Calculating insurance price");
+        double preis;
+        int alter = LocalDate.now().getYear() - geburtsDatum.getYear();
+        try {
+            preis = (alter * preismodell.getAge() + hoechstGeschwindigkeit * preismodell.getSpeed()) * preismodell.getFaktor();
+            if (!monatlich) {
+                preis = preis * 11;
+            }
+        } catch (Exception e) {
+            logger.error("Error calculating price", e);
+            throw new IllegalStateException(e);
         }
-        if (vertrag.getFahrzeug() != null) {
-            Fahrzeug f = vertrag.getFahrzeug();
-            if (f.getHersteller() != null) {
-                vertragold.getFahrzeug().setHersteller(f.getHersteller());
-                logger.debug("Updated vehicle manufacturer to: {}", f.getHersteller());
-            }
-            if (f.getHoechstgeschwindigkeit() != 0) {
-                vertragold.getFahrzeug().setHoechstgeschwindigkeit(f.getHoechstgeschwindigkeit());
-                logger.debug("Updated vehicle speed to: {}", f.getHoechstgeschwindigkeit());
-            }
-            if (f.getWagnisskennziffer() != 0) {
-                vertragold.getFahrzeug().setWagnisskennziffer(f.getWagnisskennziffer());
-                logger.debug("Updated vehicle risk number to: {}", f.getWagnisskennziffer());
-            }
-        }
-        if (vertrag.getPartner() != null) {
-            Partner p = vertrag.getPartner();
-            if (p.getVorname() != null) {
-                vertragold.getPartner().setVorname(p.getVorname());
-                logger.debug("Updated partner first name to: {}", p.getVorname());
-            }
-            if (p.getNachname() != null) {
-                vertragold.getPartner().setNachname(p.getNachname());
-                logger.debug("Updated partner last name to: {}", p.getNachname());
-            }
-            if (p.getGeschlecht() != null) {
-                vertragold.getPartner().setGeschlecht(p.getGeschlecht());
-                logger.debug("Updated partner gender to: {}", p.getGeschlecht());
-            }
-            if (p.getGeburtsdatum() != null) {
-                vertragold.getPartner().setGeburtsdatum(p.getGeburtsdatum());
-                logger.debug("Updated partner birth date to: {}", p.getGeburtsdatum());
-            }
-            if (p.getLand() != null) {
-                vertragold.getPartner().setLand(p.getLand());
-                logger.debug("Updated partner country to: {}", p.getLand());
-            }
-            if (p.getStadt() != null) {
-                vertragold.getPartner().setStadt(p.getStadt());
-                logger.debug("Updated partner city to: {}", p.getStadt());
-            }
-            if (p.getStrasse() != null) {
-                vertragold.getPartner().setStrasse(p.getStrasse());
-                logger.debug("Updated partner street to: {}", p.getStrasse());
-            }
-            if (p.getHausnummer() != null) {
-                vertragold.getPartner().setHausnummer(p.getHausnummer());
-                logger.debug("Updated partner house number to: {}", p.getHausnummer());
-            }
-            if (p.getPlz() != null) {
-                vertragold.getPartner().setPlz(p.getPlz());
-                logger.debug("Updated partner postal code to: {}", p.getPlz());
-            }
-            if (p.getBundesland() != null) {
-                vertragold.getPartner().setBundesland(p.getBundesland());
-                logger.debug("Updated partner state to: {}", p.getBundesland());
-            }
-        }
-        return vertragold;
+        double roundedPreis = Math.round(preis * 100.0) / 100.0;
+        logger.debug("Calculated price: {}", roundedPreis);
+        return roundedPreis;
     }
 }

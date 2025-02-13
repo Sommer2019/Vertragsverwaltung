@@ -7,11 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -41,7 +41,7 @@ public class SecurityConfigTest {
 
     /**
      * Testet, dass öffentliche Endpunkte (z. B. "/" und "/login") ohne Authentifizierung
-     * zugänglich sind. Da keine Controller implementiert sind, kann ein Status 404 zurückgegeben werden,
+     * zugänglich sind. Da keine konkrete Controller implementiert sind, kann ein Status 404 zurückgegeben werden,
      * es darf jedoch keine Weiterleitung (302) erfolgen.
      */
     @Test
@@ -95,5 +95,40 @@ public class SecurityConfigTest {
         mockMvc.perform(post("/logout"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/?logout"));
+    }
+
+    /**
+     * Testet, dass API-Endpunkte ohne Authentifizierung nicht zugänglich sind.
+     */
+    @Test
+    public void testApiAccessWithoutAuthentication() throws Exception {
+        String[] apiUrls = {"/api/preisverwaltung/", "/api/vertragsverwaltung/"};
+        for (String url : apiUrls) {
+            mockMvc.perform(get(url))
+                    .andExpect(status().is3xxRedirection());
+        }
+    }
+
+    /**
+     * Testet, dass API-Endpunkte mit HTTP Basic Auth und gültigen Anmeldeinformationen zugänglich sind.
+     * Hier wird der Benutzer "apiuser" mit der Rolle API_USER verwendet.
+     * Da in der Testumgebung eventuell kein Controller existiert, ist ein 404 Not Found akzeptabel,
+     * solange keine Sicherheitsumleitung erfolgt.
+     */
+    @Test
+    public void testApiAccessWithBasicAuth() throws Exception {
+        mockMvc.perform(get("/api/preisverwaltung/").with(httpBasic("apiuser", "apiuser")))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    /**
+     * Testet, dass API-Endpunkte mit einem Mock-User, der die Rolle API_USER besitzt, erreichbar sind.
+     * Auch hier ist ein 404 Not Found akzeptabel, sofern keine Sicherheitsumleitung erfolgt.
+     */
+    @Test
+    @WithMockUser(username = "apiuser", roles = {"API_USER"})
+    public void testApiAccessWithMockUser() throws Exception {
+        mockMvc.perform(get("/api/vertragsverwaltung/"))
+                .andExpect(status().is2xxSuccessful());
     }
 }

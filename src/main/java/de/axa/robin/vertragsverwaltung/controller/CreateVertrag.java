@@ -1,10 +1,9 @@
 package de.axa.robin.vertragsverwaltung.controller;
 
-import de.axa.robin.vertragsverwaltung.services.CreateUnsetableData;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
-import de.axa.robin.vertragsverwaltung.services.PreisService;
+import de.axa.robin.vertragsverwaltung.services.PreisModelService;
 import de.axa.robin.vertragsverwaltung.services.VertragsService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -33,11 +32,9 @@ public class CreateVertrag {
     @Autowired
     private VertragsService vertragsService;
     @Autowired
-    private CreateUnsetableData createUnsetableData;
-    @Autowired
     private MenuSpring menuSpring;
     @Autowired
-    private PreisService preisService;
+    private PreisModelService preisModelService;
 
     /**
      * Handles GET requests for creating a new insurance contract.
@@ -47,7 +44,7 @@ public class CreateVertrag {
      */
     @GetMapping("/createVertrag")
     public String createVertrag(Model model) {
-        menuSpring.setVsnr(createUnsetableData.createvsnr(vertragsService.getVertrage()));
+        menuSpring.setVsnr(vertragsService.createvsnr(vertragsService.getVertrage()));
         Vertrag vertrag = initializeVertrag();
 
         model.addAttribute("vertrag", vertrag);
@@ -67,7 +64,7 @@ public class CreateVertrag {
     @PostMapping("/createVertrag")
     public String createVertrag(@ModelAttribute @Valid Vertrag vertrag, BindingResult result, Model model) {
         try {
-            vertragsService.vertragAnlegen(vertrag, preisService.getPreismodell(), result);
+            vertragsService.vertragAnlegen(vertrag, preisModelService.getPreismodell(), result);
         } catch (IllegalArgumentException e) {
             model.addAttribute("vsnr", menuSpring.getVsnr());
             return "createVertrag";
@@ -137,7 +134,7 @@ public class CreateVertrag {
     private double calculatePreis(Vertrag vertrag) {
         Partner partner = vertrag.getPartner();
         Fahrzeug fahrzeug = vertrag.getFahrzeug();
-        double preis = createUnsetableData.createPreis(vertrag.isMonatlich(), partner.getGeburtsdatum(), fahrzeug.getHoechstgeschwindigkeit(), preisService.getPreismodell());
+        double preis = vertragsService.createPreis(vertrag.isMonatlich(), partner.getGeburtsdatum(), fahrzeug.getHoechstgeschwindigkeit(), preisModelService.getPreismodell());
         logger.debug("Calculated price for contract: {} €", preis);
         return preis;
     }

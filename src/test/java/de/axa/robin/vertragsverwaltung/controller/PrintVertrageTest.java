@@ -41,26 +41,36 @@ class PrintVertrageTest {
 
     @BeforeEach
     void setUp() {
+        // Aufbau des MockMvc-Objekts mit dem WebApplicationContext
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
+        // Erzeuge Testdaten: Zwei Fahrzeuge und zwei Partner
         Fahrzeug fahrzeug1 = new Fahrzeug("ABC123", "BMW", "X5", 240, 1234);
         Fahrzeug fahrzeug2 = new Fahrzeug("XYZ789", "Audi", "A4", 200, 5678);
 
-        Partner partner1 = new Partner("Max", "Mustermann", 'M', LocalDate.of(1980, 1, 1), "Deutschland", "Musterstraße", "1", "12345", "Musterstadt", "NRW");
+        Partner partner1 = new Partner("Max", "Mustermann", 'M', LocalDate.of(1980, 1, 1),
+                "Deutschland", "Musterstraße", "1", "12345", "Musterstadt", "NRW");
         List<Vertrag> vertrage = getVertrags(fahrzeug1, partner1, fahrzeug2);
 
+        // Mocking: VertragsService liefert die Testverträge zurück
         given(vertragsService.getVertrage()).willReturn(vertrage);
     }
 
     private static List<Vertrag> getVertrags(Fahrzeug fahrzeug1, Partner partner1, Fahrzeug fahrzeug2) {
-        Partner partner2 = new Partner("Erika", "Mustermann", 'W', LocalDate.of(1985, 5, 15), "Deutschland", "Beispielstraße", "2", "54321", "Beispielstadt", "NRW");
+        Partner partner2 = new Partner("Erika", "Mustermann", 'W', LocalDate.of(1985, 5, 15),
+                "Deutschland", "Beispielstraße", "2", "54321", "Beispielstadt", "NRW");
 
-        Vertrag vertrag1 = new Vertrag(12345, true, 299.99, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), LocalDate.of(2022, 12, 1), fahrzeug1, partner1);
-        Vertrag vertrag2 = new Vertrag(67890, false, 199.99, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), LocalDate.of(2022, 12, 1), fahrzeug2, partner2);
+        Vertrag vertrag1 = new Vertrag(12345, true, 299.99, LocalDate.of(2023, 1, 1),
+                LocalDate.of(2024, 1, 1), LocalDate.of(2022, 12, 1), fahrzeug1, partner1);
+        Vertrag vertrag2 = new Vertrag(67890, false, 199.99, LocalDate.of(2023, 1, 1),
+                LocalDate.of(2024, 1, 1), LocalDate.of(2022, 12, 1), fahrzeug2, partner2);
 
         return Arrays.asList(vertrag1, vertrag2);
     }
 
+    /**
+     * Testet den GET-Endpunkt "/printVertrage", der eine Übersicht aller Verträge zurückliefert.
+     */
     @Test
     void showAll() throws Exception {
         mockMvc.perform(get("/printVertrage"))
@@ -72,9 +82,14 @@ class PrintVertrageTest {
                 .andExpect(content().string(containsString("Max")))
                 .andExpect(content().string(containsString("Erika")));
     }
+
+    /**
+     * Testet die Berechnung der Gesamtsumme aller Preise.
+     * Dabei wird berücksichtigt, dass Verträge mit monatlicher Abrechnung mit 12 multipliziert werden.
+     */
     @Test
     public void testComputeTotalPriceWrapper() {
-        // Arrange
+        // Arrange: Erzeuge zwei Verträge
         Vertrag vertrag1 = new Vertrag();
         vertrag1.setPreis(15.0);
         vertrag1.setMonatlich(true); // 15.0 * 12 = 180.0
@@ -85,9 +100,8 @@ class PrintVertrageTest {
 
         List<Vertrag> vertrage = Arrays.asList(vertrag1, vertrag2);
 
-        PrintVertrage printvertrage = new PrintVertrage();
-        // Act
-        BigDecimal totalPrice = printvertrage.calculateTotalPrice(vertrage);
+        // Act: Gesamtsumme berechnen
+        BigDecimal totalPrice = printVertrage.calculateTotalPrice(vertrage);
 
         // Assert: Erwartete Gesamtsumme 180.0 + 25.0 = 205.0
         BigDecimal expected = BigDecimal.valueOf(205.0);

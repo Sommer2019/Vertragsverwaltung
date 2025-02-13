@@ -11,7 +11,7 @@ servers:
 security:
   - basicAuth: []
 paths:
-  /vertrage:
+  /:
     get:
       security:
         - basicAuth: []
@@ -268,103 +268,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /preismodell:
-    get:
-      security:
-        - basicAuth: [ ]
-      summary: Preismodell abrufen
-      responses:
-        '200':
-          description: Erfolgreiche Antwort mit Preismodell
-          content:
-            application/json:
-              schema:
-                type: string
-        '400':
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        '401':
-          description: Unauthenticated
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        '403':
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        '404':
-          description: Keine Verträge gefunden
-        '500':
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        default:
-          description: Unexpected Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-    post:
-      security:
-        - basicAuth: []
-      summary: Preise neu berechnen
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PreisDTO'
-      responses:
-        '200':
-          description: Erfolgreiche Antwort mit berechneten Einnahmen
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  preis:
-                    type: number
-                    format: double
-                    example: 100.0
-                    description: "Berechneter Preis für den Vertrag."
-        '400':
-          description: Bad Request
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        '401':
-          description: Unauthenticated
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        '403':
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        '500':
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        default:
-          description: Unexpected Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
 components:
   securitySchemes:
     basicAuth:
@@ -373,36 +276,6 @@ components:
       in: header
       name: Basic
   schemas:
-    PreisDTO:
-      type: object
-      required:
-        - faktor
-        - age
-        - speed
-      properties:
-        speed:
-          type: number
-          format: double
-          minimum: 0.0000001
-          maximum: 9.9999999
-          example: 0.7
-          description: "Geschwindigkeitsfaktor, muss größer als 0 und kleiner als 10 sein."
-
-        age:
-          type: number
-          format: double
-          minimum: 0.0000001
-          maximum: 9.9999999
-          example: 0.3
-          description: "Alter (in Jahren), muss größer als 0 und kleiner als 10 sein."
-
-        faktor:
-          type: number
-          format: double
-          minimum: 0.0000001
-          maximum: 9.9999999
-          example: 1.7
-          description: "Multiplikationsfaktor, muss größer als 0 und kleiner als 10 sein."
     VertragApi:
       type: object
       required:

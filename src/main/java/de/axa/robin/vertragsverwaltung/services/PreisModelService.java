@@ -12,17 +12,24 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 
+/**
+ * Service class for handling pricing models and updating contract prices.
+ */
 @Service
-public class PreisService {
-    private static final Logger logger = LoggerFactory.getLogger(PreisService.class);
+public class PreisModelService {
+    private static final Logger logger = LoggerFactory.getLogger(PreisModelService.class);
     @Autowired
     private Repository repository;
     @Autowired
-    private CreateUnsetableData createUnsetableData;
-    @Autowired
     private VertragsService vertragsService;
 
+    /**
+     * Retrieves the current pricing model from the repository.
+     *
+     * @return the current pricing model
+     */
     public Preis getPreismodell() {
         logger.info("Retrieving pricing model");
         JsonObject jsonObject = repository.ladeFaktoren();
@@ -37,14 +44,22 @@ public class PreisService {
         return preis;
     }
 
-    public BigDecimal updatePreismodell(Preis preis, boolean preview) {
+    /**
+     * Updates the pricing model and recalculates the prices of all contracts.
+     *
+     * @param preis    the new pricing model
+     * @param preview  if true, only preview the changes without saving
+     * @param vertrage the list of contracts to update
+     * @return the total price of all contracts per year
+     */
+    public BigDecimal updatePreisAndModell(Preis preis, boolean preview, List<Vertrag> vertrage) {
         logger.info("Setting new pricing model: {}", preis);
         repository.speichereFaktoren(preis.getFaktor(), preis.getAge(), preis.getSpeed());
         logger.info("Recalculating prices with factors: factor={}, factorage={}, factorspeed={}", preis.getFaktor(), preis.getAge(), preis.getSpeed());
         repository.speichereFaktoren(preis.getFaktor(), preis.getAge(), preis.getSpeed());
         BigDecimal summe = BigDecimal.ZERO;
         for (Vertrag v : vertragsService.getVertrage()) {
-            v.setPreis(createUnsetableData.createPreis(v.isMonatlich(), v.getPartner().getGeburtsdatum(), v.getFahrzeug().getHoechstgeschwindigkeit(), getPreismodell()));
+            v.setPreis(vertragsService.createPreis(v.isMonatlich(), v.getPartner().getGeburtsdatum(), v.getFahrzeug().getHoechstgeschwindigkeit(), getPreismodell()));
             if (!v.getVersicherungsablauf().isBefore(LocalDate.now())) {
                 if (!v.isMonatlich()) {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis()));
@@ -52,9 +67,9 @@ public class PreisService {
                     summe = summe.add(BigDecimal.valueOf(v.getPreis() * 12));
                 }
             }
-            if(!preview){
-                vertragsService.vertragLoeschen(v.getVsnr(), vertragsService.getVertrage());
-                vertragsService.vertragAnlegen(v, getPreismodell(),null);
+            if (!preview) {
+                vertragsService.vertragLoeschen(v.getVsnr(), vertrage);
+                vertragsService.vertragAnlegen(v, getPreismodell(), null);
             }
             logger.debug("Updated contract: {}", v);
         }

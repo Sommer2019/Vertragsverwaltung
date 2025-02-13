@@ -17,6 +17,9 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * This class provides methods to validate various inputs related to contracts.
+ */
 @Component
 public class InputValidator {
     private static final Logger logger = LoggerFactory.getLogger(InputValidator.class);
@@ -36,6 +39,12 @@ public class InputValidator {
     private static final String ERROR_INVALID_BIRTH_DATE = "Ungültiges Geburtsdatum";
     private static final String ERROR_INVALID_ADDRESS = "Ungültige Adresse";
 
+    /**
+     * Validates if the given manufacturer exists in the JSON file.
+     *
+     * @param searchString the manufacturer name to search for
+     * @return true if the manufacturer exists, false otherwise
+     */
     public boolean validateHersteller(String searchString) {
         String filePath = setup.getJson_brandsPath();
         logger.info("Checking if string '{}' is in JSON file '{}'", searchString, filePath);
@@ -53,6 +62,14 @@ public class InputValidator {
         return false;
     }
 
+    /**
+     * Validates the given contract and adds errors to the BindingResult if any.
+     *
+     * @param vertrage the list of existing contracts
+     * @param vertrag the contract to validate
+     * @param result the BindingResult to add errors to
+     * @return true if there are validation errors, false otherwise
+     */
     public boolean validateVertrag(List<Vertrag> vertrage, Vertrag vertrag, BindingResult result) {
         logger.info("Validating contract: {}", vertrag);
         return validateInsuranceDates(vertrag, result) ||
@@ -64,6 +81,13 @@ public class InputValidator {
                 vertragExistiert(vertrage, vertrag.getVsnr());
     }
 
+    /**
+     * Validates the insurance dates of the given contract.
+     *
+     * @param vertrag the contract to validate
+     * @param result the BindingResult to add errors to
+     * @return true if there are validation errors, false otherwise
+     */
     private boolean validateInsuranceDates(Vertrag vertrag, BindingResult result) {
         if (result == null) {
             logger.warn("BindingResult is null, skipping insurance dates validation");
@@ -87,6 +111,13 @@ public class InputValidator {
         return false;
     }
 
+    /**
+     * Validates the vehicle details of the given contract.
+     *
+     * @param vertrag the contract to validate
+     * @param result the BindingResult to add errors to
+     * @return true if there are validation errors, false otherwise
+     */
     private boolean validateVehicle(Vertrag vertrag, BindingResult result) {
         if (result == null) {
             logger.warn("BindingResult is null, skipping vehicle validation");
@@ -110,6 +141,13 @@ public class InputValidator {
         return false;
     }
 
+    /**
+     * Validates the partner details of the given contract.
+     *
+     * @param vertrag the contract to validate
+     * @param result the BindingResult to add errors to
+     * @return true if there are validation errors, false otherwise
+     */
     private boolean validatePartner(Vertrag vertrag, BindingResult result) {
         if (result == null) {
             logger.warn("BindingResult is null, skipping partner validation");
@@ -130,6 +168,13 @@ public class InputValidator {
         return false;
     }
 
+    /**
+     * Validates the address of the given contract.
+     *
+     * @param vertrag the contract to validate
+     * @param result the BindingResult to add errors to
+     * @return true if there are validation errors, false otherwise
+     */
     private boolean validateAddress(Vertrag vertrag, BindingResult result) {
         if (!adressValidator.validateAddress(vertrag.getPartner().getStrasse(), vertrag.getPartner().getHausnummer(),
                 vertrag.getPartner().getPlz(), vertrag.getPartner().getStadt(),
@@ -144,6 +189,7 @@ public class InputValidator {
     /**
      * Checks if a contract exists by its VSNR.
      *
+     * @param vertrage the list of existing contracts
      * @param vsnr the VSNR of the contract
      * @return true if the contract exists, false otherwise
      */
@@ -156,6 +202,7 @@ public class InputValidator {
     /**
      * Checks if a license plate exists.
      *
+     * @param vertrage the list of existing contracts
      * @param kennzeichen the license plate to check
      * @return true if the license plate exists, false otherwise
      */

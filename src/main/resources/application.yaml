@@ -10,8 +10,10 @@ spring:
     user:
       name: admin
       password: admin
-# logging:
+#logging:
 #  level.org.springframework.security: TRACE
+#debug:
+#  security: true
 input:
   setup:
     json_repositoryPath: src/main/resources/static/json/vertrage.json
