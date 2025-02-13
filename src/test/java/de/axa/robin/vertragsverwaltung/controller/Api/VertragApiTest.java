@@ -3,7 +3,7 @@ package de.axa.robin.vertragsverwaltung.controller.Api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axa.robin.vertragsverwaltung.VertragsverwaltungApplication;
 import de.axa.robin.vertragsverwaltung.mapper.VertragMapper;
-import de.axa.robin.vertragsverwaltung.model.VertragApi;
+import de.axa.robin.vertragsverwaltung.model.AntragDTO;
 import de.axa.robin.vertragsverwaltung.model.VertragDTO;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import de.axa.robin.vertragsverwaltung.services.PreisModelService;
@@ -58,15 +58,15 @@ public class VertragApiTest {
         // Erzeuge zwei Dummy-Vertrag-Objekte und ihre gemappten API-Repräsentationen
         Vertrag vertrag1 = new Vertrag();
         Vertrag vertrag2 = new Vertrag();
-        VertragApi vertragApi1 = new VertragApi();
-        VertragApi vertragApi2 = new VertragApi();
+        VertragDTO vertragDTO1 = new VertragDTO();
+        VertragDTO vertragDTO2 = new VertragDTO();
 
         List<Vertrag> vertragsList = Arrays.asList(vertrag1, vertrag2);
-        List<VertragApi> vertragApiList = Arrays.asList(vertragApi1, vertragApi2);
+        List<VertragDTO> vertragDTOList = Arrays.asList(vertragDTO1, vertragDTO2);
 
         given(vertragsService.getVertrage()).willReturn(vertragsList);
-        Mockito.when(vertragMapper.toVertragApi(vertrag1)).thenReturn(vertragApi1);
-        Mockito.when(vertragMapper.toVertragApi(vertrag2)).thenReturn(vertragApi2);
+        Mockito.when(vertragMapper.toVertragDTO(vertrag1)).thenReturn(vertragDTO1);
+        Mockito.when(vertragMapper.toVertragDTO(vertrag2)).thenReturn(vertragDTO2);
 
         mockMvc.perform(get("/api/vertragsverwaltung/"))
                 .andExpect(status().isOk())
@@ -82,39 +82,39 @@ public class VertragApiTest {
     public void testVertrageIdGet() throws Exception {
         int id = 123;
         Vertrag vertrag = new Vertrag();
-        VertragApi vertragApi = new VertragApi();
+        VertragDTO vertragDTO = new VertragDTO();
         // Definiere das Verhalten der Mocks
         given(vertragsService.getVertrag(id)).willReturn(vertrag);
-        Mockito.when(vertragMapper.toVertragApi(vertrag)).thenReturn(vertragApi);
+        Mockito.when(vertragMapper.toVertragDTO(vertrag)).thenReturn(vertragDTO);
 
         mockMvc.perform(get("/api/vertragsverwaltung/vertrage/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(vertragApi)));
+                .andExpect(content().json(objectMapper.writeValueAsString(vertragDTO)));
     }
 
     // Test für den PUT-Endpunkt "/api/vertragsverwaltung/"
     @Test
     @WithMockUser(username = "apiuser", roles = "API_USER")
     public void testRootPut() throws Exception {
-        VertragDTO vertragDTO = new VertragDTO();
+        AntragDTO antragDTO = new AntragDTO();
         // Erzeuge Dummy-Objekte für den erstellten Vertrag
         Vertrag vertrag = new Vertrag();
-        VertragApi vertragApi = new VertragApi();
+        VertragDTO vertragDTO = new VertragDTO();
 
-        Mockito.when(vertragMapper.toVertrag(ArgumentMatchers.any(VertragDTO.class))).thenReturn(vertrag);
+        Mockito.when(vertragMapper.toVertrag(ArgumentMatchers.any(AntragDTO.class))).thenReturn(vertrag);
         // Verwende thenReturn() statt doNothing(), da vertragAnlegen() einen Vertrag zurückgibt.
         Mockito.when(vertragsService.vertragAnlegen(
                         ArgumentMatchers.eq(vertrag),
                         ArgumentMatchers.any(),
                         ArgumentMatchers.isNull()))
                 .thenReturn(vertrag);
-        Mockito.when(vertragMapper.toVertragApi(vertrag)).thenReturn(vertragApi);
+        Mockito.when(vertragMapper.toVertragDTO(vertrag)).thenReturn(vertragDTO);
 
         mockMvc.perform(put("/api/vertragsverwaltung/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(vertragDTO)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(vertragApi)));
+                .andExpect(content().json(objectMapper.writeValueAsString(vertragDTO)));
     }
 
     /**
@@ -124,26 +124,26 @@ public class VertragApiTest {
     @WithMockUser(username = "apiuser", roles = "API_USER")
     public void testVertrageIdPost() throws Exception {
         int id = 123;
-        VertragDTO vertragDTO = new VertragDTO();
+        AntragDTO antragDTO = new AntragDTO();
         Vertrag vertrag = new Vertrag();
         Vertrag updatedVertrag = new Vertrag();
-        VertragApi vertragApi = new VertragApi();
+        VertragDTO vertragDTO = new VertragDTO();
 
-        Mockito.when(vertragMapper.toVertrag(ArgumentMatchers.any(VertragDTO.class))).thenReturn(vertrag);
+        Mockito.when(vertragMapper.toVertrag(ArgumentMatchers.any(AntragDTO.class))).thenReturn(vertrag);
         Mockito.when(vertragsService.vertragBearbeiten(
                         ArgumentMatchers.eq(vertrag),
                         ArgumentMatchers.eq(id),
                         ArgumentMatchers.any(),
                         ArgumentMatchers.isNull()))
                 .thenReturn(updatedVertrag);
-        Mockito.when(vertragMapper.toVertragApi(updatedVertrag)).thenReturn(vertragApi);
+        Mockito.when(vertragMapper.toVertragDTO(updatedVertrag)).thenReturn(vertragDTO);
 
         mockMvc.perform(post("/api/vertragsverwaltung/vertrage/{id}", id)
                         .param("id", String.valueOf(id))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(vertragDTO)))
+                        .content(objectMapper.writeValueAsString(antragDTO)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(vertragApi)));
+                .andExpect(content().json(objectMapper.writeValueAsString(vertragDTO)));
     }
 
     /**
@@ -155,17 +155,17 @@ public class VertragApiTest {
     public void testVertrageIdDelete() throws Exception {
         int id = 123;
         Vertrag vertrag = new Vertrag();
-        VertragApi vertragApi = new VertragApi();
+        VertragDTO vertragDTO = new VertragDTO();
 
         given(vertragsService.getVertrag(id)).willReturn(vertrag);
-        Mockito.when(vertragMapper.toVertragApi(vertrag)).thenReturn(vertragApi);
+        Mockito.when(vertragMapper.toVertragDTO(vertrag)).thenReturn(vertragDTO);
         Mockito.doNothing().when(vertragsService).vertragLoeschen(ArgumentMatchers.eq(id), ArgumentMatchers.anyList());
 
         mockMvc.perform(delete("/api/vertragsverwaltung/vertrage/{id}", id)
                         .param("id", String.valueOf(id))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(vertragApi)));
+                .andExpect(content().json(objectMapper.writeValueAsString(vertragDTO)));
 
         Mockito.verify(vertragsService).vertragLoeschen(ArgumentMatchers.eq(id), ArgumentMatchers.anyList());
     }

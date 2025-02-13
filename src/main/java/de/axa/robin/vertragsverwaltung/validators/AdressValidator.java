@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.validators;
 
+import de.axa.robin.vertragsverwaltung.config.DataLoadException;
 import de.axa.robin.vertragsverwaltung.config.Setup;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -43,8 +44,12 @@ public class AdressValidator {
 
             configureProxy();
 
-            if (!isInternetAvailable()) {
-                return false;
+            try {
+                if (!isInternetAvailable()) {
+                    return false;
+                }
+            } catch (Exception e) {
+                throw new Exception(e);
             }
 
             HttpURLConnection conn = createConnection(uri);
@@ -52,13 +57,13 @@ public class AdressValidator {
 
             if (status != HttpURLConnection.HTTP_OK) {
                 logger.error("HTTP-Status Code {} empfangen.", status);
-                return false;
+                throw new Exception("HTTP-Status Code " + status + " empfangen.");
             }
 
             return processResponse(conn, street, houseNumber, plz, place, bundesland, land);
         } catch (Exception e) {
             logger.error("Fehler aufgetreten: {}", e.getMessage(), e);
-            return false;
+            throw new DataLoadException("Adresse konnte nicht validiert werden", e);
         }
     }
 
@@ -94,7 +99,7 @@ public class AdressValidator {
      *
      * @return true if the internet is available, false otherwise
      */
-    public boolean isInternetAvailable() {
+    public boolean isInternetAvailable() throws Exception {
         try {
             URI uri = new URI(setup.getTestURL());
             HttpURLConnection urlConn = (HttpURLConnection) uri.toURL().openConnection();
@@ -104,7 +109,7 @@ public class AdressValidator {
             return urlConn.getResponseCode() == 200;
         } catch (IOException | URISyntaxException e) {
             logger.error("Internet connection check failed", e);
-            return false;
+            throw new Exception(e);
         }
     }
 
@@ -216,7 +221,7 @@ public class AdressValidator {
             socket.connect(new InetSocketAddress(host, port), 2000);
             return true;
         } catch (IOException e) {
-            logger.error("Proxy is not reachable", e);
+            logger.warn("Proxy is not reachable", e);
             return false;
         }
     }

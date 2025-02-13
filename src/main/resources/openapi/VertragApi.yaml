@@ -24,7 +24,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/VertragApi'
+                  $ref: '#/components/schemas/VertragDTO'
         '400':
           description: Bad Request
           content:
@@ -66,14 +66,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VertragDTO'
+              $ref: '#/components/schemas/AntragDTO'
       responses:
         '200':
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VertragApi'
+                $ref: '#/components/schemas/VertragDTO'
         '400':
           description: Bad Request
           content:
@@ -121,7 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VertragApi'
+                $ref: '#/components/schemas/VertragDTO'
         '400':
           description: Bad Request
           content:
@@ -173,14 +173,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VertragDTO'
+              $ref: '#/components/schemas/AntragDTO'
       responses:
         '200':
           description: Vertrag erfolgreich aktualisiert
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VertragApi'
+                $ref: '#/components/schemas/VertragDTO'
         '400':
           description: Bad Request
           content:
@@ -229,13 +229,13 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/VertragApi"
+                $ref: "#/components/schemas/VertragDTO"
         '204':
           description: Vertrag erfolgreich gelöscht
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/VertragApi"
+                $ref: "#/components/schemas/VertragDTO"
         '400':
           description: Bad Request
           content:
@@ -276,7 +276,7 @@ components:
       in: header
       name: Basic
   schemas:
-    VertragApi:
+    VertragDTO:
       type: object
       required:
         - vsnr
@@ -329,7 +329,7 @@ components:
 
         partner:
           $ref: "#/components/schemas/PartnerDTO"
-    VertragDTO:
+    AntragDTO:
       type: object
       required:
         - monatlich

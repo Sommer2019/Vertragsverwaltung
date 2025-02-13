@@ -3,6 +3,8 @@ package de.axa.robin.vertragsverwaltung.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -40,19 +43,47 @@ public class SecurityConfig {
      * @return the SecurityFilterChain
      * @throws Exception if an error occurs
      */
+    // Konfiguration für API-Anfragen
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(API_PATHS)  // Disable CSRF for API paths
+                )
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(PERMITTED_PATHS).permitAll()
+                        .requestMatchers(API_PATHS).hasRole("API_USER")
+                )
+                .httpBasic(withDefaults())  // Enable Basic Authentication
+                // Nur auf URLs, die mit /api beginnen, anwenden
+                .securityMatcher("/api/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().authenticated()
+                )
+                // Exception Handling:
+                //  - Bei fehlender Authentifizierung HTTP 401 (Unauthorized) zurückgeben
+                //  - Bei unzureichender Berechtigung HTTP 403 (Forbidden) zurückgeben
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                response.sendError(HttpStatus.FORBIDDEN.value()))
+                )
+                .csrf(AbstractHttpConfigurer::disable);  // Disable CSRF globally
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf
                         .csrfTokenRepository(csrfTokenRepository())
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PERMITTED_PATHS).permitAll()
                         .requestMatchers(ADMIN_PATHS).hasRole("ADMIN")
-                        .requestMatchers(API_PATHS).hasRole("API_USER")
                 )
-                .httpBasic(withDefaults())  // Enable Basic Authentication
                 .formLogin(form -> form
                         .loginPage("/")
                         .loginProcessingUrl("/login")
@@ -104,10 +135,16 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(admin, apiUser);
     }
 
-    /*@Bean
+    /**
+     * Customizes the WebSecurity configuration based on the debug.security property.
+     *
+     * @param debugSecurity the debug.security property value
+     * @return the WebSecurityCustomizer
+     */
+    @Bean
     public WebSecurityCustomizer webSecurityCustomizer(@Value("${debug.security:false}") boolean debugSecurity) {
         return (web) -> web.debug(debugSecurity);
-    }*/
+    }
 
     /**
      * Password encoder bean using BCrypt.

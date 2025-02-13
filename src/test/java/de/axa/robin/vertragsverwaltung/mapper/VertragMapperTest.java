@@ -21,22 +21,22 @@ public class VertragMapperTest {
 
     @Test
     public void testToVertrag() {
-        VertragDTO vertragDTO = new VertragDTO();
+        AntragDTO antragDTO = new AntragDTO();
         // Set properties on vertragDTO as needed for the test
-        vertragDTO.setMonatlich(true);
-        vertragDTO.setVersicherungsbeginn(LocalDate.of(2023,1,1));
-        vertragDTO.setVersicherungsablauf(LocalDate.of(2023,12,31));
-        vertragDTO.setAntragsDatum(LocalDate.of(2022,12,1));
-        vertragDTO.setFahrzeug(new FahrzeugDTO());
-        vertragDTO.setPartner(new PartnerDTO());
+        antragDTO.setMonatlich(true);
+        antragDTO.setVersicherungsbeginn(LocalDate.of(2023,1,1));
+        antragDTO.setVersicherungsablauf(LocalDate.of(2023,12,31));
+        antragDTO.setAntragsDatum(LocalDate.of(2022,12,1));
+        antragDTO.setFahrzeug(new FahrzeugDTO());
+        antragDTO.setPartner(new PartnerDTO());
 
-        Vertrag vertrag = vertragMapper.toVertrag(vertragDTO);
+        Vertrag vertrag = vertragMapper.toVertrag(antragDTO);
 
         assertNotNull(vertrag);
-        assertEquals(vertragDTO.getMonatlich(), vertrag.isMonatlich());
-        assertEquals(vertragDTO.getVersicherungsbeginn(), vertrag.getVersicherungsbeginn());
-        assertEquals(vertragDTO.getVersicherungsablauf(), vertrag.getVersicherungsablauf());
-        assertEquals(vertragDTO.getAntragsDatum(), vertrag.getAntragsDatum());
+        assertEquals(antragDTO.getMonatlich(), vertrag.isMonatlich());
+        assertEquals(antragDTO.getVersicherungsbeginn(), vertrag.getVersicherungsbeginn());
+        assertEquals(antragDTO.getVersicherungsablauf(), vertrag.getVersicherungsablauf());
+        assertEquals(antragDTO.getAntragsDatum(), vertrag.getAntragsDatum());
         assertNotNull(vertrag.getFahrzeug());
         assertNotNull(vertrag.getPartner());
     }
@@ -82,16 +82,16 @@ public class VertragMapperTest {
         vertrag.setFahrzeug(new Fahrzeug());
         vertrag.setPartner(new Partner());
 
-        VertragApi vertragApi = vertragMapper.toVertragApi(vertrag);
+        VertragDTO vertragDTO = vertragMapper.toVertragDTO(vertrag);
 
-        assertNotNull(vertragApi);
-        assertEquals(vertrag.getVsnr(), vertragApi.getVsnr());
-        assertEquals(vertrag.getPreis(), vertragApi.getPreis());
-        assertEquals(vertrag.isMonatlich(), vertragApi.getMonatlich());
-        assertEquals(vertrag.getVersicherungsbeginn(), vertragApi.getVersicherungsbeginn());
-        assertEquals(vertrag.getVersicherungsablauf(), vertragApi.getVersicherungsablauf());
-        assertEquals(vertrag.getAntragsDatum(), vertragApi.getAntragsDatum());
-        assertNotNull(vertragApi.getFahrzeug());
-        assertNotNull(vertragApi.getPartner());
+        assertNotNull(vertragDTO);
+        assertEquals(vertrag.getVsnr(), vertragDTO.getVsnr());
+        assertEquals(vertrag.getPreis(), vertragDTO.getPreis());
+        assertEquals(vertrag.isMonatlich(), vertragDTO.getMonatlich());
+        assertEquals(vertrag.getVersicherungsbeginn(), vertragDTO.getVersicherungsbeginn());
+        assertEquals(vertrag.getVersicherungsablauf(), vertragDTO.getVersicherungsablauf());
+        assertEquals(vertrag.getAntragsDatum(), vertragDTO.getAntragsDatum());
+        assertNotNull(vertragDTO.getFahrzeug());
+        assertNotNull(vertragDTO.getPartner());
     }
 }

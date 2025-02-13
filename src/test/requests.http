@@ -1,0 +1,90 @@
+###
+GET http://localhost:8080/api/vertragsverwaltung/
+Authorization: Basic YXBpdXNlcjphcGl1c2Vy
+
+###
+PUT http://localhost:8080/api/vertragsverwaltung/
+Authorization: Basic YXBpdXNlcjphcGl1c2Vy
+Content-Type: application/json
+
+{
+  "monatlich": true,
+  "versicherungsbeginn": "2026-01-01",
+  "versicherungsablauf": "2027-01-01",
+  "antragsDatum": "2025-01-01",
+  "fahrzeug": {
+    "amtlichesKennzeichen": "M-AB1234E",
+    "hersteller": "Volkswagen",
+    "typ": "Golf GTI",
+    "hoechstgeschwindigkeit": 220,
+    "wagnisskennziffer": 112
+  },
+  "partner": {
+    "vorname": "Max",
+    "nachname": "Müller",
+    "geschlecht": "M",
+    "geburtsdatum": "1990-05-15",
+    "land": "Deutschland",
+    "strasse": "Hauptstraße",
+    "hausnummer": "1",
+    "plz": "10317",
+    "stadt": "Berlin",
+    "bundesland": "Berlin"
+  }
+}
+
+
+###
+GET http://localhost:8080/api/vertragsverwaltung/vertrage/10000000
+Authorization: Basic YXBpdXNlcjphcGl1c2Vy
+
+###
+POST http://localhost:8080/api/vertragsverwaltung/vertrage/10000000
+Authorization: Basic YXBpdXNlcjphcGl1c2Vy
+Content-Type: application/json
+
+{
+  "monatlich": true,
+  "versicherungsbeginn": "2026-01-01",
+  "versicherungsablauf": "2027-01-01",
+  "antragsDatum": "2025-01-01",
+  "fahrzeug": {
+    "amtlichesKennzeichen": "M-AB1234E",
+    "hersteller": "Volkswagen",
+    "typ": "Golf GTI",
+    "hoechstgeschwindigkeit": 220,
+    "wagnisskennziffer": 112
+  },
+  "partner": {
+    "vorname": "Max",
+    "nachname": "Müller",
+    "geschlecht": "M",
+    "geburtsdatum": "1990-05-15",
+    "land": "Deutschland",
+    "strasse": "Hauptstraße",
+    "hausnummer": "1",
+    "plz": "10317",
+    "stadt": "Berlin",
+    "bundesland": "Berlin"
+  }
+}
+
+###
+DELETE http://localhost:8080/api/vertragsverwaltung/vertrage/10000000
+Authorization: Basic YXBpdXNlcjphcGl1c2Vy
+
+###
+GET http://localhost:8080/api/preisverwaltung/
+Authorization: Basic YXBpdXNlcjphcGl1c2Vy
+
+
+###
+POST http://localhost:8080/api/preisverwaltung/
+Authorization: Basic YXBpdXNlcjphcGl1c2Vy
+Content-Type: application/json
+
+{
+  "speed": 0.7,
+  "age": 0.3,
+  "faktor": 1.7
+}

@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.validators;
 
+import de.axa.robin.vertragsverwaltung.config.DataLoadException;
 import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import jakarta.json.Json;
@@ -45,7 +46,7 @@ public class InputValidator {
      * @param searchString the manufacturer name to search for
      * @return true if the manufacturer exists, false otherwise
      */
-    public boolean validateHersteller(String searchString) {
+    public boolean validateHersteller(String searchString) throws Exception {
         String filePath = setup.getJson_brandsPath();
         logger.info("Checking if string '{}' is in JSON file '{}'", searchString, filePath);
         try (InputStream fis = new FileInputStream(filePath);
@@ -56,10 +57,11 @@ public class InputValidator {
             return contains;
         } catch (FileNotFoundException e) {
             logger.error("File not found: {}", filePath, e);
+            throw new Exception(e);
         } catch (Exception e) {
             logger.error("Error reading JSON file", e);
+            throw new Exception(e);
         }
-        return false;
     }
 
     /**
@@ -70,15 +72,19 @@ public class InputValidator {
      * @param result the BindingResult to add errors to
      * @return true if there are validation errors, false otherwise
      */
-    public boolean validateVertrag(List<Vertrag> vertrage, Vertrag vertrag, BindingResult result) {
+    public boolean validateVertrag(List<Vertrag> vertrage, Vertrag vertrag, BindingResult result) throws DataLoadException {
         logger.info("Validating contract: {}", vertrag);
-        return validateInsuranceDates(vertrag, result) ||
-                validateVehicle(vertrag, result) ||
-                validatePartner(vertrag, result) ||
-                validateAddress(vertrag, result) ||
-                vertrag.getVersicherungsbeginn().isBefore(LocalDate.now()) ||
-                kennzeichenExistiert(vertrage, vertrag.getFahrzeug().getAmtlichesKennzeichen()) ||
-                vertragExistiert(vertrage, vertrag.getVsnr());
+        try {
+            return validateInsuranceDates(vertrag, result) ||
+                    validateVehicle(vertrag, result) ||
+                    validatePartner(vertrag, result) ||
+                    validateAddress(vertrag, result) ||
+                    vertrag.getVersicherungsbeginn().isBefore(LocalDate.now()) ||
+                    kennzeichenExistiert(vertrage, vertrag.getFahrzeug().getAmtlichesKennzeichen()) ||
+                    vertragExistiert(vertrage, vertrag.getVsnr());
+        } catch (Exception e) {
+            throw new DataLoadException("Fehler beim Laden der Herstellerliste", e);
+        }
     }
 
     /**
@@ -90,7 +96,7 @@ public class InputValidator {
      */
     private boolean validateInsuranceDates(Vertrag vertrag, BindingResult result) {
         if (result == null) {
-            logger.warn("BindingResult is null, skipping insurance dates validation");
+            logger.info("BindingResult is null, skipping insurance dates validation");
             return false;
         }
         if (vertrag.getVersicherungsbeginn().isBefore(vertrag.getAntragsDatum())) {
@@ -118,15 +124,19 @@ public class InputValidator {
      * @param result the BindingResult to add errors to
      * @return true if there are validation errors, false otherwise
      */
-    private boolean validateVehicle(Vertrag vertrag, BindingResult result) {
+    private boolean validateVehicle(Vertrag vertrag, BindingResult result) throws Exception {
         if (result == null) {
-            logger.warn("BindingResult is null, skipping vehicle validation");
+            logger.info("BindingResult is null, skipping vehicle validation");
             return false;
         }
-        if (!validateHersteller(vertrag.getFahrzeug().getHersteller())) {
-            result.rejectValue("fahrzeug.hersteller", "error.fahrzeug.hersteller", ERROR_INVALID_MANUFACTURER);
-            logger.warn("Invalid vehicle manufacturer: {}", vertrag.getFahrzeug().getHersteller());
-            return true;
+        try {
+            if (!validateHersteller(vertrag.getFahrzeug().getHersteller())) {
+                result.rejectValue("fahrzeug.hersteller", "error.fahrzeug.hersteller", ERROR_INVALID_MANUFACTURER);
+                logger.warn("Invalid vehicle manufacturer: {}", vertrag.getFahrzeug().getHersteller());
+                return true;
+            }
+        } catch (Exception e) {
+            throw new Exception(e);
         }
         if (vertrag.getFahrzeug().getHoechstgeschwindigkeit() <= 50 || vertrag.getFahrzeug().getHoechstgeschwindigkeit() >= 250) {
             result.rejectValue("fahrzeug.hoechstgeschwindigkeit", "error.fahrzeug.hoechstgeschwindigkeit", ERROR_INVALID_SPEED);
@@ -150,7 +160,7 @@ public class InputValidator {
      */
     private boolean validatePartner(Vertrag vertrag, BindingResult result) {
         if (result == null) {
-            logger.warn("BindingResult is null, skipping partner validation");
+            logger.info("BindingResult is null, skipping partner validation");
             return false;
         }
         char gender = vertrag.getPartner().getGeschlecht().charAt(0);

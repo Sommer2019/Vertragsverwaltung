@@ -15,7 +15,7 @@ public interface VertragMapper {
     /**
      * Converts a VertragDTO to a Vertrag.
      *
-     * @param vertragDTO the VertragDTO to convert
+     * @param antragDTO the VertragDTO to convert
      * @return the converted Vertrag
      */
     @Mapping(target = "monatlich", source = "monatlich")
@@ -24,7 +24,7 @@ public interface VertragMapper {
     @Mapping(target = "antragsDatum", source = "antragsDatum")
     @Mapping(target = "fahrzeug", source = "fahrzeug")
     @Mapping(target = "partner", source = "partner")
-    Vertrag toVertrag(VertragDTO vertragDTO);
+    Vertrag toVertrag(AntragDTO antragDTO);
 
     /**
      * Converts a PartnerDTO to a Partner.
@@ -71,5 +71,5 @@ public interface VertragMapper {
     @Mapping(target = "antragsDatum", source = "antragsDatum")
     @Mapping(target = "fahrzeug", source = "fahrzeug")
     @Mapping(target = "partner", source = "partner")
-    VertragApi toVertragApi(Vertrag vertrag);
+    VertragDTO toVertragDTO(Vertrag vertrag);
 }

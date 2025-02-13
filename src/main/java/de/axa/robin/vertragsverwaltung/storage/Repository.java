@@ -1,5 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage;
 
+import de.axa.robin.vertragsverwaltung.config.DataLoadException;
 import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
@@ -34,7 +35,7 @@ public class Repository {
      *
      * @param vertrage the list of contracts to save
      */
-    public void speichereVertrage(List<Vertrag> vertrage) {
+    public void speichereVertrage(List<Vertrag> vertrage) throws DataLoadException {
         logger.info("Starting to save contracts to JSON file");
         try (FileWriter file = new FileWriter(setup.getJson_repositoryPath(), false)) {
             JsonArray jsonArray = createVertraegeJsonArray(vertrage);
@@ -43,6 +44,7 @@ public class Repository {
             logger.info("Successfully saved contracts to JSON file");
         } catch (IOException e) {
             logger.error(ERROR_SAVING, e);
+            throw new DataLoadException(ERROR_SAVING, e);
         }
     }
 
@@ -126,7 +128,7 @@ public class Repository {
      *
      * @return the loaded list of contracts
      */
-    public List<Vertrag> ladeVertrage() {
+    public List<Vertrag> ladeVertrage() throws DataLoadException {
         logger.info("Starting to load contracts from JSON file");
         List<Vertrag> vertrage = new ArrayList<>();
         try (FileReader file = new FileReader(setup.getJson_repositoryPath())) {
@@ -142,6 +144,7 @@ public class Repository {
             logger.warn(FILE_NOT_FOUND, e);
         } catch (IOException e) {
             logger.error(ERROR_LOADING, e);
+            throw new DataLoadException(ERROR_LOADING, e);
         }
         return vertrage;
     }
@@ -217,9 +220,14 @@ public class Repository {
             logger.info("Successfully loaded factors from JSON file: {}", jsonObject);
             return jsonObject;
         } catch (Exception e) {
-            logger.error("Fehler beim Laden der Faktoren", e);
+            logger.warn("Fehler beim Laden der Faktoren", e);
+            logger.info("Rückgabe der Standardfaktoren");
+            return Json.createObjectBuilder()
+                    .add("factor", 1.7)
+                    .add("factorage", 0.3)
+                    .add("factorspeed", 0.6)
+                    .build();
         }
-        return null;
     }
 
     /**
@@ -229,7 +237,7 @@ public class Repository {
      * @param factorage the age factor
      * @param factorspeed the speed factor
      */
-    public void speichereFaktoren(double factor, double factorage, double factorspeed) {
+    public void speichereFaktoren(double factor, double factorage, double factorspeed) throws DataLoadException {
         logger.info("Starting to save factors to JSON file");
         try (FileWriter file = new FileWriter(setup.getJson_preisPath(), false)) {
             JsonObject jsonObject = Json.createObjectBuilder()
@@ -242,6 +250,7 @@ public class Repository {
             logger.info("Successfully saved factors to JSON file: factor={}, factorage={}, factorspeed={}", factor, factorage, factorspeed);
         } catch (IOException e) {
             logger.error("Fehler beim Speichern der Faktoren", e);
+            throw new DataLoadException("Fehler beim Speichern der Faktoren", e);
         }
     }
 }
