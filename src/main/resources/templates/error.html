@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Error</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" th:href="@{/static/css/style.css}">
 </head>
 <body>
 <h1>Etwas ist schiefgelaufen!</h1>
-    <div style="display: flex; gap: 10px;">
-        <form action="/logout" method="post">
-            <button type="submit">Logout</button>
-        </form>
-        <a href="/home"><button>Zurück zur Startseite</button></a>
-    </div>
+
+<!-- Anzeige des Zeitstempels und der Fehlermeldung -->
+<div>
+    <p><strong>Timestamp:</strong> <span th:text="${timestamp}">[Zeitstempel]</span></p>
+    <p><strong>Fehlermeldung:</strong> <span th:text="${error}">[Fehler]</span></p>
+</div>
+
+<div style="display: flex; gap: 10px;">
+    <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+    <a th:href="@{/home}">
+        <button>Zurück zur Startseite</button>
+    </a>
+</div>
 </body>
 </html>
