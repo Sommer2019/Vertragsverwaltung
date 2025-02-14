@@ -3,12 +3,16 @@ package de.axa.robin.vertragsverwaltung.controller.Api;
 import de.axa.robin.preisverwaltung.DefaultApi;
 import de.axa.robin.vertragsverwaltung.mapper.PreisModelMapper;
 import de.axa.robin.preisverwaltung.model.PreisDTO;
+import de.axa.robin.vertragsverwaltung.model.VertragDTO;
 import de.axa.robin.vertragsverwaltung.models.Preis;
 import de.axa.robin.vertragsverwaltung.services.PreisModelService;
 import de.axa.robin.vertragsverwaltung.services.VertragsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for managing {@link PreisDTO} entities.
+ */
 @RestController
 @RequestMapping("/api/preisverwaltung")
 public class PreisApi extends DefaultApi {

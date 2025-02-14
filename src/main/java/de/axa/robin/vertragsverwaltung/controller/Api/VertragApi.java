@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * REST controller for managing {@link VertragDTO} entities.
+ * REST controller for managing {@link VertragDTO} and {@link AntragDTO} entities.
  */
 @RestController
 @RequestMapping("/api/vertragsverwaltung")
