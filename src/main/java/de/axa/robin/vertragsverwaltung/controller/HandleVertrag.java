@@ -117,8 +117,8 @@ public class HandleVertrag {
             model.addAttribute("editVisible", editVisible);
             return "handleVertrag";
         }
-        model.addAttribute("confirm", "Vertrag mit VSNR " + vertrag.getVsnr() + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(vertrag.getPreis()).replace('.', ',') + "€");
-        logger.info("Contract successfully edited for VSNR: {}. New price: {}€", vertrag.getVsnr(), vertrag.getPreis());
+        model.addAttribute("confirm", "Vertrag mit VSNR " + vertrag.getVsnr() + " erfolgreich bearbeitet! Neuer Preis: " + String.valueOf(vertragsService.getVertrag(vertrag.getVsnr()).getPreis()).replace('.', ',') + "€");
+        logger.info("Contract successfully edited for VSNR: {}. New price: {}€", vertrag.getVsnr(), vertragsService.getVertrag(vertrag.getVsnr()).getPreis());
         return "home";
     }
 

@@ -105,7 +105,7 @@ public class SecurityConfigTest {
         String[] apiUrls = {"/api/preisverwaltung/", "/api/vertragsverwaltung/"};
         for (String url : apiUrls) {
             mockMvc.perform(get(url))
-                    .andExpect(status().is3xxRedirection());
+                    .andExpect(status().is4xxClientError());
         }
     }
 

@@ -67,7 +67,8 @@ public class VertragUtilTest {
         VertragUtil vertragUtil = new VertragUtil();
 
         // Act: Merge der neuen Werte in den alten Vertrag
-        Vertrag result = vertragUtil.mergeVertrage(vertragNew, vertragOld);
+        // RICHTIGE Parameterreihenfolge: (alter Vertrag, neuer Vertrag)
+        Vertrag result = vertragUtil.mergeVertrage(vertragOld, vertragNew);
 
         // Assert: Alle Felder müssen entsprechend aktualisiert worden sein
         assertEquals(LocalDate.of(2022, 2, 2), result.getVersicherungsbeginn());
@@ -140,7 +141,7 @@ public class VertragUtilTest {
         VertragUtil vertragUtil = new VertragUtil();
 
         // Act: Merge der neuen Werte in den alten Vertrag
-        Vertrag result = vertragUtil.mergeVertrage(vertragNew, vertragOld);
+        Vertrag result = vertragUtil.mergeVertrage(vertragOld, vertragNew);
 
         // Assert: Es sollte nur der Versicherungsbeginn und der Fahrzeughersteller aktualisiert werden
         assertEquals(LocalDate.of(2022, 5, 5), result.getVersicherungsbeginn());
