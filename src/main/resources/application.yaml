@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: vertragsverwaltung
+  mvc:
+    format:
+      date: yyyy-MM-dd
+      time: HH:mm:ss
+      datetime: yyyy-MM-dd'T'HH:mm:ss
+  security:
+    user:
+      name: admin
+      password: admin
+#logging:
+#  level.org.springframework.security: TRACE
+#debug:
+#  security: true
+input:
+  setup:
+    json_repositoryPath: src/main/resources/static/json/vertrage.json
+    json_preisPath: src/main/resources/static/json/preiscalc.json
+    json_brandsPath: src/main/resources/static/json/brands.json
+    testURL: https://www.google.com
+    checkURL: https://nominatim.openstreetmap.org/search?format=json&q=
+    proxy_host: localhost
+    proxy_port: 3128
+    db_url: jdbc:mysql://localhost:3306/falconbyte
+    db_user: root
+    db_pass:

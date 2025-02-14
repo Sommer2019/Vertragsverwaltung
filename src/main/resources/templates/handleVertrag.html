@@ -56,7 +56,7 @@
                     </button>
                 </div>
             </div>
-            <div><span>Abrechnungszeitraum:</span><span
+            <div class="valid"><span>Abrechnungszeitraum:</span><span
                     th:text="${abrechnungszeitraumMonatlich ? 'monatlich' : 'jährlich'}"></span>
                 <div class="flex-container">
                     <input th:field="*{monatlich}" type="radio" name="abrechnung" value=true id="check1">
@@ -104,14 +104,14 @@
                 Ungültiger Typ</b>
             <div class="flex-container"><span>Höchstgeschwindigkeit:</span><span th:text="${maxspeed}"></span>
                 <input th:field="*{fahrzeug.hoechstgeschwindigkeit}" type="number" id="speed" min="45" max="250"
-                       required>
+                       style="width: 167px;" required>
                 <label for="speed" id="kmh">km/h</label>
             </div>
             <b th:if="${#fields.hasErrors('fahrzeug.hoechstgeschwindigkeit')}"
                th:class="${#fields.hasErrors('fahrzeug.hoechstgeschwindigkeit')}? error">
                 Ungültige Höchstgeschwindigkeit</b>
             <div><span>Wagnisskennziffer:</span><span th:text="${wkz}"></span>
-                <input th:field="*{fahrzeug.wagnisskennziffer}" type="number" id="wkz" min="112" max="112" required>
+                <input th:field="*{fahrzeug.wagnisskennziffer}" type="number" id="wkz" min="112" max="112" class="valid" readonly>
             </div>
             <b th:if="${#fields.hasErrors('fahrzeug.wagnisskennziffer')}"
                th:class="${#fields.hasErrors('fahrzeug.wagnisskennziffer')}? error">
@@ -131,7 +131,7 @@
             <b th:if="${#fields.hasErrors('partner.nachname')}"
                th:class="${#fields.hasErrors('partner.nachname')}? error">
                 Ungültiger Nachname</b>
-            <div><span>Geschlecht:</span><span th:text="${geschlecht}"></span>
+            <div class="valid"><span>Geschlecht:</span><span th:text="${geschlecht}"></span>
                 <div class="flex-container">
                     <input th:field="*{partner.geschlecht}" type="radio" name="gender" value='M' id="check3">
                     <label for="check3">M</label>
@@ -180,7 +180,7 @@
                 </select>
             </div>
             <div><span>Land:</span><span th:text="${land}"></span>
-                <input th:field="*{partner.land}" type="text" id="land" value="Deutschland" readonly>
+                <input th:field="*{partner.land}" type="text" id="land" value="Deutschland" class="valid" readonly>
             </div>
             <b th:if="${#fields.hasErrors('partner.land')}" th:class="${#fields.hasErrors('partner.land')}? error">
                 Ungültige Adresse</b>

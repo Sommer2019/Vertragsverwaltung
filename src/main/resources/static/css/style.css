@@ -31,11 +31,19 @@ label {
 input[type="text"],
 input[type="date"],
 input[type="number"],
-span,
-button,
+span{
+    width: 200px;
+    height: 25px;
+}
+
+button{
+    width: 208px;
+    height: 30px;
+}
+
 select {
-    width: 200px !important;
-    height: 25px !important;
+    width: 208px;
+    height: 30px;
 }
 
 .vertrag-details {

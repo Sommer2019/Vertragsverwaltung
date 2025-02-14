@@ -24,12 +24,15 @@
 </a>
 <form action="/home" method="post">
     <h3>Bestimmter Vertrag</h3>
-    <label for="vsnr">Vertrag:</label>
-    <input type="number" id="vsnr" name="vsnr" min="10000000" max="99999999" required><br><br>
+    <label for="vsnr">VSNR:</label>
+    <br><br>
     <div th:if="${result}" th:text="${result}"></div>
-    <button type="submit">Vertrag abrufen</button>
+    <div style="display: flex; gap: 10px;">
+        <input type="number" id="vsnr" name="vsnr" min="10000000" max="99999999" required>
+        <button type="submit">Vertrag abrufen</button>
+    </div>
 </form>
-<p></p>
+<br><br>
 <form action="/logout" method="post">
     <button type="submit">Logout</button>
 </form>
