@@ -16,7 +16,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-//ToDo: einbauen, Tests, Exception handling
+//ToDo: einbauen, Tests, Exception handling, JBA
 /**
  * Repository class for handling the storage and retrieval of contracts and factors using SQL database.
  */
