@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.controller.Api;
+package de.axa.robin.vertragsverwaltung.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.axa.robin.vertragsverwaltung.VertragsverwaltungApplication;

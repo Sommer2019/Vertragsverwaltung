@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.controller.Api;
+package de.axa.robin.vertragsverwaltung.controller.api;
 
 import de.axa.robin.vertragsverwaltung.DefaultApi;
 import de.axa.robin.vertragsverwaltung.mapper.VertragMapper;
