@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 
-public class VertragUtilTest {
+class VertragUtilTest {
 
     @Test
-    public void testMergeVertrage_UpdateAllFields() {
+    void testMergeVertrage_UpdateAllFields() {
         // Arrange: Erzeuge einen "alten" Vertrag mit initialen Werten
         Vertrag vertragOld = new Vertrag();
         vertragOld.setVsnr(10000000);

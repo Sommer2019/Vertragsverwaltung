@@ -8,18 +8,18 @@ import org.mapstruct.factory.Mappers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PreisModelMapperTest {
+class PreisModelMapperTest {
 
     private PreisModelMapper preisModelMapper;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         // Initialisiert den Mapper über die MapStruct-Factory
         preisModelMapper = Mappers.getMapper(PreisModelMapper.class);
     }
 
     @Test
-    public void testToPreis() {
+    void testToPreis() {
         // Arrange: Erstelle ein PreisDTO mit Testdaten
         PreisDTO preisDTO = new PreisDTO();
         preisDTO.setAge(1.5);

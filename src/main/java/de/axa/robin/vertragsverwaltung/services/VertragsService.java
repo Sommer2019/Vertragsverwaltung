@@ -51,7 +51,7 @@ public class VertragsService {
                 .findFirst()
                 .orElse(null);
         if (vertrag != null) {
-            logger.info("Contract found: {}", vertrag);
+            logger.debug("Contract found: {}", vertrag);
             return vertrag;
         } else {
             logger.warn("Contract not found for VSNR: {}", vsnr);
@@ -69,7 +69,7 @@ public class VertragsService {
      * @throws IllegalArgumentException if validation errors are found
      */
     public Vertrag vertragAnlegen(Vertrag vertrag, Preis preismodell, BindingResult result) throws IllegalArgumentException {
-        logger.info("Creating new contract: {}", vertrag);
+        logger.debug("Creating new contract: {}", vertrag);
         List<Vertrag> vertrage = getVertrage();
         vertrag.setVsnr(createvsnr(vertrage));
         vertrag.setPreis(createPreis(vertrag.isMonatlich(), vertrag.getPartner().getGeburtsdatum(), vertrag.getFahrzeug().getHoechstgeschwindigkeit(), preismodell));
@@ -78,7 +78,7 @@ public class VertragsService {
             logger.warn("Validation errors found: {}", result.getAllErrors());
             throw new IllegalArgumentException("Validation errors found: " + result.getAllErrors());
         }
-        logger.info("Contract successfully created: {}", vertrag);
+        logger.debug("Contract successfully created: {}", vertrag);
         vertrage.add(vertrag);
         repository.speichereVertrage(vertrage);
         return vertrag;

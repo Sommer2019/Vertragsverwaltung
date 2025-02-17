@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SecurityConfigTest {
+class SecurityConfigTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -31,7 +31,7 @@ public class SecurityConfigTest {
      * Testet, ob der in-memory User "admin" mit der Rolle ADMIN korrekt konfiguriert wurde.
      */
     @Test
-    public void testUserDetailsService() {
+    void testUserDetailsService() {
         UserDetailsService uds = context.getBean(UserDetailsService.class);
         UserDetails user = uds.loadUserByUsername("admin");
         assertThat(user).isNotNull();
@@ -45,9 +45,9 @@ public class SecurityConfigTest {
      * es darf jedoch keine Weiterleitung (302) erfolgen.
      */
     @Test
-    public void testPublicAccess() throws Exception {
-        String[] publicUrls = {"/", "/login", "/error", "/favicon.ico"};
-        for (String url : publicUrls) {
+    void testAccess() throws Exception {
+        String[] Urls = {"/", "/login", "/error", "/favicon.ico"};
+        for (String url : Urls) {
             mockMvc.perform(get(url))
                     .andExpect(result -> {
                         int status = result.getResponse().getStatus();
@@ -62,7 +62,7 @@ public class SecurityConfigTest {
      * eine Weiterleitung zur Login-Seite (in diesem Fall "/") erfolgt.
      */
     @Test
-    public void testAdminAccessWithoutAuthentication() throws Exception {
+    void testAdminAccessWithoutAuthentication() throws Exception {
         String[] adminUrls = {"/home", "/printVertrage", "/editPreis",
                 "/createVertrag", "/json/someEndpoint", "/showEdit", "/showDelete",
                 "/precalcPreis", "/createPreis", "/logout"};
@@ -79,7 +79,7 @@ public class SecurityConfigTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testAdminAccessWithAuthentication() throws Exception {
+    void testAdminAccessWithAuthentication() throws Exception {
         mockMvc.perform(get("/home"))
                 .andExpect(status().is2xxSuccessful());
     }
@@ -91,7 +91,7 @@ public class SecurityConfigTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testLogout() throws Exception {
+    void testLogout() throws Exception {
         mockMvc.perform(post("/logout"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/?logout"));
@@ -101,7 +101,7 @@ public class SecurityConfigTest {
      * Testet, dass API-Endpunkte ohne Authentifizierung nicht zugänglich sind.
      */
     @Test
-    public void testApiAccessWithoutAuthentication() throws Exception {
+    void testApiAccessWithoutAuthentication() throws Exception {
         String[] apiUrls = {"/api/preisverwaltung/", "/api/vertragsverwaltung/"};
         for (String url : apiUrls) {
             mockMvc.perform(get(url))
@@ -116,7 +116,7 @@ public class SecurityConfigTest {
      * solange keine Sicherheitsumleitung erfolgt.
      */
     @Test
-    public void testApiAccessWithBasicAuth() throws Exception {
+    void testApiAccessWithBasicAuth() throws Exception {
         mockMvc.perform(get("/api/preisverwaltung/").with(httpBasic("apiuser", "apiuser")))
                 .andExpect(status().is2xxSuccessful());
     }
@@ -127,7 +127,7 @@ public class SecurityConfigTest {
      */
     @Test
     @WithMockUser(username = "apiuser", roles = {"API_USER"})
-    public void testApiAccessWithMockUser() throws Exception {
+    void testApiAccessWithMockUser() throws Exception {
         mockMvc.perform(get("/api/vertragsverwaltung/"))
                 .andExpect(status().is2xxSuccessful());
     }

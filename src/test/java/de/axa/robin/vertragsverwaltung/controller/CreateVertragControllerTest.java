@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CreateVertragController.class)
-public class CreateVertragControllerTest {
+class CreateVertragControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -43,7 +43,7 @@ public class CreateVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testCreateVertragGet() throws Exception {
+    void testCreateVertragGet() throws Exception {
         int expectedVsnr = 10000000;
         // Simuliere, dass derzeit keine Verträge existieren
         Mockito.when(vertragsService.getVertrage()).thenReturn(new ArrayList<>());
@@ -62,7 +62,7 @@ public class CreateVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testCreateVertragPostSuccess() throws Exception {
+    void testCreateVertragPostSuccess() throws Exception {
         // Simuliere das Preismodell
         Preis preisModel = new Preis();
         Mockito.when(preisModelService.getPreismodell()).thenReturn(preisModel);
@@ -93,7 +93,7 @@ public class CreateVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testCreateVertragPostError() throws Exception {
+    void testCreateVertragPostError() throws Exception {
         Preis preisModel = new Preis();
         Mockito.when(preisModelService.getPreismodell()).thenReturn(preisModel);
         // Simuliere, dass bei der Vertragserstellung eine IllegalArgumentException geworfen wird.
@@ -124,7 +124,7 @@ public class CreateVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testCreatePreisWithValidPlz() throws Exception {
+    void testCreatePreisWithValidPlz() throws Exception {
         double calculatedPrice = 123.45;
         Preis preisModel = new Preis();
         Mockito.when(preisModelService.getPreismodell()).thenReturn(preisModel);
@@ -153,7 +153,7 @@ public class CreateVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testCreatePreisWithEmptyPlz() throws Exception {
+    void testCreatePreisWithEmptyPlz() throws Exception {
         mockMvc.perform(post("/createPreis")
                         .param("partner.plz", "")
                         .param("monatlich", "true")
@@ -168,7 +168,7 @@ public class CreateVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testCreatePreisWithNullVersicherungsablauf() throws Exception {
+    void testCreatePreisWithNullVersicherungsablauf() throws Exception {
         mockMvc.perform(post("/createPreis")
                         .param("partner.plz", "12345")
                         .param("fahrzeug.hoechstgeschwindigkeit", "200")
@@ -183,7 +183,7 @@ public class CreateVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testCreatePreisWithExpiredContract() throws Exception {
+    void testCreatePreisWithExpiredContract() throws Exception {
         LocalDate pastDate = LocalDate.now().minusDays(1);
         mockMvc.perform(post("/createPreis")
                         .param("partner.plz", "12345")

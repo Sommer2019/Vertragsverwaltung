@@ -88,7 +88,7 @@ class PrintVertrageControllerTest {
      * Dabei wird berücksichtigt, dass Verträge mit monatlicher Abrechnung mit 12 multipliziert werden.
      */
     @Test
-    public void testComputeTotalPriceWrapper() {
+    void testComputeTotalPriceWrapper() {
         // Arrange: Erzeuge zwei Verträge
         Vertrag vertrag1 = new Vertrag();
         vertrag1.setPreis(15.0);

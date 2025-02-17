@@ -3,6 +3,7 @@ package de.axa.robin.vertragsverwaltung.validators;
 import de.axa.robin.vertragsverwaltung.exceptions.DataLoadException;
 import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Repository;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -26,9 +27,9 @@ public class InputValidator {
     private static final Logger logger = LoggerFactory.getLogger(InputValidator.class);
 
     @Autowired
-    private Setup setup;
-    @Autowired
     private AdressValidator adressValidator;
+    @Autowired
+    private Repository repository;
 
     private static final String ERROR_INVALID_DATE = "Ungültiger Versicherungsbeginn";
     private static final String ERROR_INVALID_EXPIRY = "Ungültiger Versicherungsablauf";
@@ -41,27 +42,18 @@ public class InputValidator {
     private static final String ERROR_INVALID_ADDRESS = "Ungültige Adresse";
 
     /**
-     * Validates if the given manufacturer exists in the JSON file.
+     * Validates if the given manufacturer exists in the DB.
      *
      * @param searchString the manufacturer name to search for
      * @return true if the manufacturer exists, false otherwise
      */
     public boolean validateHersteller(String searchString) throws Exception {
-        String filePath = setup.getJson_brandsPath();
-        logger.info("Checking if string '{}' is in JSON file '{}'", searchString, filePath);
-        try (InputStream fis = new FileInputStream(filePath);
-             JsonReader jsonReader = Json.createReader(fis)) {
-            JsonObject jsonObject = jsonReader.readObject();
-            boolean contains = jsonObject.toString().contains("'" + searchString + "'");
-            logger.debug("String '{}' found in JSON file: {}", searchString, contains);
-            return contains;
-        } catch (FileNotFoundException e) {
-            logger.error("File not found: {}", filePath, e);
-            throw new Exception(e);
-        } catch (Exception e) {
-            logger.error("Error reading JSON file", e);
-            throw new Exception(e);
-        }
+        logger.info("Loading manufacturer object from JSON file");
+        JsonObject jsonObject = repository.ladeHersteller();
+        logger.info("Checking if string '{}' is a valid manufacturer", searchString);
+        boolean contains = jsonObject.toString().contains("'" + searchString + "'");
+        logger.debug("String '{}' found in JSON file: {}", searchString, contains);
+        return contains;
     }
 
     /**
@@ -73,7 +65,7 @@ public class InputValidator {
      * @return true if there are validation errors, false otherwise
      */
     public boolean validateVertrag(List<Vertrag> vertrage, Vertrag vertrag, BindingResult result) throws DataLoadException {
-        logger.info("Validating contract: {}", vertrag);
+        logger.debug("Validating contract: {}", vertrag);
         try {
             return validateInsuranceDates(vertrag, result) ||
                     validateVehicle(vertrag, result) ||

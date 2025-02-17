@@ -116,7 +116,7 @@ public class RepoSQL {
             while (rs.next()) {
                 Vertrag vertrag = createVertragFromResultSet(rs);
                 vertrage.add(vertrag);
-                logger.info("Loaded contract from database: {}", vertrag);
+                logger.debug("Loaded contract from database: {}", vertrag);
             }
         } catch (SQLException e) {
             logger.error("Error loading contracts from the database", e);
@@ -159,7 +159,7 @@ public class RepoSQL {
                         rs.getString("partner_bundesland")
                 )
         );
-        logger.info("Created contract from ResultSet: {}", vertrag);
+        logger.debug("Created contract from ResultSet: {}", vertrag);
         return vertrag;
     }
 

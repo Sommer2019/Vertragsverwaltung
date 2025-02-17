@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = VertragsverwaltungApplication.class)
 @AutoConfigureMockMvc
-public class PreisApiTest {
+class PreisApiTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,7 +50,7 @@ public class PreisApiTest {
      */
     @Test
     @WithMockUser(username = "apiuser", roles = "API_USER")
-    public void testPreismodellGet() throws Exception {
+    void testPreismodellGet() throws Exception {
         // Arrange
         Preis preis = new Preis();
         preis.setAge(1.5);
@@ -74,7 +74,7 @@ public class PreisApiTest {
      */
     @Test
     @WithMockUser(username = "apiuser", roles = "API_USER")
-    public void testPreismodellPost() throws Exception {
+    void testPreismodellPost() throws Exception {
         // Arrange
         PreisDTO preisDTO = new PreisDTO();
         // Optional: Felder von preisDTO setzen, sofern erforderlich, z. B.:

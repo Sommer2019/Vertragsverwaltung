@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = VertragsverwaltungApplication.class)
 @AutoConfigureMockMvc
-public class VertragApiTest {
+class VertragApiTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +54,7 @@ public class VertragApiTest {
      */
     @Test
     @WithMockUser(username = "apiuser", roles = "API_USER")
-    public void testRootGet() throws Exception {
+    void testRootGet() throws Exception {
         // Erzeuge zwei Dummy-Vertrag-Objekte und ihre gemappten API-Repräsentationen
         Vertrag vertrag1 = new Vertrag();
         Vertrag vertrag2 = new Vertrag();
@@ -79,7 +79,7 @@ public class VertragApiTest {
      */
     @Test
     @WithMockUser(username = "apiuser", roles = "API_USER")
-    public void testVertrageIdGet() throws Exception {
+    void testVertrageIdGet() throws Exception {
         int id = 123;
         Vertrag vertrag = new Vertrag();
         VertragDTO vertragDTO = new VertragDTO();
@@ -95,7 +95,7 @@ public class VertragApiTest {
     // Test für den PUT-Endpunkt "/api/vertragsverwaltung/"
     @Test
     @WithMockUser(username = "apiuser", roles = "API_USER")
-    public void testRootPut() throws Exception {
+    void testRootPut() throws Exception {
         AntragDTO antragDTO = new AntragDTO();
         // Erzeuge Dummy-Objekte für den erstellten Vertrag
         Vertrag vertrag = new Vertrag();
@@ -122,7 +122,7 @@ public class VertragApiTest {
      */
     @Test
     @WithMockUser(username = "apiuser", roles = "API_USER")
-    public void testVertrageIdPost() throws Exception {
+    void testVertrageIdPost() throws Exception {
         int id = 123;
         AntragDTO antragDTO = new AntragDTO();
         Vertrag vertrag = new Vertrag();
@@ -152,7 +152,7 @@ public class VertragApiTest {
      */
     @Test
     @WithMockUser(username = "apiuser", roles = "API_USER")
-    public void testVertrageIdDelete() throws Exception {
+    void testVertrageIdDelete() throws Exception {
         int id = 123;
         Vertrag vertrag = new Vertrag();
         VertragDTO vertragDTO = new VertragDTO();

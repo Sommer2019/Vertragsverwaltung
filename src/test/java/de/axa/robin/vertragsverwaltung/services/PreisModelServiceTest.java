@@ -10,16 +10,18 @@ import jakarta.json.JsonObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class PreisModelServiceTest {
+class PreisModelServiceTest {
 
     @InjectMocks
     private PreisModelService preisModelService;
@@ -31,7 +33,7 @@ public class PreisModelServiceTest {
     private VertragsService vertragsService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -40,7 +42,7 @@ public class PreisModelServiceTest {
      * ein Preis-Objekt mit den korrekten Werten erzeugt.
      */
     @Test
-    public void testGetPreismodell() {
+    void testGetPreismodell() {
         // Erzeuge ein JsonObject mit den Testwerten
         JsonObject jsonObject = Json.createObjectBuilder()
                 .add("factor", 1.5)
@@ -63,7 +65,7 @@ public class PreisModelServiceTest {
      * Es wird erwartet, dass im Preview-Modus keine Änderungen am Repository vorgenommen werden.
      */
     @Test
-    public void testUpdatePreisAndModellPreview() {
+    void testUpdatePreisAndModellPreview() {
         // Setup des JSON-Objekts für das Preismodell
         JsonObject jsonObject = Json.createObjectBuilder()
                 .add("factor", 1.5)
@@ -126,7 +128,7 @@ public class PreisModelServiceTest {
      * Zusätzlich wird überprüft, ob die Methoden vertragLoeschen und vertragAnlegen aufgerufen werden.
      */
     @Test
-    public void testUpdatePreisAndModellNotPreview() {
+    void testUpdatePreisAndModellNotPreview() {
         // Setup des JSON-Objekts für das Preismodell
         JsonObject jsonObject = Json.createObjectBuilder()
                 .add("factor", 1.5)

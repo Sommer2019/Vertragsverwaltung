@@ -83,7 +83,7 @@ public class CreateVertragController {
     @PostMapping("/createPreis")
     @ResponseBody
     public Map<String, Object> createPreis(@ModelAttribute Vertrag vertrag) {
-        logger.info("Calculating price for contract: {}", vertrag);
+        logger.debug("Calculating price for contract: {}", vertrag);
         Map<String, Object> response = new HashMap<>();
 
         if (!vertrag.getPartner().getPlz().isEmpty()) {

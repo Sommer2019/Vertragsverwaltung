@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage;
 
-import de.axa.robin.test.config.CustomTestConfig;
+import de.axa.robin.vertragsverwaltung.config.CustomTestConfig;
 import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @Import(CustomTestConfig.class)
-public class RepositoryTest {
+class RepositoryTest {
 
     @InjectMocks
     private Repository repository;
@@ -45,7 +45,7 @@ public class RepositoryTest {
 
 
     @Test
-    public void testSpeichereUndLadeVertrage() {
+    void testSpeichereUndLadeVertrage() {
         repoFile = tempDir.resolve("vertrage.json");
         when(setup.getJson_repositoryPath()).thenReturn(repoFile.toString());
         // Erstelle ein Beispielobjekt für Partner
@@ -108,7 +108,7 @@ public class RepositoryTest {
     }
 
     @Test
-    public void testLadeVertrageFileNotFound() {
+    void testLadeVertrageFileNotFound() {
         repoFile = tempDir.resolve("vertrage.json");
         when(setup.getJson_repositoryPath()).thenReturn(repoFile.toString());
         // Lösche die Datei (falls sie nicht existiert, passiert nichts) und überprüfe,
@@ -119,7 +119,7 @@ public class RepositoryTest {
     }
 
     @Test
-    public void testSpeichereFaktoren() throws IOException {
+    void testSpeichereFaktoren() throws IOException {
         preisFile = tempDir.resolve("preis.json");
         when(setup.getJson_preisPath()).thenReturn(preisFile.toString());
         double factor = 1.5;
@@ -140,7 +140,7 @@ public class RepositoryTest {
     }
 
     @Test
-    public void testLadeFaktoren() throws IOException {
+    void testLadeFaktoren() throws IOException {
         preisFile = tempDir.resolve("preis.json");
         when(setup.getJson_preisPath()).thenReturn(preisFile.toString());
         // Erstelle manuell ein JSON-Objekt in der Datei
@@ -159,5 +159,29 @@ public class RepositoryTest {
         assertEquals(4.5, loaded.getJsonNumber("factor").doubleValue(), 0.0001);
         assertEquals(5.5, loaded.getJsonNumber("factorage").doubleValue(), 0.0001);
         assertEquals(6.5, loaded.getJsonNumber("factorspeed").doubleValue(), 0.0001);
+    }
+
+    @Test
+    void testLadeHersteller() throws Exception {
+        preisFile = tempDir.resolve("brands.json");
+        when(setup.getJson_brandsPath()).thenReturn(preisFile.toString());
+
+        // Create a sample JSON object for manufacturers
+        JsonObject jsonObject = Json.createObjectBuilder()
+                .add("manufacturer1", "Toyota")
+                .add("manufacturer2", "Honda")
+                .build();
+
+        // Write the sample JSON object to the file
+        try (FileWriter fw = new FileWriter(preisFile.toFile());
+             JsonWriter writer = Json.createWriter(fw)) {
+            writer.writeObject(jsonObject);
+        }
+
+        // Load the manufacturers and verify the content
+        JsonObject loaded = repository.ladeHersteller();
+        assertNotNull(loaded, "The loaded JSON object should not be null.");
+        assertEquals("Toyota", loaded.getString("manufacturer1"));
+        assertEquals("Honda", loaded.getString("manufacturer2"));
     }
 }

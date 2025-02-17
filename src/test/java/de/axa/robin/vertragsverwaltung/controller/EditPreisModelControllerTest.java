@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(EditPreisModelController.class)
-public class EditPreisModelControllerTest {
+class EditPreisModelControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,7 +41,7 @@ public class EditPreisModelControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testEditPreisGet() throws Exception {
+    void testEditPreisGet() throws Exception {
         Preis preismodell = new Preis();
         preismodell.setFaktor(1.0);
         preismodell.setAge(1.0);
@@ -62,7 +62,7 @@ public class EditPreisModelControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testPrecalcPreisPost() throws Exception {
+    void testPrecalcPreisPost() throws Exception {
         // Testdaten erstellen
         Preis preismodell = new Preis();
         preismodell.setFaktor(1.2);
@@ -94,7 +94,7 @@ public class EditPreisModelControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testEditPreisPost() throws Exception {
+    void testEditPreisPost() throws Exception {
         Preis preismodell = new Preis();
         preismodell.setFaktor(1.5);
         preismodell.setAge(0.9);

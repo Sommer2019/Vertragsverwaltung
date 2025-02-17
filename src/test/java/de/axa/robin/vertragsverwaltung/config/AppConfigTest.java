@@ -11,13 +11,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AppConfigTest {
+class AppConfigTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void testStaticResourceMapping() throws Exception {
+    void testStaticResourceMapping() throws Exception {
         // Hinweis: Damit dieser Test erfolgreich ist, muss im Verzeichnis
         // src/main/resources/static eine Datei namens "favicon.ico" vorhanden sein.
         mockMvc.perform(get("/static/favicon.ico"))

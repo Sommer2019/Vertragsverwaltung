@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AdressValidatorTest {
+class AdressValidatorTest {
 
     private AdressValidator adressValidator;
     private Setup setup;
@@ -42,7 +42,7 @@ public class AdressValidatorTest {
      * passendem "display_name" zurückliefert.
      */
     @Test
-    public void testValidateAddress_valid() throws Exception {
+    void testValidateAddress_valid() throws Exception {
         try (MockWebServer server = new MockWebServer()) {
             // Dispatcher simuliert zwei Endpunkte:
             // - /test: Für den Internet-Check (HTTP 200)
@@ -88,7 +88,7 @@ public class AdressValidatorTest {
      * Testet den Fall einer ungültigen Adresse (leere JSON-Antwort vom externen Service).
      */
     @Test
-    public void testValidateAddress_invalidEmptyResponse() throws Exception {
+    void testValidateAddress_invalidEmptyResponse() throws Exception {
         try (MockWebServer server = new MockWebServer()) {
             // Dispatcher liefert für /test einen HTTP 200 und für /check einen leeren JSON-Array
             Dispatcher dispatcher = new Dispatcher() {
@@ -122,7 +122,7 @@ public class AdressValidatorTest {
      * Testet, dass isInternetAvailable() true zurückgibt, wenn der Test-URL-Endpunkt HTTP 200 liefert.
      */
     @Test
-    public void testIsInternetAvailable_success() throws Exception {
+    void testIsInternetAvailable_success() throws Exception {
         try (MockWebServer server = new MockWebServer()) {
             server.enqueue(new MockResponse().setResponseCode(200));
             server.start();
@@ -137,7 +137,7 @@ public class AdressValidatorTest {
      * Testet, dass isInternetAvailable() false zurückgibt, wenn der Test-URL-Endpunkt keinen HTTP 200 Status liefert.
      */
     @Test
-    public void testIsInternetAvailable_failure() throws Exception {
+    void testIsInternetAvailable_failure() throws Exception {
         try (MockWebServer server = new MockWebServer()) {
             server.enqueue(new MockResponse().setResponseCode(500));
             server.start();
@@ -152,7 +152,7 @@ public class AdressValidatorTest {
      * Testet die Methode isProxyReachable() für einen vermutlich nicht erreichbaren Proxy.
      */
     @Test
-    public void testIsProxyReachable_unreachable() {
+    void testIsProxyReachable_unreachable() {
         // Hier wird davon ausgegangen, dass auf Port 9999 kein Dienst läuft.
         boolean reachable = adressValidator.isProxyReachable("127.0.0.1", 9999);
         assertFalse(reachable, "Der Proxy sollte als nicht erreichbar erkannt werden.");

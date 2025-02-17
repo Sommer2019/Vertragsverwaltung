@@ -4,24 +4,25 @@ import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
+import de.axa.robin.vertragsverwaltung.storage.Repository;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 class InputValidatorTest {
 
@@ -34,39 +35,31 @@ class InputValidatorTest {
     @Mock
     private AdressValidator adressValidator;
 
+    @Mock
+    private Repository repository;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    // --- Tests für validateHersteller ---
-
     @Test
-    void testValidateHerstellerFound() throws Exception {
-        // Erzeuge eine temporäre Datei mit JSON-Inhalt, der den Hersteller "BMW" (in einfachen Anführungszeichen) enthält.
-        File tempFile = File.createTempFile("brands", ".json");
-        tempFile.deleteOnExit();
-        try (FileWriter writer = new FileWriter(tempFile)) {
-            writer.write("{\"brands\": [\"'BMW'\", \"'Audi'\"]}");
-        }
-        when(setup.getJson_brandsPath()).thenReturn(tempFile.getAbsolutePath());
+    void testValidateHersteller() throws Exception {
+        // Mock the repository to return a JsonObject containing the manufacturer
+        JsonObject jsonObject = Json.createObjectBuilder()
+                .add("brands", Json.createArrayBuilder()
+                        .add("'BMW'")
+                        .add("'Audi'"))
+                .build();
+        when(repository.ladeHersteller()).thenReturn(jsonObject);
 
+        // Test for a manufacturer that exists
         boolean result = inputValidator.validateHersteller("BMW");
-        assertTrue(result, "Es sollte true zurückgegeben werden, wenn 'BMW' gefunden wird.");
-    }
+        assertTrue(result, "The manufacturer 'BMW' should be found.");
 
-    @Test
-    void testValidateHerstellerNotFound() throws Exception {
-        // Erzeuge eine temporäre Datei ohne den gesuchten Hersteller "BMW"
-        File tempFile = File.createTempFile("brands", ".json");
-        tempFile.deleteOnExit();
-        try (FileWriter writer = new FileWriter(tempFile)) {
-            writer.write("{\"brands\": [\"'Audi'\", \"'Mercedes'\"]}");
-        }
-        when(setup.getJson_brandsPath()).thenReturn(tempFile.getAbsolutePath());
-
-        boolean result = inputValidator.validateHersteller("BMW");
-        assertFalse(result, "Es sollte false zurückgegeben werden, wenn 'BMW' nicht gefunden wird.");
+        // Test for a manufacturer that does not exist
+        result = inputValidator.validateHersteller("Mercedes");
+        assertFalse(result, "The manufacturer 'Mercedes' should not be found.");
     }
 
     // --- Tests für vertragExistiert und kennzeichenExistiert ---
@@ -136,7 +129,7 @@ class InputValidatorTest {
     }
 
     @Test
-    void testValidateVertragWithoutErrors() {
+    void testValidateVertragWithoutErrors() throws Exception {
         List<Vertrag> vertrage = new ArrayList<>();
         Vertrag vertrag = new Vertrag();
 
@@ -177,6 +170,11 @@ class InputValidatorTest {
 
         //Simuliere, dass der Hersteller gültig ist.
         when(setup.getJson_brandsPath()).thenReturn("src/main/resources/static/json/brands.json");
+        when(repository.ladeHersteller()).thenReturn(Json.createObjectBuilder()
+                .add("brands", Json.createArrayBuilder()
+                        .add("'BMW'")
+                        .add("'Audi'"))
+                .build());
 
         BindingResult result = new BeanPropertyBindingResult(vertrag, "vertrag");
         boolean hasErrors = inputValidator.validateVertrag(vertrage, vertrag, result);

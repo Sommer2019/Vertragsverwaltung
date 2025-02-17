@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class VertragsServiceTest {
+class VertragsServiceTest {
 
     @InjectMocks
     private VertragsService vertragsService;
@@ -35,13 +35,13 @@ public class VertragsServiceTest {
     private VertragUtil vertragUtil;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     // Test getVertrage()
     @Test
-    public void testGetVertrage() {
+    void testGetVertrage() {
         List<Vertrag> vertragsListe = new ArrayList<>();
         Vertrag vertrag = new Vertrag();
         vertragsListe.add(vertrag);
@@ -53,7 +53,7 @@ public class VertragsServiceTest {
 
     // Test getVertrag() - Vertrag gefunden
     @Test
-    public void testGetVertragFound() {
+    void testGetVertragFound() {
         int vsnr = 123;
         Vertrag vertrag = new Vertrag();
         vertrag.setVsnr(vsnr);
@@ -68,7 +68,7 @@ public class VertragsServiceTest {
 
     // Test getVertrag() - Vertrag nicht gefunden
     @Test
-    public void testGetVertragNotFound() {
+    void testGetVertragNotFound() {
         when(repository.ladeVertrage()).thenReturn(new ArrayList<>());
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -79,7 +79,7 @@ public class VertragsServiceTest {
 
     // Test vertragAnlegen() - Erfolgreiche Anlage
     @Test
-    public void testVertragAnlegenSuccess() {
+    void testVertragAnlegenSuccess() {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(false);
 
@@ -123,7 +123,7 @@ public class VertragsServiceTest {
 
     // Test vertragAnlegen() - Validierungsfehler
     @Test
-    public void testVertragAnlegenValidationError() {
+    void testVertragAnlegenValidationError() {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
@@ -152,7 +152,7 @@ public class VertragsServiceTest {
 
     // Test vertragBearbeiten() - Erfolgreiche Bearbeitung
     @Test
-    public void testVertragBearbeitenSuccess() {
+    void testVertragBearbeitenSuccess() {
         int vsnr = 123;
         // Vorhandener Vertrag
         Vertrag existing = new Vertrag();
@@ -206,7 +206,7 @@ public class VertragsServiceTest {
 
     // Test vertragBearbeiten() - Validierungsfehler
     @Test
-    public void testVertragBearbeitenValidationError() {
+    void testVertragBearbeitenValidationError() {
         int vsnr = 123;
         Vertrag existing = new Vertrag();
         existing.setVsnr(vsnr);
@@ -250,7 +250,7 @@ public class VertragsServiceTest {
 
     // Test vertragLoeschen()
     @Test
-    public void testVertragLoeschen() {
+    void testVertragLoeschen() {
         int vsnr = 123;
         Vertrag vertrag = new Vertrag();
         vertrag.setVsnr(vsnr);
@@ -264,7 +264,7 @@ public class VertragsServiceTest {
 
     // Test createvsnr()
     @Test
-    public void testCreatevsnr() {
+    void testCreatevsnr() {
         Vertrag vertrag1 = new Vertrag();
         vertrag1.setVsnr(10000000);
         Vertrag vertrag2 = new Vertrag();
@@ -283,7 +283,7 @@ public class VertragsServiceTest {
 
     // Test createPreis() für monatliche Verträge
     @Test
-    public void testCreatePreisMonthly() {
+    void testCreatePreisMonthly() {
         LocalDate geburtsdatum = LocalDate.of(1990, 1, 1);
         int hoechstGeschwindigkeit = 200;
         Preis preismodell = new Preis();
@@ -300,7 +300,7 @@ public class VertragsServiceTest {
 
     // Test createPreis() für nicht-monatliche Verträge
     @Test
-    public void testCreatePreisNotMonthly() {
+    void testCreatePreisNotMonthly() {
         LocalDate geburtsdatum = LocalDate.of(1990, 1, 1);
         int hoechstGeschwindigkeit = 200;
         Preis preismodell = new Preis();

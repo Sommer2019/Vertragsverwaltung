@@ -253,4 +253,21 @@ public class Repository {
             throw new DataLoadException("Fehler beim Speichern der Faktoren", e);
         }
     }
+
+    /**
+     * Test for loading manufacturers from a JSON file.
+     *
+     * @throws IOException if an I/O error occurs
+     */
+    public JsonObject ladeHersteller() throws Exception{
+        logger.info("Starting to load manufacturers from JSON file");
+        try (JsonReader reader = Json.createReader(new FileReader(setup.getJson_brandsPath()))) {
+            JsonObject jsonObject = reader.readObject();
+            logger.info("Successfully loaded manufacturers from JSON file: {}", jsonObject);
+            return jsonObject;
+        } catch (Exception e) {
+            logger.warn("Fehler beim Laden der Hersteller", e);
+            throw new Exception(e);
+        }
+    }
 }

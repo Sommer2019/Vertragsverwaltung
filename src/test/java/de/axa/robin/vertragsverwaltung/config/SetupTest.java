@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         "input.setup.db_user=sa",
         "input.setup.db_pass=pass"
 })
-public class SetupTest {
+class SetupTest {
 
     @Autowired
     private Setup setup;
 
     @Test
-    public void testPropertiesBinding() {
+    void testPropertiesBinding() {
         assertNotNull(setup, "Das Setup-Bean sollte erstellt werden.");
         assertEquals("/repository", setup.getJson_repositoryPath(), "json_repositoryPath sollte /repository sein.");
         assertEquals("/preis", setup.getJson_preisPath(), "json_preisPath sollte /preis sein.");

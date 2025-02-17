@@ -1,11 +1,10 @@
-package de.axa.robin.test.config;
+package de.axa.robin.vertragsverwaltung.config;
 
-import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.controller.CreateVertragController;
 import de.axa.robin.vertragsverwaltung.controller.HandleVertragController;
 import de.axa.robin.vertragsverwaltung.controller.MenuController;
 import de.axa.robin.vertragsverwaltung.mapper.VertragMapper;
-import de.axa.robin.vertragsverwaltung.util.VertragUtilTest;
+import de.axa.robin.vertragsverwaltung.util.VertragUtil;
 import de.axa.robin.vertragsverwaltung.controller.EditPreisModelController;
 import de.axa.robin.vertragsverwaltung.services.VertragsService;
 import de.axa.robin.vertragsverwaltung.validators.AdressValidator;
@@ -33,8 +32,8 @@ public class CustomTestConfig {
     }
 
     @Bean
-    public VertragUtilTest create() {
-        return mock(VertragUtilTest.class);
+    public VertragUtil create() {
+        return mock(VertragUtil.class);
     }
 
     @Bean

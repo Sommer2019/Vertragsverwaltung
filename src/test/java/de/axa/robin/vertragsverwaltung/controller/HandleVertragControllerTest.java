@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = VertragsverwaltungApplication.class)
 @AutoConfigureMockMvc
-public class HandleVertragControllerTest {
+class HandleVertragControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -79,7 +79,7 @@ public class HandleVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testProcessPrintVertragSuccess() throws Exception {
+    void testProcessPrintVertragSuccess() throws Exception {
         int vsnr = 123;
         Vertrag vertrag = createValidVertrag(vsnr, 100.0, true, LocalDate.now(), LocalDate.now().plusDays(30));
         Mockito.when(vertragsService.getVertrag(vsnr)).thenReturn(vertrag);
@@ -99,7 +99,7 @@ public class HandleVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testProcessPrintVertragInvalidFormat() throws Exception {
+    void testProcessPrintVertragInvalidFormat() throws Exception {
         mockMvc.perform(post("/home")
                         .param("vsnr", "abc").with(csrf()))
                 .andExpect(status().isOk())
@@ -112,7 +112,7 @@ public class HandleVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testProcessPrintVertragNotFound() throws Exception {
+    void testProcessPrintVertragNotFound() throws Exception {
         int vsnr = 123;
         Mockito.doNothing().when(menuController).setVsnr(vsnr);
         Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
@@ -128,7 +128,7 @@ public class HandleVertragControllerTest {
     // Beispiel für testDeleteVertrag: Verwende eq() für vsnr
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testDeleteVertrag() throws Exception {
+    void testDeleteVertrag() throws Exception {
         int vsnr = 123;
         Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
         // Verwende eq(vsnr) statt des Rohwerts
@@ -142,7 +142,7 @@ public class HandleVertragControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testEditVertragSuccess() throws Exception {
+    void testEditVertragSuccess() throws Exception {
         int vsnr = 123;
         Vertrag vertrag = createValidVertrag(vsnr, 150.0, true, LocalDate.now(), LocalDate.now().plusDays(30));
         Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
@@ -171,7 +171,7 @@ public class HandleVertragControllerTest {
      */
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    public void testEditVertragValidationError() throws Exception {
+    void testEditVertragValidationError() throws Exception {
         int vsnr = 123;
         Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
         // Simuliere, dass bei der Bearbeitung eine Exception auftritt

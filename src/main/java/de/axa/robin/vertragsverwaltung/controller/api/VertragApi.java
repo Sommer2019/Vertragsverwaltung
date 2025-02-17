@@ -74,7 +74,7 @@ public class VertragApi extends DefaultApi {
         logger.info("Creating new contract: {}", antragDTO);
         Vertrag vertrag = vertragMapper.toVertrag(antragDTO);
         vertragsService.vertragAnlegen(vertrag, preisModelService.getPreismodell(), null);
-        logger.info("Contract successfully created: {}", vertrag);
+        logger.debug("Contract successfully created: {}", vertrag);
         return vertragMapper.toVertragDTO(vertrag);
     }
 

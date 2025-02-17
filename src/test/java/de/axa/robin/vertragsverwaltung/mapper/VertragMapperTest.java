@@ -10,23 +10,23 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class VertragMapperTest {
+class VertragMapperTest {
 
     private VertragMapper vertragMapper;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         vertragMapper = Mappers.getMapper(VertragMapper.class);
     }
 
     @Test
-    public void testToVertrag() {
+    void testToVertrag() {
         AntragDTO antragDTO = new AntragDTO();
         // Set properties on vertragDTO as needed for the test
         antragDTO.setMonatlich(true);
-        antragDTO.setVersicherungsbeginn(LocalDate.of(2023,1,1));
-        antragDTO.setVersicherungsablauf(LocalDate.of(2023,12,31));
-        antragDTO.setAntragsDatum(LocalDate.of(2022,12,1));
+        antragDTO.setVersicherungsbeginn(LocalDate.of(2023, 1, 1));
+        antragDTO.setVersicherungsablauf(LocalDate.of(2023, 12, 31));
+        antragDTO.setAntragsDatum(LocalDate.of(2022, 12, 1));
         antragDTO.setFahrzeug(new FahrzeugDTO());
         antragDTO.setPartner(new PartnerDTO());
 
@@ -42,7 +42,7 @@ public class VertragMapperTest {
     }
 
     @Test
-    public void testToPartner() {
+    void testToPartner() {
         PartnerDTO partnerDTO = new PartnerDTO();
         // Set properties on partnerDTO as needed for the test
         partnerDTO.setVorname("John");
@@ -56,7 +56,7 @@ public class VertragMapperTest {
     }
 
     @Test
-    public void testToFahrzeug() {
+    void testToFahrzeug() {
         FahrzeugDTO fahrzeugDTO = new FahrzeugDTO();
         // Set properties on fahrzeugDTO as needed for the test
         fahrzeugDTO.setAmtlichesKennzeichen("ABC123");
@@ -70,7 +70,7 @@ public class VertragMapperTest {
     }
 
     @Test
-    public void testToVertragApi() {
+    void testToVertragApi() {
         Vertrag vertrag = new Vertrag();
         // Set properties on vertrag as needed for the test
         vertrag.setVsnr(123456789);

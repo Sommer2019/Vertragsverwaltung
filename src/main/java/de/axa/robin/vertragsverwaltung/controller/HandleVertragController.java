@@ -107,7 +107,7 @@ public class HandleVertragController {
     @PostMapping("/showEdit")
     public String editVertrag(@ModelAttribute @Valid Vertrag vertrag, BindingResult result, @RequestParam("editVisible") boolean editVisible, Model model) {
         vertrag.setVsnr(menuController.getVsnr());
-        logger.info("Editing contract: {}", vertrag);
+        logger.debug("Editing contract: {}", vertrag);
         try {
             vertragsService.vertragBearbeiten(vertrag, vertrag.getVsnr(), preisModelService.getPreismodell(), result);
         } catch (IllegalArgumentException e) {
