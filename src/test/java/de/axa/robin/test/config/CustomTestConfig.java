@@ -1,14 +1,15 @@
-package de.axa.robin.vertragsverwaltung.config;
+package de.axa.robin.test.config;
 
+import de.axa.robin.vertragsverwaltung.config.Setup;
+import de.axa.robin.vertragsverwaltung.controller.CreateVertragController;
+import de.axa.robin.vertragsverwaltung.controller.HandleVertragController;
+import de.axa.robin.vertragsverwaltung.controller.MenuController;
 import de.axa.robin.vertragsverwaltung.mapper.VertragMapper;
 import de.axa.robin.vertragsverwaltung.util.VertragUtilTest;
-import de.axa.robin.vertragsverwaltung.controller.CreateVertrag;
-import de.axa.robin.vertragsverwaltung.controller.EditPreisModel;
-import de.axa.robin.vertragsverwaltung.controller.HandleVertrag;
+import de.axa.robin.vertragsverwaltung.controller.EditPreisModelController;
 import de.axa.robin.vertragsverwaltung.services.VertragsService;
 import de.axa.robin.vertragsverwaltung.validators.AdressValidator;
 import de.axa.robin.vertragsverwaltung.validators.InputValidator;
-import de.axa.robin.vertragsverwaltung.controller.MenuSpring;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import static org.mockito.Mockito.mock;
@@ -42,8 +43,8 @@ public class CustomTestConfig {
     }
 
     @Bean
-    public MenuSpring menuSpring() {
-        return mock(MenuSpring.class);
+    public MenuController menuSpring() {
+        return mock(MenuController.class);
     }
 
     @Bean
@@ -52,18 +53,18 @@ public class CustomTestConfig {
     }
 
     @Bean
-    public HandleVertrag handleVertrag() {
-        return mock(HandleVertrag.class);
+    public HandleVertragController handleVertrag() {
+        return mock(HandleVertragController.class);
     }
 
     @Bean
-    public EditPreisModel editPreis() {
-        return mock(EditPreisModel.class);
+    public EditPreisModelController editPreis() {
+        return mock(EditPreisModelController.class);
     }
 
     @Bean
-    public CreateVertrag createVertrag() {
-        return mock(CreateVertrag.class);
+    public CreateVertragController createVertrag() {
+        return mock(CreateVertragController.class);
     }
 
     @Bean

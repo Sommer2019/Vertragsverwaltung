@@ -5,13 +5,11 @@ import de.axa.robin.vertragsverwaltung.models.Partner;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * Utility class for handling contract-related operations.
  */
-@Component
-public class VertragUtil {
+public final class VertragUtil {
     private static final Logger logger = LoggerFactory.getLogger(VertragUtil.class);
 
     /**
@@ -21,7 +19,7 @@ public class VertragUtil {
      * @param vertragold the contract to be updated
      * @return the updated contract
      */
-    public Vertrag mergeVertrage(Vertrag vertragold, Vertrag vertrag) {
+    public static Vertrag mergeVertrage(Vertrag vertragold, Vertrag vertrag) {
         logger.info("Editing contract with VSNR: {}", vertragold.getVsnr());
 
         if (vertrag.getVersicherungsbeginn() != null) {

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Getter
 @Setter
-public class MenuSpring {
-    private static final Logger logger = LoggerFactory.getLogger(MenuSpring.class);
+public class MenuController {
+    private static final Logger logger = LoggerFactory.getLogger(MenuController.class);
     private int vsnr;
 
     /**

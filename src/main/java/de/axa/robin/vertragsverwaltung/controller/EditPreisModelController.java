@@ -22,8 +22,8 @@ import java.util.List;
  * This class provides methods to edit the price model of insurance contracts.
  */
 @Controller
-public class EditPreisModel {
-    private static final Logger logger = LoggerFactory.getLogger(EditPreisModel.class);
+public class EditPreisModelController {
+    private static final Logger logger = LoggerFactory.getLogger(EditPreisModelController.class);
 
     @Autowired
     private PreisModelService preisModelService;

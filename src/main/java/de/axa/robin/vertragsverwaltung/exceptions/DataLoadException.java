@@ -1,4 +1,4 @@
-package de.axa.robin.vertragsverwaltung.config;
+package de.axa.robin.vertragsverwaltung.exceptions;
 
 public class DataLoadException extends RuntimeException {
     private static final String DEFAULT_MESSAGE = "An error occurred while loading data.";

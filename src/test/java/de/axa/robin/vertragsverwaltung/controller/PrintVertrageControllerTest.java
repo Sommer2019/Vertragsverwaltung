@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class PrintVertrageTest {
+class PrintVertrageControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -34,7 +34,7 @@ class PrintVertrageTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PrintVertrage printVertrage;
+    private PrintVertrageController printVertrageController;
 
     @MockitoBean
     private VertragsService vertragsService;
@@ -101,7 +101,7 @@ class PrintVertrageTest {
         List<Vertrag> vertrage = Arrays.asList(vertrag1, vertrag2);
 
         // Act: Gesamtsumme berechnen
-        BigDecimal totalPrice = printVertrage.calculateTotalPrice(vertrage);
+        BigDecimal totalPrice = printVertrageController.calculateTotalPrice(vertrage);
 
         // Assert: Erwartete Gesamtsumme 180.0 + 25.0 = 205.0
         BigDecimal expected = BigDecimal.valueOf(205.0);

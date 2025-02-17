@@ -184,7 +184,6 @@ public class VertragsServiceTest {
         merged.setMonatlich(neueDaten.isMonatlich());
         merged.setPartner(neueDaten.getPartner());
         merged.setFahrzeug(neueDaten.getFahrzeug());
-        when(vertragUtil.mergeVertrage(existing, neueDaten)).thenReturn(merged);
 
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(false);
@@ -221,7 +220,6 @@ public class VertragsServiceTest {
 
         List<Vertrag> vertragsListe = new ArrayList<>();
         vertragsListe.add(existing);
-        when(repository.ladeVertrage()).thenReturn(vertragsListe);
 
         Vertrag neueDaten = new Vertrag();
         neueDaten.setMonatlich(true);
@@ -236,7 +234,6 @@ public class VertragsServiceTest {
         merged.setMonatlich(neueDaten.isMonatlich());
         merged.setPartner(neueDaten.getPartner());
         merged.setFahrzeug(neueDaten.getFahrzeug());
-        when(vertragUtil.mergeVertrage(existing, neueDaten)).thenReturn(merged);
 
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);

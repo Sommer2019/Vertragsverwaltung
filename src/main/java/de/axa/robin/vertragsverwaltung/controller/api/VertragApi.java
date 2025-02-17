@@ -39,7 +39,7 @@ public class VertragApi extends DefaultApi {
      */
     @GetMapping("/")
     @Override
-    public List<de.axa.robin.vertragsverwaltung.model.VertragDTO> rootGet() throws RestClientException {
+    public List<VertragDTO> rootGet() throws RestClientException {
         logger.info("Retrieving all contracts");
         List<Vertrag> vertrageloaded = vertragsService.getVertrage();
         List<de.axa.robin.vertragsverwaltung.model.VertragDTO> vertragereturn = new ArrayList<>();
@@ -57,7 +57,7 @@ public class VertragApi extends DefaultApi {
      */
     @GetMapping("/vertrage/{id}")
     @Override
-    public de.axa.robin.vertragsverwaltung.model.VertragDTO vertrageIdGet(@PathVariable Integer id) throws RestClientException {
+    public VertragDTO vertrageIdGet(@PathVariable Integer id) throws RestClientException {
         Vertrag vertrag = vertragsService.getVertrag(id);
         return vertragMapper.toVertragDTO(vertrag);
     }
@@ -70,7 +70,7 @@ public class VertragApi extends DefaultApi {
      */
     @PutMapping("/")
     @Override
-    public de.axa.robin.vertragsverwaltung.model.VertragDTO rootPut(@RequestBody AntragDTO antragDTO) throws RestClientException {
+    public VertragDTO rootPut(@RequestBody AntragDTO antragDTO) throws RestClientException {
         logger.info("Creating new contract: {}", antragDTO);
         Vertrag vertrag = vertragMapper.toVertrag(antragDTO);
         vertragsService.vertragAnlegen(vertrag, preisModelService.getPreismodell(), null);
@@ -87,7 +87,7 @@ public class VertragApi extends DefaultApi {
      */
     @PostMapping("/vertrage/{id}")
     @Override
-    public de.axa.robin.vertragsverwaltung.model.VertragDTO vertrageIdPost(@PathVariable Integer id, @RequestBody AntragDTO antragDTO) throws RestClientException {
+    public VertragDTO vertrageIdPost(@PathVariable Integer id, @RequestBody AntragDTO antragDTO) throws RestClientException {
         logger.info("Updating contract with ID: {}", id);
         Vertrag vertrag = vertragMapper.toVertrag(antragDTO);
         Vertrag vertragneu = vertragsService.vertragBearbeiten(vertrag, id, preisModelService.getPreismodell(), null);
@@ -103,7 +103,7 @@ public class VertragApi extends DefaultApi {
      */
     @DeleteMapping("/vertrage/{id}")
     @Override
-    public de.axa.robin.vertragsverwaltung.model.VertragDTO vertrageIdDelete(@PathVariable Integer id) throws RestClientException {
+    public VertragDTO vertrageIdDelete(@PathVariable Integer id) throws RestClientException {
         Vertrag vertrag = vertragsService.getVertrag(id);
         logger.info("Deleting contract with ID: {}", id);
         vertragsService.vertragLoeschen(id, vertragsService.getVertrage());

@@ -26,8 +26,6 @@ public class VertragsService {
     private Repository repository;
     @Autowired
     private InputValidator inputValidator;
-    @Autowired
-    private VertragUtil vertragUtil;
 
     /**
      * Retrieves all contracts.
@@ -97,7 +95,7 @@ public class VertragsService {
      * @throws IllegalArgumentException if validation errors are found
      */
     public Vertrag vertragBearbeiten(Vertrag vertragalt, int vsnr, Preis preismodell, BindingResult result) throws IllegalArgumentException {
-        Vertrag vertragneu = vertragUtil.mergeVertrage(getVertrag(vsnr), vertragalt);
+        Vertrag vertragneu = VertragUtil.mergeVertrage(getVertrag(vsnr), vertragalt);
         List<Vertrag> vertrage = getVertrage();
         if (result != null) {
             inputValidator.validateVertrag(vertrage, vertragneu, result);

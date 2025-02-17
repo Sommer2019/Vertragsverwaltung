@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.validators;
 
-import de.axa.robin.vertragsverwaltung.config.DataLoadException;
+import de.axa.robin.vertragsverwaltung.exceptions.DataLoadException;
 import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import jakarta.json.Json;

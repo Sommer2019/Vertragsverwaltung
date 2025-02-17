@@ -3,6 +3,7 @@ package de.axa.robin.vertragsverwaltung.controller;
 import de.axa.robin.vertragsverwaltung.VertragsverwaltungApplication;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;
+import de.axa.robin.vertragsverwaltung.models.Preis;
 import de.axa.robin.vertragsverwaltung.models.Vertrag;
 import de.axa.robin.vertragsverwaltung.services.PreisModelService;
 import de.axa.robin.vertragsverwaltung.services.VertragsService;
@@ -11,27 +12,21 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = VertragsverwaltungApplication.class)
 @AutoConfigureMockMvc
-public class HandleVertragTest {
+public class HandleVertragControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +35,7 @@ public class HandleVertragTest {
     private VertragsService vertragsService;
 
     @MockitoBean
-    private MenuSpring menuSpring;
+    private MenuController menuController;
 
     @MockitoBean
     private PreisModelService preisModelService;
@@ -88,8 +83,8 @@ public class HandleVertragTest {
         int vsnr = 123;
         Vertrag vertrag = createValidVertrag(vsnr, 100.0, true, LocalDate.now(), LocalDate.now().plusDays(30));
         Mockito.when(vertragsService.getVertrag(vsnr)).thenReturn(vertrag);
-        Mockito.doNothing().when(menuSpring).setVsnr(vsnr);
-        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+        Mockito.doNothing().when(menuController).setVsnr(vsnr);
+        Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
 
         mockMvc.perform(post("/home")
                         .param("vsnr", String.valueOf(vsnr)).with(csrf()))
@@ -119,8 +114,8 @@ public class HandleVertragTest {
     @WithMockUser(username = "admin", roles = "ADMIN")
     public void testProcessPrintVertragNotFound() throws Exception {
         int vsnr = 123;
-        Mockito.doNothing().when(menuSpring).setVsnr(vsnr);
-        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+        Mockito.doNothing().when(menuController).setVsnr(vsnr);
+        Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
         Mockito.when(vertragsService.getVertrag(vsnr)).thenThrow(new IllegalArgumentException("Not found"));
 
         mockMvc.perform(post("/home")
@@ -135,7 +130,7 @@ public class HandleVertragTest {
     @WithMockUser(username = "admin", roles = "ADMIN")
     public void testDeleteVertrag() throws Exception {
         int vsnr = 123;
-        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+        Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
         // Verwende eq(vsnr) statt des Rohwerts
         Mockito.doNothing().when(vertragsService).vertragLoeschen(ArgumentMatchers.eq(vsnr), ArgumentMatchers.anyList());
 
@@ -145,24 +140,24 @@ public class HandleVertragTest {
                 .andExpect(view().name("home"));
     }
 
-    // Beispiel für testEditVertragSuccess: Stub die Methode mit thenReturn()
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     public void testEditVertragSuccess() throws Exception {
         int vsnr = 123;
         Vertrag vertrag = createValidVertrag(vsnr, 150.0, true, LocalDate.now(), LocalDate.now().plusDays(30));
-        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
-        // Statt doNothing(), simuliere ein erfolgreiches Bearbeitungsergebnis
+        Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
+        // Ensure the getVertrag method returns a valid Vertrag object
+        Mockito.when(vertragsService.getVertrag(vsnr)).thenReturn(vertrag);
+        // Simulate a successful edit result
         Mockito.when(vertragsService.vertragBearbeiten(
                         ArgumentMatchers.any(Vertrag.class),
                         ArgumentMatchers.eq(vsnr),
-                        ArgumentMatchers.any(),
+                        ArgumentMatchers.any(Preis.class),
                         ArgumentMatchers.any()))
                 .thenReturn(vertrag);
 
         mockMvc.perform(post("/showEdit")
                         .param("editVisible", "true")
-                        // ... weitere Parameter ...
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("confirm"))
@@ -178,7 +173,7 @@ public class HandleVertragTest {
     @WithMockUser(username = "admin", roles = "ADMIN")
     public void testEditVertragValidationError() throws Exception {
         int vsnr = 123;
-        Mockito.when(menuSpring.getVsnr()).thenReturn(vsnr);
+        Mockito.when(menuController.getVsnr()).thenReturn(vsnr);
         // Simuliere, dass bei der Bearbeitung eine Exception auftritt
         Mockito.doThrow(new IllegalArgumentException("Validation error"))
                 .when(vertragsService).vertragBearbeiten(

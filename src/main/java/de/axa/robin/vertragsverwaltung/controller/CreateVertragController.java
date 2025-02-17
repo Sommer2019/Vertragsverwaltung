@@ -26,13 +26,13 @@ import java.util.Map;
  * Controller class for creating insurance contracts.
  */
 @Controller
-public class CreateVertrag {
-    private static final Logger logger = LoggerFactory.getLogger(CreateVertrag.class);
+public class CreateVertragController {
+    private static final Logger logger = LoggerFactory.getLogger(CreateVertragController.class);
 
     @Autowired
     private VertragsService vertragsService;
     @Autowired
-    private MenuSpring menuSpring;
+    private MenuController menuController;
     @Autowired
     private PreisModelService preisModelService;
 
@@ -44,12 +44,12 @@ public class CreateVertrag {
      */
     @GetMapping("/createVertrag")
     public String createVertrag(Model model) {
-        menuSpring.setVsnr(vertragsService.createvsnr(vertragsService.getVertrage()));
+        menuController.setVsnr(vertragsService.createvsnr(vertragsService.getVertrage()));
         Vertrag vertrag = initializeVertrag();
 
         model.addAttribute("vertrag", vertrag);
-        model.addAttribute("vsnr", menuSpring.getVsnr());
-        logger.info("Initialized new contract creation with VSNR: {}", menuSpring.getVsnr());
+        model.addAttribute("vsnr", menuController.getVsnr());
+        logger.info("Initialized new contract creation with VSNR: {}", menuController.getVsnr());
         return "createVertrag";
     }
 
@@ -66,7 +66,7 @@ public class CreateVertrag {
         try {
             vertragsService.vertragAnlegen(vertrag, preisModelService.getPreismodell(), result);
         } catch (IllegalArgumentException e) {
-            model.addAttribute("vsnr", menuSpring.getVsnr());
+            model.addAttribute("vsnr", menuController.getVsnr());
             return "createVertrag";
         }
         model.addAttribute("confirm", "Vertrag mit VSNR " + vertrag.getVsnr() + " erfolgreich erstellt! Preis: " + String.valueOf(vertrag.getPreis()).replace('.', ',') + "€");

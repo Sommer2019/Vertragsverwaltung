@@ -23,8 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(EditPreisModel.class)
-public class EditPreisModelTest {
+@WebMvcTest(EditPreisModelController.class)
+public class EditPreisModelControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -23,8 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(CreateVertrag.class)
-public class CreateVertragTest {
+@WebMvcTest(CreateVertragController.class)
+public class CreateVertragControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -33,7 +33,7 @@ public class CreateVertragTest {
     @MockitoBean
     private VertragUtil vertragUtil;
     @MockitoBean
-    private MenuSpring menuSpring;
+    private MenuController menuController;
     @MockitoBean
     private PreisModelService preisModelService;
 
@@ -48,7 +48,7 @@ public class CreateVertragTest {
         // Simuliere, dass derzeit keine Verträge existieren
         Mockito.when(vertragsService.getVertrage()).thenReturn(new ArrayList<>());
         Mockito.when(vertragsService.createvsnr(ArgumentMatchers.any())).thenReturn(expectedVsnr);
-        Mockito.when(menuSpring.getVsnr()).thenReturn(expectedVsnr);
+        Mockito.when(menuController.getVsnr()).thenReturn(expectedVsnr);
 
         mockMvc.perform(get("/createVertrag").with(csrf()))
                 .andExpect(status().isOk())
@@ -100,7 +100,7 @@ public class CreateVertragTest {
         Mockito.doThrow(new IllegalArgumentException("Error"))
                 .when(vertragsService)
                 .vertragAnlegen(ArgumentMatchers.any(Vertrag.class), ArgumentMatchers.eq(preisModel), ArgumentMatchers.any());
-        Mockito.when(menuSpring.getVsnr()).thenReturn(10000000);
+        Mockito.when(menuController.getVsnr()).thenReturn(10000000);
 
         mockMvc.perform(post("/createVertrag")
                         .param("monatlich", "true")

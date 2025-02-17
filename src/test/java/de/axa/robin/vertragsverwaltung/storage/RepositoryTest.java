@@ -1,6 +1,6 @@
 package de.axa.robin.vertragsverwaltung.storage;
 
-import de.axa.robin.vertragsverwaltung.config.CustomTestConfig;
+import de.axa.robin.test.config.CustomTestConfig;
 import de.axa.robin.vertragsverwaltung.config.Setup;
 import de.axa.robin.vertragsverwaltung.models.Fahrzeug;
 import de.axa.robin.vertragsverwaltung.models.Partner;

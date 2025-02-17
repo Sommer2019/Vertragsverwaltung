@@ -25,13 +25,13 @@ import static java.lang.Integer.parseInt;
  * Controller class for handling insurance contracts.
  */
 @Controller
-public class HandleVertrag {
-    private static final Logger logger = LoggerFactory.getLogger(HandleVertrag.class);
+public class HandleVertragController {
+    private static final Logger logger = LoggerFactory.getLogger(HandleVertragController.class);
 
     @Autowired
     private VertragsService vertragsService;
     @Autowired
-    private MenuSpring menuSpring;
+    private MenuController menuController;
     @Autowired
     private PreisModelService preisModelService;
 
@@ -48,7 +48,7 @@ public class HandleVertrag {
     public String processPrintVertrag(@RequestParam String vsnr, Model model) {
         try {
             int vsnrInt = parseInt(vsnr);
-            menuSpring.setVsnr(vsnrInt);
+            menuController.setVsnr(vsnrInt);
             handledVertrag = vsnrInt;
             Vertrag v;
             try {
@@ -89,9 +89,9 @@ public class HandleVertrag {
      */
     @PostMapping("/showDelete")
     public String deleteVertrag(Model model) {
-        vertragsService.vertragLoeschen(menuSpring.getVsnr(), vertragsService.getVertrage());
+        vertragsService.vertragLoeschen(menuController.getVsnr(), vertragsService.getVertrage());
         model.addAttribute("confirm", "Vertrag erfolgreich gelöscht!");
-        logger.info("Contract successfully deleted for VSNR: {}", menuSpring.getVsnr());
+        logger.info("Contract successfully deleted for VSNR: {}", menuController.getVsnr());
         return "home";
     }
 
@@ -106,7 +106,7 @@ public class HandleVertrag {
      */
     @PostMapping("/showEdit")
     public String editVertrag(@ModelAttribute @Valid Vertrag vertrag, BindingResult result, @RequestParam("editVisible") boolean editVisible, Model model) {
-        vertrag.setVsnr(menuSpring.getVsnr());
+        vertrag.setVsnr(menuController.getVsnr());
         logger.info("Editing contract: {}", vertrag);
         try {
             vertragsService.vertragBearbeiten(vertrag, vertrag.getVsnr(), preisModelService.getPreismodell(), result);

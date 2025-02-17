@@ -19,10 +19,10 @@ import java.util.Locale;
  * Controller class for handling the printing of contracts.
  */
 @Controller
-public class PrintVertrage {
+public class PrintVertrageController {
     @Autowired
     private VertragsService vertragsService;
-    private static final Logger logger = LoggerFactory.getLogger(PrintVertrage.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(PrintVertrageController.class.getName());
     private static final String PRICE_FORMAT_PATTERN = "#,##0.00";
 
     /**
